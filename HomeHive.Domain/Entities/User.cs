@@ -14,9 +14,10 @@ public sealed class User : BaseEntity
     public string? Password { get; set; }
     public string? PhoneNumber { get; set; }
     public string? ProfilePicture { get; set; }
+    public ICollection<Estate>? Estates { get; set; }
     
     public static Result<User> Create(string firstName, string lastName, string email, string password,
-        string phoneNumber, string profilePicture)
+        string phoneNumber, string profilePicture, ICollection<Estate>? estates)
     {
         if (string.IsNullOrWhiteSpace(firstName))
         {
@@ -47,6 +48,11 @@ public sealed class User : BaseEntity
         {
             return Result<User>.Failure("Profile Picture is required.");
         }
+        
+        if (estates == null)
+        {
+            return Result<User>.Failure("Estates is required.");
+        }
 
         return Result<User>.Success(new User
         {
@@ -55,7 +61,8 @@ public sealed class User : BaseEntity
             Email = email,
             Password = password,
             PhoneNumber = phoneNumber,
-            ProfilePicture = profilePicture
+            ProfilePicture = profilePicture,
+            Estates = estates
         });
     }
 }
