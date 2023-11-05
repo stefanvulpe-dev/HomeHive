@@ -21,56 +21,6 @@ namespace HomeHive.Infrastructure.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
-            
-            modelBuilder.Entity("HomeHive.Domain.Entities.Contract", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-                    b.Property<string>("CreatedBy")
-                        .HasColumnType("text");
-                    b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("timestamp with time zone");
-                    b.Property<string>("Description")
-                        .HasColumnType("text");
-                    b.Property<DateTime>("EndDate")
-                        .HasColumnType("timestamp with time zone");
-                    b.Property<Guid>("EstateId")
-                        .HasColumnType("uuid");
-                    b.Property<string>("LastModifiedBy")
-                        .HasColumnType("text");
-                    b.Property<DateTime>("LastModifiedDate")
-                        .HasColumnType("timestamp with time zone");
-                    b.Property<DateTime>("StartDate")
-                        .HasColumnType("timestamp with time zone");
-                    b.Property<int>("Type")
-                        .HasColumnType("integer");
-                    b.Property<Guid>("UserId")
-                        .HasColumnType("uuid");
-                    b.HasKey("Id");
-                    b.ToTable("Contracts");
-                });
-
-            modelBuilder.Entity("HomeHive.Domain.Entities.Photo", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-                    b.Property<string>("CreatedBy")
-                        .HasColumnType("text");
-                    b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("timestamp with time zone");
-                    b.Property<Guid>("EstateId")
-                        .HasColumnType("uuid");
-                    b.Property<string>("LastModifiedBy")
-                        .HasColumnType("text");
-                    b.Property<DateTime>("LastModifiedDate")
-                        .HasColumnType("timestamp with time zone");
-                    b.Property<string>("ObjectName")
-                        .HasColumnType("text");
-                    b.HasKey("Id");
-                    b.ToTable("Photos");
-                });
 
             modelBuilder.Entity("HomeHive.Domain.Entities.Estate", b =>
                 {

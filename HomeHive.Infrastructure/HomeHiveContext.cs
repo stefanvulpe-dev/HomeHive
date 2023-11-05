@@ -10,6 +10,7 @@ public class HomeHiveContext: DbContext
     public DbSet<User>? Users { get; set; }
     public DbSet<Photo>? Photos { get; set; }
     public DbSet<Contract>? Contracts { get; set; }
+    public DbSet<Estate>? Estates { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
