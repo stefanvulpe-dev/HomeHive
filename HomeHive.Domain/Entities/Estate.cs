@@ -1,6 +1,4 @@
-using System.ComponentModel.DataAnnotations.Schema;
 using HomeHive.Domain.Common;
-using HomeHive.Domain.Common.Enums;
 
 namespace HomeHive.Domain.Entities;
 
@@ -88,5 +86,23 @@ public sealed class Estate: BaseEntity
             Image = image
         });
     }
-
+    public enum EstateType
+    {
+        House,
+        Apartment,
+        Villa,
+        Cottage,
+        Farmhouse,
+        Bungalow,
+        Townhouse,
+        Penthouse,
+        Studio,
+        Duplex,
+        Flat,
+    }
+    
+    public enum EstateCategory
+    {
+        ForRent, ForSale
+    }
 }
