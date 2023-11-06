@@ -22,11 +22,4 @@ public class HomeHiveContext: DbContext
             .Build();
         optionsBuilder.UseNpgsql(configuration.GetConnectionString("RelationalDatabase"));
     }
-
-    protected override void OnModelCreating(ModelBuilder modelBuilder)
-    {
-        modelBuilder.Entity<Estate>().HasOne<User>(e => e.OwnerId)
-            .WithMany(user => user.Estates)
-            .HasForeignKey(est => est.Id);
-    }
 }

@@ -7,7 +7,7 @@ public sealed class Photo : BaseEntity
     private Photo()
     {
     }
-    
+
     public Guid EstateId { get; set; }
     public string? ObjectName { get; set; }
 
@@ -23,9 +23,6 @@ public sealed class Photo : BaseEntity
             return Result<Photo>.Failure("Estate id should not be default!");
         }
 
-        return Result<Photo>.Success(new Photo{
-            EstateId = estateId,
-            ObjectName = objectName
-            });
+        return Result<Photo>.Success(new Photo { EstateId = estateId, ObjectName = objectName });
     }
 }

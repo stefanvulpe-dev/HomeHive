@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace HomeHive.Infrastructure.Migrations
 {
     [DbContext(typeof(HomeHiveContext))]
-    [Migration("20231106203337_Initial")]
+    [Migration("20231106205944_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -63,12 +63,15 @@ namespace HomeHive.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("EstateId");
+
                     b.ToTable("Contracts");
                 });
 
             modelBuilder.Entity("HomeHive.Domain.Entities.Estate", b =>
                 {
                     b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
                     b.Property<int?>("Category")
@@ -98,6 +101,9 @@ namespace HomeHive.Infrastructure.Migrations
                     b.Property<string>("Name")
                         .HasColumnType("text");
 
+                    b.Property<Guid>("OwnerId")
+                        .HasColumnType("uuid");
+
                     b.Property<decimal>("Price")
                         .HasColumnType("numeric");
 
@@ -107,10 +113,15 @@ namespace HomeHive.Infrastructure.Migrations
                     b.Property<int?>("Type")
                         .HasColumnType("integer");
 
+                    b.Property<Guid?>("UserId")
+                        .HasColumnType("uuid");
+
                     b.Property<string>("Utilities")
                         .HasColumnType("text");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("Estates");
                 });
@@ -140,6 +151,8 @@ namespace HomeHive.Infrastructure.Migrations
                         .HasColumnType("text");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("EstateId");
 
                     b.ToTable("Photos");
                 });
@@ -178,6 +191,8 @@ namespace HomeHive.Infrastructure.Migrations
                         .HasColumnType("integer");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("EstateId");
 
                     b.ToTable("Rooms");
                 });
@@ -223,15 +238,47 @@ namespace HomeHive.Infrastructure.Migrations
                     b.ToTable("Users");
                 });
 
-            modelBuilder.Entity("HomeHive.Domain.Entities.Estate", b =>
+            modelBuilder.Entity("HomeHive.Domain.Entities.Contract", b =>
                 {
-                    b.HasOne("HomeHive.Domain.Entities.User", "OwnerId")
-                        .WithMany("Estates")
-                        .HasForeignKey("Id")
+                    b.HasOne("HomeHive.Domain.Entities.Estate", null)
+                        .WithMany("Contracts")
+                        .HasForeignKey("EstateId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
 
-                    b.Navigation("OwnerId");
+            modelBuilder.Entity("HomeHive.Domain.Entities.Estate", b =>
+                {
+                    b.HasOne("HomeHive.Domain.Entities.User", null)
+                        .WithMany("Estates")
+                        .HasForeignKey("UserId");
+                });
+
+            modelBuilder.Entity("HomeHive.Domain.Entities.Photo", b =>
+                {
+                    b.HasOne("HomeHive.Domain.Entities.Estate", null)
+                        .WithMany("Photos")
+                        .HasForeignKey("EstateId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("HomeHive.Domain.Entities.Room", b =>
+                {
+                    b.HasOne("HomeHive.Domain.Entities.Estate", null)
+                        .WithMany("Rooms")
+                        .HasForeignKey("EstateId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("HomeHive.Domain.Entities.Estate", b =>
+                {
+                    b.Navigation("Contracts");
+
+                    b.Navigation("Photos");
+
+                    b.Navigation("Rooms");
                 });
 
             modelBuilder.Entity("HomeHive.Domain.Entities.User", b =>

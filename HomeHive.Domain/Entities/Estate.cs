@@ -8,7 +8,7 @@ public sealed class Estate: BaseEntity
     {
     }
     
-    public User? OwnerId { get; private set; }
+    public Guid OwnerId { get; private set; }
     public EstateType? Type { get; private set; }
     public EstateCategory? Category { get; private set; }
     public string? Name { get; private set; }
@@ -18,15 +18,18 @@ public sealed class Estate: BaseEntity
     public string? Utilities { get; private set; }
     public string? Description { get; private set; }
     public string? Image { get; private set; }
-    
-    public static Result<Estate> Create(User? ownerId, EstateType? type, EstateCategory? category, string name,
+    public ICollection<Contract>? Contracts { get; set; }
+    public ICollection<Photo>? Photos { get; set; }
+    public ICollection<Room>? Rooms { get; set; }
+
+    public static Result<Estate> Create(Guid ownerId, EstateType? type, EstateCategory? category, string name,
         string location, decimal price, string totalArea, string utilities, string description, string image)
     {
-        if (ownerId == null)
+        if (ownerId == default)
         {
-            return Result<Estate>.Failure("Owner Id is required.");
+            return Result<Estate>.Failure("Owner Id should not be default.");
         }
-        
+
         if (type == null)
         {
             return Result<Estate>.Failure("Type is required.");
@@ -83,26 +86,30 @@ public sealed class Estate: BaseEntity
             TotalArea = totalArea,
             Utilities = utilities,
             Description = description,
-            Image = image
+            Image = image,
+            Contracts = new List<Contract>(),
+            Photos = new List<Photo>(), 
+            Rooms = new List<Room>()
         });
     }
-    public enum EstateType
-    {
-        House,
-        Apartment,
-        Villa,
-        Cottage,
-        Farmhouse,
-        Bungalow,
-        Townhouse,
-        Penthouse,
-        Studio,
-        Duplex,
-        Flat,
-    }
+}
+
+public enum EstateType
+{
+    House,
+    Apartment,
+    Villa,
+    Cottage,
+    Farmhouse,
+    Bungalow,
+    Townhouse,
+    Penthouse,
+    Studio,
+    Duplex,
+    Flat,
+}
     
-    public enum EstateCategory
-    {
-        ForRent, ForSale
-    }
+public enum EstateCategory
+{
+    ForRent, ForSale
 }

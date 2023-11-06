@@ -54,3 +54,9 @@ public sealed class Contract: BaseEntity
         });
     }
 }
+
+public enum ContractType
+{
+    Rent,
+    Sale
+}
