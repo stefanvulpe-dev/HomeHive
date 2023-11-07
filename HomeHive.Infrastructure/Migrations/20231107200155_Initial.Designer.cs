@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace HomeHive.Infrastructure.Migrations
 {
     [DbContext(typeof(HomeHiveContext))]
-    [Migration("20231106205944_Initial")]
+    [Migration("20231107200155_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -65,6 +65,8 @@ namespace HomeHive.Infrastructure.Migrations
 
                     b.HasIndex("EstateId");
 
+                    b.HasIndex("UserId");
+
                     b.ToTable("Contracts");
                 });
 
@@ -113,15 +115,12 @@ namespace HomeHive.Infrastructure.Migrations
                     b.Property<int?>("Type")
                         .HasColumnType("integer");
 
-                    b.Property<Guid?>("UserId")
-                        .HasColumnType("uuid");
-
                     b.Property<string>("Utilities")
                         .HasColumnType("text");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex("OwnerId");
 
                     b.ToTable("Estates");
                 });
@@ -240,36 +239,54 @@ namespace HomeHive.Infrastructure.Migrations
 
             modelBuilder.Entity("HomeHive.Domain.Entities.Contract", b =>
                 {
-                    b.HasOne("HomeHive.Domain.Entities.Estate", null)
+                    b.HasOne("HomeHive.Domain.Entities.Estate", "Estate")
                         .WithMany("Contracts")
                         .HasForeignKey("EstateId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.HasOne("HomeHive.Domain.Entities.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Estate");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("HomeHive.Domain.Entities.Estate", b =>
                 {
-                    b.HasOne("HomeHive.Domain.Entities.User", null)
+                    b.HasOne("HomeHive.Domain.Entities.User", "Owner")
                         .WithMany("Estates")
-                        .HasForeignKey("UserId");
+                        .HasForeignKey("OwnerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Owner");
                 });
 
             modelBuilder.Entity("HomeHive.Domain.Entities.Photo", b =>
                 {
-                    b.HasOne("HomeHive.Domain.Entities.Estate", null)
+                    b.HasOne("HomeHive.Domain.Entities.Estate", "Estate")
                         .WithMany("Photos")
                         .HasForeignKey("EstateId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Estate");
                 });
 
             modelBuilder.Entity("HomeHive.Domain.Entities.Room", b =>
                 {
-                    b.HasOne("HomeHive.Domain.Entities.Estate", null)
+                    b.HasOne("HomeHive.Domain.Entities.Estate", "Estate")
                         .WithMany("Rooms")
                         .HasForeignKey("EstateId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Estate");
                 });
 
             modelBuilder.Entity("HomeHive.Domain.Entities.Estate", b =>

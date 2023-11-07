@@ -10,22 +10,24 @@ public sealed class Contract: BaseEntity
     
     public Guid UserId { get; set; }
     public Guid EstateId { get; set; }
+    public Estate? Estate { get; set; }
+    public User? User { get; set; }
     public ContractType Type { get; set; }
     public DateTime StartDate { get; set; }
     public DateTime EndDate { get; set; }
     public string? Description { get; set; }
 
-    public Result<Contract> Create(Guid userId, Guid estateId, ContractType type, DateTime startDate, DateTime endDate,
+    public Result<Contract> Create(User? user, Estate? estate, ContractType type, DateTime startDate, DateTime endDate,
         string description)
     {
-        if (userId == default)
+        if (user == null)
         {
-            return Result<Contract>.Failure("User id should not be default!");
+            return Result<Contract>.Failure("User is required.");
         }
 
-        if (estateId == default)
+        if (estate == null)
         {
-            return Result<Contract>.Failure("Estate id should not be default!");
+            return Result<Contract>.Failure("Estate is required.");
         }
 
         if (startDate == default)
@@ -45,8 +47,10 @@ public sealed class Contract: BaseEntity
 
         return Result<Contract>.Success(new Contract
         {
-            UserId = userId,
-            EstateId = estateId,
+            User = user,
+            Estate = estate,
+            UserId = user.Id,
+            EstateId = estate.Id,
             Type = type,
             StartDate = startDate,
             EndDate = endDate,

@@ -9,20 +9,21 @@ public sealed class Photo : BaseEntity
     }
 
     public Guid EstateId { get; set; }
+    public Estate? Estate { get; set; }
     public string? ObjectName { get; set; }
 
-    public static Result<Photo> Create(string objectName, Guid estateId)
+    public static Result<Photo> Create(string? objectName, Estate? estate)
     {
         if (string.IsNullOrWhiteSpace(objectName))
         {
             return Result<Photo>.Failure("Object name is not valid!");
         }
 
-        if (estateId == default)
+        if (estate == null)
         {
-            return Result<Photo>.Failure("Estate id should not be default!");
+            return Result<Photo>.Failure("Estate is required.");
         }
 
-        return Result<Photo>.Success(new Photo { EstateId = estateId, ObjectName = objectName });
+        return Result<Photo>.Success(new Photo { EstateId = estate.Id, Estate = estate, ObjectName = objectName });
     }
 }

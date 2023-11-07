@@ -47,7 +47,6 @@ namespace HomeHive.Infrastructure.Migrations
                     Utilities = table.Column<string>(type: "text", nullable: true),
                     Description = table.Column<string>(type: "text", nullable: true),
                     Image = table.Column<string>(type: "text", nullable: true),
-                    UserId = table.Column<Guid>(type: "uuid", nullable: true),
                     CreatedBy = table.Column<string>(type: "text", nullable: true),
                     CreatedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     LastModifiedBy = table.Column<string>(type: "text", nullable: true),
@@ -57,10 +56,11 @@ namespace HomeHive.Infrastructure.Migrations
                 {
                     table.PrimaryKey("PK_Estates", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Estates_Users_UserId",
-                        column: x => x.UserId,
+                        name: "FK_Estates_Users_OwnerId",
+                        column: x => x.OwnerId,
                         principalTable: "Users",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -86,6 +86,12 @@ namespace HomeHive.Infrastructure.Migrations
                         name: "FK_Contracts_Estates_EstateId",
                         column: x => x.EstateId,
                         principalTable: "Estates",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Contracts_Users_UserId",
+                        column: x => x.UserId,
+                        principalTable: "Users",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -145,9 +151,14 @@ namespace HomeHive.Infrastructure.Migrations
                 column: "EstateId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Estates_UserId",
-                table: "Estates",
+                name: "IX_Contracts_UserId",
+                table: "Contracts",
                 column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Estates_OwnerId",
+                table: "Estates",
+                column: "OwnerId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Photos_EstateId",

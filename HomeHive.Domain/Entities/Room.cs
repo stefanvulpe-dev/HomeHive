@@ -9,13 +9,14 @@ public sealed class Room : BaseEntity
     }
 
     public Guid EstateId { get; set; }
+    public Estate? Estate { get; set; }
     public string? Name { get; set; }
     public RoomType? Type { get; set; }
     public int Capacity { get; set; }
 
     public int Size { get; set; }
 
-    public static Result<Room> Create(string name, RoomType type, int capacity, int size, Guid estateId)
+    public static Result<Room> Create(string name, RoomType type, int capacity, int size, Estate? estate)
     {
         if (string.IsNullOrWhiteSpace(name))
         {
@@ -37,9 +38,9 @@ public sealed class Room : BaseEntity
             return Result<Room>.Failure("Size should be greater than 0.");
         }
 
-        if (estateId == default)
+        if (estate == null)
         {
-            return Result<Room>.Failure("Estate ID should not be default.");
+            return Result<Room>.Failure("Estate is required.");
         }
 
         return Result<Room>.Success(new Room
@@ -48,7 +49,8 @@ public sealed class Room : BaseEntity
             Type = type,
             Capacity = capacity,
             Size = size,
-            EstateId = estateId
+            EstateId = estate.Id,
+            Estate = estate
         });
     }
 }

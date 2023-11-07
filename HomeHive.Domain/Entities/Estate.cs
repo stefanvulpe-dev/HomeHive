@@ -9,6 +9,7 @@ public sealed class Estate: BaseEntity
     }
     
     public Guid OwnerId { get; private set; }
+    public User? Owner { get; private set; }
     public EstateType? Type { get; private set; }
     public EstateCategory? Category { get; private set; }
     public string? Name { get; private set; }
@@ -22,12 +23,12 @@ public sealed class Estate: BaseEntity
     public ICollection<Photo>? Photos { get; set; }
     public ICollection<Room>? Rooms { get; set; }
 
-    public static Result<Estate> Create(Guid ownerId, EstateType? type, EstateCategory? category, string name,
+    public static Result<Estate> Create(User? owner, EstateType? type, EstateCategory? category, string name,
         string location, decimal price, string totalArea, string utilities, string description, string image)
     {
-        if (ownerId == default)
+        if (owner == null)
         {
-            return Result<Estate>.Failure("Owner Id should not be default.");
+            return Result<Estate>.Failure("Owner is required.");
         }
 
         if (type == null)
@@ -77,7 +78,8 @@ public sealed class Estate: BaseEntity
 
         return Result<Estate>.Success(new Estate
         {
-            OwnerId = ownerId,
+            OwnerId = owner.Id,
+            Owner = owner,
             Type = type,
             Category = category,
             Name = name,
