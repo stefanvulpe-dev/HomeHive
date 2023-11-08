@@ -1,8 +1,9 @@
-﻿using HomeHive.Domain.Entities;
+﻿using HomeHive.Application.Persistence;
+using HomeHive.Domain.Entities;
 
 namespace HomeHive.Infrastructure.Repositories;
 
-public class PhotoRepository : BaseRepository<Photo>
+public class PhotoRepository : BaseRepository<Photo>, IPhotoRepository
 {
     public PhotoRepository(HomeHiveContext context) : base(context)
     {

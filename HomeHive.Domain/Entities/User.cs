@@ -2,6 +2,9 @@
 
 namespace HomeHive.Domain.Entities;
 
+public record UserData(string? FirstName, string? LastName, string? Email, string? Password, string? PhoneNumber,
+    string? ProfilePicture);
+
 public sealed class User : BaseEntity
 {
     private User()
@@ -14,11 +17,11 @@ public sealed class User : BaseEntity
     public string? Password { get; set; }
     public string? PhoneNumber { get; set; }
     public string? ProfilePicture { get; set; }
-    public ICollection<Estate>? Estates { get; set; }
+    public List<Estate>? Estates { get; set; }
     
-    public static Result<User> Create(string firstName, string lastName, string email, string password,
-        string phoneNumber, string profilePicture)
+    public static Result<User> Create(UserData userData)
     {
+        var (firstName, lastName, email, password, phoneNumber, profilePicture) = userData;
         if (string.IsNullOrWhiteSpace(firstName))
         {
             return Result<User>.Failure("First Name is required.");

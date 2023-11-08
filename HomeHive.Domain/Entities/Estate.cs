@@ -1,17 +1,18 @@
 using HomeHive.Domain.Common;
+using HomeHive.Domain.Common.EntitiesUtils.Estates;
 
 namespace HomeHive.Domain.Entities;
 
-public sealed class Estate: BaseEntity
+public sealed class Estate : BaseEntity
 {
     private Estate()
     {
     }
-    
+
     public Guid OwnerId { get; private set; }
     public User? Owner { get; private set; }
-    public EstateType? Type { get; private set; }
-    public EstateCategory? Category { get; private set; }
+    public EstateType? EstateType { get; private set; }
+    public EstateCategory? EstateCategory { get; private set; }
     public string? Name { get; private set; }
     public string? Location { get; private set; }
     public decimal Price { get; private set; }
@@ -19,26 +20,29 @@ public sealed class Estate: BaseEntity
     public string? Utilities { get; private set; }
     public string? Description { get; private set; }
     public string? Image { get; private set; }
-    public ICollection<Contract>? Contracts { get; set; }
-    public ICollection<Photo>? Photos { get; set; }
-    public ICollection<Room>? Rooms { get; set; }
+    public List<Contract>? Contracts { get; set; }
+    public List<Photo>? Photos { get; set; }
+    public List<Room>? Rooms { get; set; }
 
-    public static Result<Estate> Create(User? owner, EstateType? type, EstateCategory? category, string name,
-        string location, decimal price, string totalArea, string utilities, string description, string image)
+    public static Result<Estate> Create(EstateData estateData)
     {
+        var (owner, estateType, estateCategory, name, 
+                location, price, totalArea, utilities, 
+                description, image) = estateData;
         if (owner == null)
         {
             return Result<Estate>.Failure("Owner is required.");
         }
 
-        if (type == null)
+        if (string.IsNullOrWhiteSpace(estateType) || !Enum.TryParse(estateType, out EstateType typeEnum))
         {
-            return Result<Estate>.Failure("Type is required.");
+            return Result<Estate>.Failure("EstateType is not valid.");
         }
 
-        if (category == null)
+        if (string.IsNullOrWhiteSpace(estateCategory) ||
+            !Enum.TryParse(estateCategory, out EstateCategory categoryEnum))
         {
-            return Result<Estate>.Failure("Category is required.");
+            return Result<Estate>.Failure("EstateCategory is not valid.");
         }
 
         if (string.IsNullOrWhiteSpace(name))
@@ -80,8 +84,8 @@ public sealed class Estate: BaseEntity
         {
             OwnerId = owner.Id,
             Owner = owner,
-            Type = type,
-            Category = category,
+            EstateType = Enum.Parse<EstateType>(estateType),
+            EstateCategory = Enum.Parse<EstateCategory>(estateCategory),
             Name = name,
             Location = location,
             Price = price,
@@ -90,28 +94,8 @@ public sealed class Estate: BaseEntity
             Description = description,
             Image = image,
             Contracts = new List<Contract>(),
-            Photos = new List<Photo>(), 
+            Photos = new List<Photo>(),
             Rooms = new List<Room>()
         });
     }
-}
-
-public enum EstateType
-{
-    House,
-    Apartment,
-    Villa,
-    Cottage,
-    Farmhouse,
-    Bungalow,
-    Townhouse,
-    Penthouse,
-    Studio,
-    Duplex,
-    Flat,
-}
-    
-public enum EstateCategory
-{
-    ForRent, ForSale
 }
