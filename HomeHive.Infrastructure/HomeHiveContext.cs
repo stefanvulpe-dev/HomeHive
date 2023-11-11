@@ -13,6 +13,13 @@ public class HomeHiveContext: DbContext
     public DbSet<Estate>? Estates { get; set; }
     public DbSet<Room>? Rooms { get; set; }
 
+    public HomeHiveContext(
+        DbContextOptions<HomeHiveContext> options) :
+        base(options)
+    {
+
+    }
+
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
         var configuration = new ConfigurationBuilder()
@@ -20,6 +27,6 @@ public class HomeHiveContext: DbContext
             .SetFileProvider(new PhysicalFileProvider(AppDomain.CurrentDomain.BaseDirectory))
             .AddJsonFile("appsettings.json")
             .Build();
-        optionsBuilder.UseNpgsql(configuration.GetConnectionString("RelationalDatabase"));
+        optionsBuilder.UseNpgsql(configuration.GetConnectionString("HomeHiveConnection"));
     }
 }

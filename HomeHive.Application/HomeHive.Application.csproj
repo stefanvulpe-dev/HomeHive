@@ -10,4 +10,13 @@
       <ProjectReference Include="..\HomeHive.Domain\HomeHive.Domain.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <PackageReference Include="FluentValidation" Version="11.8.0" />
+      <PackageReference Include="MediatR" Version="12.1.1" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Features\Queries\" />
+    </ItemGroup>
+
 </Project>
