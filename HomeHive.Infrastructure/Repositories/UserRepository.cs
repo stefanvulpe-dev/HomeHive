@@ -18,4 +18,16 @@ public class UserRepository: BaseRepository<User>, IUserRepository
         }
         return null;
     }
+    
+    public async Task DeleteByEmailAsync(string email)
+    {
+        if (Context.Users != null)
+        {
+            var user = await GetByEmailAsync(email);
+            if (user != null)
+            {
+                Context.Set<User>().Remove(user);
+            }
+        }
+    }
 }
