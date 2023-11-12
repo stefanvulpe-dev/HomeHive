@@ -13,6 +13,10 @@ public class HomeHiveContext: DbContext
     public DbSet<Estate>? Estates { get; set; }
     public DbSet<Room>? Rooms { get; set; }
 
+    public HomeHiveContext()
+    {
+    }
+
     public HomeHiveContext(
         DbContextOptions<HomeHiveContext> options) :
         base(options)
@@ -28,5 +32,10 @@ public class HomeHiveContext: DbContext
             .AddJsonFile("appsettings.json")
             .Build();
         optionsBuilder.UseNpgsql(configuration.GetConnectionString("HomeHiveConnection"));
+    }
+
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        modelBuilder.Entity<User>().HasIndex(p => p.Email).IsUnique(true);
     }
 }

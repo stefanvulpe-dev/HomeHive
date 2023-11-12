@@ -14,6 +14,6 @@ public class UsersController: ApiBaseController
         {
             return BadRequest(result);
         }
-        return Ok(result);
+        return CreatedAtAction(nameof(Create), result);
     }
 }
