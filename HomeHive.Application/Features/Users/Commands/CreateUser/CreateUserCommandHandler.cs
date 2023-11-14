@@ -1,9 +1,8 @@
 ﻿using HomeHive.Application.Abstractions;
 using HomeHive.Application.Persistence;
-using HomeHive.Domain.Common;
 using HomeHive.Domain.Entities;
 
-namespace HomeHive.Application.Features.Commands.CreateUser;
+namespace HomeHive.Application.Features.Users.Commands.CreateUser;
 
 public class CreateUserCommandHandler: ICommandHandler<CreateUserCommand, CreateUserCommandResponse>
 {

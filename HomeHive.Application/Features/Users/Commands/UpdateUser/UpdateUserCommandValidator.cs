@@ -1,6 +1,6 @@
 ﻿using FluentValidation;
 
-namespace HomeHive.Application.Features.Commands.UpdateUser;
+namespace HomeHive.Application.Features.Users.Commands.UpdateUser;
 
     public class UpdateUserCommandValidator : AbstractValidator<UpdateUserCommand>
     {

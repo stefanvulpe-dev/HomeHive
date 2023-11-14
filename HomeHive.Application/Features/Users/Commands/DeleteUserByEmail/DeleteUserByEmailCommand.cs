@@ -1,5 +1,5 @@
 using HomeHive.Application.Abstractions;
 
-namespace HomeHive.Application.Features.Commands.DeleteUserByEmail;
+namespace HomeHive.Application.Features.Users.Commands.DeleteUserByEmail;
 
 public record DeleteUserByEmailCommand(string Email) : ICommand<DeleteUserByEmailCommandResponse>;

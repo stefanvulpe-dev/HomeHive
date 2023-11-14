@@ -1,7 +1,7 @@
 using HomeHive.Application.Abstractions;
 using HomeHive.Application.Persistence;
 
-namespace HomeHive.Application.Features.Commands.DeleteUserByEmail;
+namespace HomeHive.Application.Features.Users.Commands.DeleteUserByEmail;
 
 public class DeleteUserByEmailCommandHandler: ICommandHandler<DeleteUserByEmailCommand, DeleteUserByEmailCommandResponse>
 {

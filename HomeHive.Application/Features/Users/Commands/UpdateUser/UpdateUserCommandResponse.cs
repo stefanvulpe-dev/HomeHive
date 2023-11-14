@@ -1,7 +1,7 @@
-﻿using HomeHive.Application.Features.Commands.CreateUser;
+﻿using HomeHive.Application.Features.Users.Commands.CreateUser;
 using HomeHive.Application.Responses;
 
-namespace HomeHive.Application.Features.Commands.UpdateUser;
+namespace HomeHive.Application.Features.Users.Commands.UpdateUser;
 
 public class UpdateUserCommandResponse : BaseResponse
 {

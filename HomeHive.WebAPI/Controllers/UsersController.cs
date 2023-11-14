@@ -1,8 +1,8 @@
-﻿using HomeHive.Application.Features.Commands.CreateUser;
-using HomeHive.Application.Features.Commands.UpdateUser;
-using HomeHive.Application.Features.Commands.DeleteUserByEmail;
-using HomeHive.Application.Features.Commands.DeleteUserById;
-using HomeHive.Application.Features.Queries.GetUserById;
+﻿using HomeHive.Application.Features.Users.Commands.CreateUser;
+using HomeHive.Application.Features.Users.Commands.DeleteUserByEmail;
+using HomeHive.Application.Features.Users.Commands.DeleteUserById;
+using HomeHive.Application.Features.Users.Commands.UpdateUser;
+using HomeHive.Application.Features.Users.Queries.GetUserById;
 using Microsoft.AspNetCore.Mvc;
 
 namespace HomeHive.WebAPI.Controllers;
@@ -64,6 +64,10 @@ public class UsersController: ApiBaseController
     public async Task<IActionResult> Get(Guid userId)
     {
         var result = await Mediator.Send(new GetUserByIdQuery(userId));
+        if (!result.Success)
+        {
+            return BadRequest(result);
+        }
         return Ok(result);
     }
 }

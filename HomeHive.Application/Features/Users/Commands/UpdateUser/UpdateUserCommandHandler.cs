@@ -1,11 +1,11 @@
-﻿using HomeHive.Application.Features.Commands.CreateUser;
+﻿using HomeHive.Application.Abstractions;
+using HomeHive.Application.Features.Users.Commands.CreateUser;
 using HomeHive.Application.Persistence;
 using HomeHive.Domain.Entities;
-using MediatR;
 
-namespace HomeHive.Application.Features.Commands.UpdateUser;
+namespace HomeHive.Application.Features.Users.Commands.UpdateUser;
 
-public class UpdateUserCommandHandler : IRequestHandler<UpdateUserCommand, UpdateUserCommandResponse>
+public class UpdateUserCommandHandler : ICommandHandler<UpdateUserCommand, UpdateUserCommandResponse>
 {
     private readonly IUserRepository _userRepository;
 

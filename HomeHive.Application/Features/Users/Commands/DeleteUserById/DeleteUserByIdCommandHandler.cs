@@ -1,7 +1,7 @@
 ﻿using HomeHive.Application.Abstractions;
 using HomeHive.Application.Persistence;
 
-namespace HomeHive.Application.Features.Commands.DeleteUserById;
+namespace HomeHive.Application.Features.Users.Commands.DeleteUserById;
 
 public class DeleteUserByIdCommandHandler: ICommandHandler<DeleteUserByIdCommand, DeleteUserByIdCommandResponse>
 {
