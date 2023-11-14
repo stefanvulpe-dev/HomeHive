@@ -1,6 +1,8 @@
 ﻿using HomeHive.Application.Features.Commands.CreateUser;
 using HomeHive.Application.Features.Commands.DeleteUser;
 using HomeHive.Application.Features.Commands.UpdateUser;
+using HomeHive.Application.Features.Commands.DeleteUserByEmail;
+using HomeHive.Application.Features.Commands.DeleteUserById;
 using Microsoft.AspNetCore.Mvc;
 
 namespace HomeHive.WebAPI.Controllers;
@@ -43,5 +45,17 @@ public class UsersController: ApiBaseController
         }
 
         return Ok(result);
+    }
+    
+    [HttpDelete("{id}")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    public async Task<IActionResult> Delete(Guid id)
+    {
+        var result = await Mediator.Send(new DeleteUserByIdCommand(id));
+        if (!result.Success)
+        {
+            return BadRequest(result);
+        }
+        return NoContent();
     }
 }

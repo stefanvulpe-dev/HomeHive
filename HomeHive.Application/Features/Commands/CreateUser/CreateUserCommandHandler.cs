@@ -60,7 +60,7 @@ public class CreateUserCommandHandler: ICommandHandler<CreateUserCommand, Create
         return new CreateUserCommandResponse
         {
             Message = "User created successfully.",
-            User = new CreateUserDto(user.FirstName, user.LastName, user.Email)
+            User = new CreateUserDto(user.Id, user.FirstName, user.LastName, user.Email)
         };
     }
 }
