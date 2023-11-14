@@ -64,7 +64,7 @@ public class UpdateUserCommandHandler : IRequestHandler<UpdateUserCommand, Updat
         return new UpdateUserCommandResponse()
         {
             Message = "User updated successfully.",
-            User = new CreateUserDto(existingUser.FirstName, existingUser.LastName, existingUser.Email)
+            User = new CreateUserDto(existingUser.Id, existingUser.FirstName, existingUser.LastName, existingUser.Email)
         };
     }
 }
