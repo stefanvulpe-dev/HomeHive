@@ -63,4 +63,22 @@ public sealed class User : BaseEntity
             Estates = new List<Estate>()
         });
     }
+    
+    public static Result<User> Create(Guid userId, UserData userData)
+    {
+        if (userId == Guid.Empty)
+        {
+            return Result<User>.Failure("Invalid user ID.");
+        }
+
+        var result = Create(userData);
+
+        if (!result.IsSuccess)
+        {
+            return result;
+        }
+
+        result.Value.Id = userId;
+        return result;
+    }
 }
