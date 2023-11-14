@@ -2,6 +2,7 @@
 using HomeHive.Application.Features.Commands.UpdateUser;
 using HomeHive.Application.Features.Commands.DeleteUserByEmail;
 using HomeHive.Application.Features.Commands.DeleteUserById;
+using HomeHive.Application.Features.Queries.GetUserById;
 using Microsoft.AspNetCore.Mvc;
 
 namespace HomeHive.WebAPI.Controllers;
@@ -56,5 +57,13 @@ public class UsersController: ApiBaseController
             return BadRequest(result);
         }
         return NoContent();
+    }
+    
+    [HttpGet("{userId}")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    public async Task<IActionResult> Get(Guid userId)
+    {
+        var result = await Mediator.Send(new GetUserByIdQuery(userId));
+        return Ok(result);
     }
 }
