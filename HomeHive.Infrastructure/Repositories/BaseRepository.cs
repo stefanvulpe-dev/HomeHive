@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace HomeHive.Infrastructure.Repositories;
 
-public class BaseRepository<T>: IAsyncRepository<T> where T : class
+public class BaseRepository<T>: IAsyncRepository<T> where T : BaseEntity
 {
     public BaseRepository(HomeHiveContext context)
     {
@@ -23,6 +23,14 @@ public class BaseRepository<T>: IAsyncRepository<T> where T : class
 
     public virtual async Task<Result<T>> UpdateAsync(T entity)
     {
+        var existingEntity = Context.Set<T>().Local.FirstOrDefault(entry => entry.Id.Equals(entity.Id));
+
+        if (existingEntity != null)
+        {
+            Context.Entry(existingEntity).State = EntityState.Detached;
+        }
+
+        Context.Entry(entity).State = EntityState.Modified;
         var result = await Context.SaveChangesAsync();
         return result == 0 ? Result<T>.Failure($"Entity could not be updated") : Result<T>.Success(entity);
     }

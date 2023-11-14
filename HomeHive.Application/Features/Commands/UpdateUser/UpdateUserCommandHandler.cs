@@ -48,35 +48,17 @@ public class UpdateUserCommandHandler : IRequestHandler<UpdateUserCommand, Updat
 
         foreach (var property in userDataProperties)
         {
-            var existingUserValue = typeof(User).GetProperty(property.Name)?.GetValue(existingUser, null);
-            var commandValue = property.GetValue(command.UserData);
-
-            if (commandValue != null)
+            var userDataValue = property.GetValue(command.UserData);
+    
+            if (userDataValue != null)
             {
-                Console.WriteLine("1");
-                property.SetValue(command.UserData, existingUserValue);
+                var existingUserProperty = typeof(User).GetProperty(property.Name);
+                if (existingUserProperty != null)
+                {
+                    existingUserProperty.SetValue(existingUser, userDataValue);
+                }
             }
         }
-
-        Console.WriteLine("UserData updated:");
-        foreach (var property in userDataProperties)
-        {
-            var updatedValue = property.GetValue(command.UserData, null);
-            Console.WriteLine($"{property.Name}: {updatedValue}");
-        }
-        var result = User.Create(command.UserId,command.UserData);
-
-        if (!result.IsSuccess)
-        {
-            return new UpdateUserCommandResponse()
-            {
-                Success = false,
-                Message = "Failed to update user.",
-                ValidationsErrors = new List<string> { result.Error }
-            };
-        }
-
-        existingUser = result.Value;
         await _userRepository.UpdateAsync(existingUser);
         
         return new UpdateUserCommandResponse()
