@@ -3,6 +3,7 @@ using HomeHive.Application.Features.Users.Commands.DeleteUserByEmail;
 using HomeHive.Application.Features.Users.Commands.DeleteUserById;
 using HomeHive.Application.Features.Users.Commands.UpdateUser;
 using HomeHive.Application.Features.Users.Queries.GetUserById;
+using HomeHive.Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
 
 namespace HomeHive.WebAPI.Controllers;
@@ -35,15 +36,13 @@ public class UsersController: ApiBaseController
     
     [HttpPut("{userId}", Name = "Update")]
     [ProducesResponseType(StatusCodes.Status200OK)]
-    public async Task<IActionResult> Update([FromRoute]Guid userId, [FromBody] UpdateUserCommand command)
+    public async Task<IActionResult> Update([FromRoute] Guid userId, [FromBody] UserData data)
     {
-        command.UserId = userId;
-        var result = await Mediator.Send(command);
+        var result = await Mediator.Send(new UpdateUserCommand(userId, data));
         if (!result.Success)
         {
             return BadRequest(result);
         }
-
         return Ok(result);
     }
     

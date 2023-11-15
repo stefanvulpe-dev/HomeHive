@@ -30,7 +30,6 @@ public class UpdateUserCommandHandler : ICommandHandler<UpdateUserCommand, Updat
         }
 
         var existingUserResult = await _userRepository.FindByIdAsync(command.UserId);
-        Console.WriteLine(command.UserId);
 
         if (!existingUserResult.IsSuccess)
         {
