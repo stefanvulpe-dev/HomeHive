@@ -1,17 +1,22 @@
-﻿using HomeHive.Domain.Entities;
+﻿using dotenv.net;
+using HomeHive.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.FileProviders;
+using Microsoft.EntityFrameworkCore.Design;
 
 namespace HomeHive.Infrastructure;
 
-public class HomeHiveContext: DbContext
+public class HomeHiveContext: DbContext, IDesignTimeDbContextFactory<HomeHiveContext>
 {
     public DbSet<User>? Users { get; set; }
     public DbSet<Photo>? Photos { get; set; }
     public DbSet<Contract>? Contracts { get; set; }
     public DbSet<Estate>? Estates { get; set; }
     public DbSet<Room>? Rooms { get; set; }
+
+    public HomeHiveContext()
+    {
+        DotEnv.Load();
+    }
 
     public HomeHiveContext(
         DbContextOptions<HomeHiveContext> options) :
@@ -20,13 +25,16 @@ public class HomeHiveContext: DbContext
 
     }
 
-    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+    public HomeHiveContext CreateDbContext(string[] args)
     {
-        var configuration = new ConfigurationBuilder()
-            .SetBasePath(AppDomain.CurrentDomain.BaseDirectory)
-            .SetFileProvider(new PhysicalFileProvider(AppDomain.CurrentDomain.BaseDirectory))
-            .AddJsonFile("appsettings.json")
-            .Build();
-        optionsBuilder.UseNpgsql(configuration.GetConnectionString("HomeHiveConnection"));
+        var connectionString = DotEnv.Read()["HOME_HIVE_CONNECTION_STRING"];
+        var optionsBuilder = new DbContextOptionsBuilder<HomeHiveContext>();
+        optionsBuilder.UseNpgsql(connectionString);
+        return new HomeHiveContext(optionsBuilder.Options);
+    }
+
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        modelBuilder.Entity<User>().HasIndex(p => p.Email).IsUnique(true);
     }
 }

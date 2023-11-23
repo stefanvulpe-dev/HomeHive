@@ -9,14 +9,14 @@ public sealed class Contract : BaseEntity
     {
     }
 
-    public Guid UserId { get; set; }
-    public Guid EstateId { get; set; }
-    public Estate? Estate { get; set; }
-    public User? User { get; set; }
-    public ContractType ContractType { get; set; }
-    public DateTime? StartDate { get; set; }
-    public DateTime? EndDate { get; set; }
-    public string? Description { get; set; }
+    public Guid UserId { get; private set; }
+    public Guid EstateId { get; private set; }
+    public Estate? Estate { get; private set; }
+    public User? User { get; private set; }
+    public ContractType ContractType { get; private set; }
+    public DateTime? StartDate { get; private set; }
+    public DateTime? EndDate { get; private set; }
+    public string? Description { get; private set; }
 
     public Result<Contract> Create(ContractData contractData)
     {

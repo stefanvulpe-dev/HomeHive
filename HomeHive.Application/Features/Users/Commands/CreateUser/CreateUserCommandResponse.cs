@@ -1,6 +1,6 @@
 ﻿using HomeHive.Application.Responses;
 
-namespace HomeHive.Application.Features.Commands.CreateUser;
+namespace HomeHive.Application.Features.Users.Commands.CreateUser;
 
 public class CreateUserCommandResponse : BaseResponse
 {

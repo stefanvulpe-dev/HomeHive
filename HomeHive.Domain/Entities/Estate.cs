@@ -5,6 +5,10 @@ namespace HomeHive.Domain.Entities;
 
 public sealed class Estate : BaseEntity
 {
+    private readonly List<Contract>? _contracts = null;
+    private readonly List<Photo>? _photos = null;
+    private readonly List<Room>? _rooms = null;
+    
     private Estate()
     {
     }
@@ -20,9 +24,9 @@ public sealed class Estate : BaseEntity
     public string? Utilities { get; private set; }
     public string? Description { get; private set; }
     public string? Image { get; private set; }
-    public List<Contract>? Contracts { get; set; }
-    public List<Photo>? Photos { get; set; }
-    public List<Room>? Rooms { get; set; }
+    public IReadOnlyList<Contract>? Contracts => _contracts;
+    public IReadOnlyList<Photo>? Photos => _photos;
+    public IReadOnlyList<Room>? Rooms => _rooms;
 
     public static Result<Estate> Create(EstateData estateData)
     {
@@ -93,9 +97,6 @@ public sealed class Estate : BaseEntity
             Utilities = utilities,
             Description = description,
             Image = image,
-            Contracts = new List<Contract>(),
-            Photos = new List<Photo>(),
-            Rooms = new List<Room>()
         });
     }
 }

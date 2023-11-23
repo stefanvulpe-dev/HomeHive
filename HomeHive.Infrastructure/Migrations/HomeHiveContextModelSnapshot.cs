@@ -28,6 +28,9 @@ namespace HomeHive.Infrastructure.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
+                    b.Property<int>("ContractType")
+                        .HasColumnType("integer");
+
                     b.Property<string>("CreatedBy")
                         .HasColumnType("text");
 
@@ -37,7 +40,7 @@ namespace HomeHive.Infrastructure.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("text");
 
-                    b.Property<DateTime>("EndDate")
+                    b.Property<DateTime?>("EndDate")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<Guid>("EstateId")
@@ -49,11 +52,8 @@ namespace HomeHive.Infrastructure.Migrations
                     b.Property<DateTime>("LastModifiedDate")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<DateTime>("StartDate")
+                    b.Property<DateTime?>("StartDate")
                         .HasColumnType("timestamp with time zone");
-
-                    b.Property<int>("Type")
-                        .HasColumnType("integer");
 
                     b.Property<Guid>("UserId")
                         .HasColumnType("uuid");
@@ -73,9 +73,6 @@ namespace HomeHive.Infrastructure.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
-                    b.Property<int?>("Category")
-                        .HasColumnType("integer");
-
                     b.Property<string>("CreatedBy")
                         .HasColumnType("text");
 
@@ -84,6 +81,12 @@ namespace HomeHive.Infrastructure.Migrations
 
                     b.Property<string>("Description")
                         .HasColumnType("text");
+
+                    b.Property<int?>("EstateCategory")
+                        .HasColumnType("integer");
+
+                    b.Property<int?>("EstateType")
+                        .HasColumnType("integer");
 
                     b.Property<string>("Image")
                         .HasColumnType("text");
@@ -108,9 +111,6 @@ namespace HomeHive.Infrastructure.Migrations
 
                     b.Property<string>("TotalArea")
                         .HasColumnType("text");
-
-                    b.Property<int?>("Type")
-                        .HasColumnType("integer");
 
                     b.Property<string>("Utilities")
                         .HasColumnType("text");
@@ -180,10 +180,10 @@ namespace HomeHive.Infrastructure.Migrations
                     b.Property<string>("Name")
                         .HasColumnType("text");
 
-                    b.Property<int>("Size")
+                    b.Property<int?>("RoomType")
                         .HasColumnType("integer");
 
-                    b.Property<int?>("Type")
+                    b.Property<int>("Size")
                         .HasColumnType("integer");
 
                     b.HasKey("Id");
@@ -230,6 +230,9 @@ namespace HomeHive.Infrastructure.Migrations
                         .HasColumnType("text");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("Email")
+                        .IsUnique();
 
                     b.ToTable("Users");
                 });

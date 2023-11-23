@@ -3,6 +3,6 @@ using MediatR;
 
 namespace HomeHive.Application.Abstractions;
 
-public interface IQuery<TResponse>: IRequest<Result<TResponse>> where TResponse : class
+public interface IQuery<TResponse>: IRequest<TResponse> where TResponse : class
 {
 }

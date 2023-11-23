@@ -1,9 +1,8 @@
 ﻿using HomeHive.Application.Abstractions;
 using HomeHive.Application.Persistence;
-using HomeHive.Domain.Common;
 using HomeHive.Domain.Entities;
 
-namespace HomeHive.Application.Features.Commands.CreateUser;
+namespace HomeHive.Application.Features.Users.Commands.CreateUser;
 
 public class CreateUserCommandHandler: ICommandHandler<CreateUserCommand, CreateUserCommandResponse>
 {
@@ -29,8 +28,20 @@ public class CreateUserCommandHandler: ICommandHandler<CreateUserCommand, Create
             };
         }
         
-        var result = User.Create(command.UserData);
+        var existingUser = await _userRepository.GetByEmailAsync(command.UserData.Email!);
+
+        if (existingUser != null)
+        {
+            return new CreateUserCommandResponse
+            {
+                Success = false,
+                Message = "Failed to create user.",
+                ValidationsErrors = new List<string> { "User with this email already exists." }
+            };
+        }
         
+        var result = User.Create(command.UserData);
+
         if (!result.IsSuccess)
         {
             return new CreateUserCommandResponse
@@ -40,14 +51,15 @@ public class CreateUserCommandHandler: ICommandHandler<CreateUserCommand, Create
                 ValidationsErrors = new List<string> { result.Error }
             };
         }
-        
+
         var user = result.Value;
+        
         await _userRepository.AddAsync(user);
         
         return new CreateUserCommandResponse
         {
             Message = "User created successfully.",
-            User = new CreateUserDto(user.FirstName, user.LastName, user.Email)
+            User = new CreateUserDto(user.Id, user.FirstName, user.LastName, user.Email)
         };
     }
 }

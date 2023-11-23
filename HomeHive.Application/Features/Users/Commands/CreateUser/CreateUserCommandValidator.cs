@@ -1,6 +1,6 @@
 ﻿using FluentValidation;
 
-namespace HomeHive.Application.Features.Commands.CreateUser;
+namespace HomeHive.Application.Features.Users.Commands.CreateUser;
 
 public class CreateUserCommandValidator: AbstractValidator<CreateUserCommand>
 {
