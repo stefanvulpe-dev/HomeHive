@@ -2,7 +2,7 @@
 
 public class BaseEntity
 {
-    public Guid Id { get; } = Guid.NewGuid();
+    public Guid Id { get; set; } = Guid.NewGuid();
     public string? CreatedBy { get; set; }
     public DateTime CreatedDate { get; set; } = DateTime.UtcNow;
     public string? LastModifiedBy { get; set; }

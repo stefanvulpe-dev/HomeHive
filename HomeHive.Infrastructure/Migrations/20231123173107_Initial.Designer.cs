@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace HomeHive.Infrastructure.Migrations
 {
     [DbContext(typeof(HomeHiveContext))]
-    [Migration("20231112104746_Initial")]
+    [Migration("20231123173107_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
