@@ -8,9 +8,9 @@ public sealed class Photo : BaseEntity
     {
     }
 
-    public Guid EstateId { get; set; }
-    public Estate? Estate { get; set; }
-    public string? ObjectName { get; set; }
+    public Guid EstateId { get; private set; }
+    public Estate? Estate { get; private set; }
+    public string? ObjectName { get; private set; }
 
     public static Result<Photo> Create(string? objectName, Estate? estate)
     {

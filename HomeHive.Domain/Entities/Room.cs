@@ -9,12 +9,12 @@ public sealed class Room : BaseEntity
     {
     }
 
-    public Guid EstateId { get; set; }
-    public Estate? Estate { get; set; }
-    public string? Name { get; set; }
-    public RoomType? RoomType { get; set; }
-    public int Capacity { get; set; }
-    public int Size { get; set; }
+    public Guid EstateId { get; private set; }
+    public Estate? Estate { get; private set; }
+    public string? Name { get; private set; }
+    public RoomType? RoomType { get; private set; }
+    public int Capacity { get; private set; }
+    public int Size { get; private set; }
 
     public static Result<Room> Create(RoomData roomData)
     {

@@ -16,9 +16,9 @@ public class UpdateUserCommandHandler : ICommandHandler<UpdateUserCommand, Updat
 
     public async Task<UpdateUserCommandResponse> Handle(UpdateUserCommand command, CancellationToken cancellationToken)
     {
-        var validator = new UpdateUserCommandValidator();
+        var validator = new UpdateUserCommandValidator(_userRepository);
         var validatorResult = await validator.ValidateAsync(command, cancellationToken);
-
+        
         if (!validatorResult.IsValid)
         {
             return new UpdateUserCommandResponse()
@@ -28,38 +28,23 @@ public class UpdateUserCommandHandler : ICommandHandler<UpdateUserCommand, Updat
                 ValidationsErrors = validatorResult.Errors.Select(e => e.ErrorMessage).ToList()
             };
         }
-
-        var existingUserResult = await _userRepository.FindByIdAsync(command.UserId);
-
-        if (!existingUserResult.IsSuccess)
+        
+        var userResult = await validator.ValidateUserExistence(command, cancellationToken);
+        if (!userResult.IsSuccess)
         {
             return new UpdateUserCommandResponse()
             {
                 Success = false,
                 Message = "Failed to update user.",
-                ValidationsErrors = new List<string> { "User with this id does not exist." }
+                ValidationsErrors = new List<string> { userResult.Error }
             };
         }
         
-        var existingUser = existingUserResult.Value;
+        var existingUser = userResult.Value;
+        existingUser.UpdateUser(command.UserData); 
         
-        var userDataProperties = typeof(UserData).GetProperties();
-
-        foreach (var property in userDataProperties)
-        {
-            var userDataValue = property.GetValue(command.UserData);
-    
-            if (userDataValue != null)
-            {
-                var existingUserProperty = typeof(User).GetProperty(property.Name);
-                if (existingUserProperty != null)
-                {
-                    existingUserProperty.SetValue(existingUser, userDataValue);
-                }
-            }
-        }
         await _userRepository.UpdateAsync(existingUser);
-        
+
         return new UpdateUserCommandResponse()
         {
             Message = "User updated successfully.",
