@@ -1,10 +1,9 @@
-﻿using HomeHive.Domain.Entities;
+﻿using HomeHive.Domain.Common;
+using HomeHive.Domain.Entities;
 
 namespace HomeHive.Application.Persistence;
 
-public interface IUserRepository: IAsyncRepository<User>
+public interface IUserRepository : IAsyncRepository<User>
 {
-    public Task<User?> GetByEmailAsync(string email);
-    
-    public Task DeleteByEmailAsync(string email);
+    public Task<Result<User>> GetByEmailAsync(string email);
 }

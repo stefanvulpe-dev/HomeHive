@@ -2,10 +2,10 @@
 
 namespace HomeHive.Application.Features.Users.Commands.CreateUser;
 
-public class CreateUserCommandValidator: AbstractValidator<CreateUserCommand>
+public class CreateUserCommandValidator : AbstractValidator<CreateUserCommand>
 {
     public CreateUserCommandValidator()
-    {   
+    {
         RuleSet("CreateUser", () =>
         {
             RuleFor(p => p.UserData.FirstName)

@@ -8,7 +8,7 @@ public sealed class Estate : BaseEntity
     private readonly List<Contract>? _contracts = null;
     private readonly List<Photo>? _photos = null;
     private readonly List<Room>? _rooms = null;
-    
+
     private Estate()
     {
     }
@@ -30,59 +30,31 @@ public sealed class Estate : BaseEntity
 
     public static Result<Estate> Create(EstateData estateData)
     {
-        var (owner, estateType, estateCategory, name, 
-                location, price, totalArea, utilities, 
-                description, image) = estateData;
-        if (owner == null)
-        {
-            return Result<Estate>.Failure("Owner is required.");
-        }
+        var (owner, estateType, estateCategory, name,
+            location, price, totalArea, utilities,
+            description, image) = estateData;
+        if (owner == null) return Result<Estate>.Failure("Owner is required.");
 
         if (string.IsNullOrWhiteSpace(estateType) || !Enum.TryParse(estateType, out EstateType typeEnum))
-        {
             return Result<Estate>.Failure("EstateType is not valid.");
-        }
 
         if (string.IsNullOrWhiteSpace(estateCategory) ||
             !Enum.TryParse(estateCategory, out EstateCategory categoryEnum))
-        {
             return Result<Estate>.Failure("EstateCategory is not valid.");
-        }
 
-        if (string.IsNullOrWhiteSpace(name))
-        {
-            return Result<Estate>.Failure("Name is required.");
-        }
+        if (string.IsNullOrWhiteSpace(name)) return Result<Estate>.Failure("Name is required.");
 
-        if (string.IsNullOrWhiteSpace(location))
-        {
-            return Result<Estate>.Failure("Location is required.");
-        }
+        if (string.IsNullOrWhiteSpace(location)) return Result<Estate>.Failure("Location is required.");
 
-        if (price <= 0)
-        {
-            return Result<Estate>.Failure("Price is required.");
-        }
+        if (price <= 0) return Result<Estate>.Failure("Price is required.");
 
-        if (string.IsNullOrWhiteSpace(totalArea))
-        {
-            return Result<Estate>.Failure("Total Area is required.");
-        }
+        if (string.IsNullOrWhiteSpace(totalArea)) return Result<Estate>.Failure("Total Area is required.");
 
-        if (string.IsNullOrWhiteSpace(utilities))
-        {
-            return Result<Estate>.Failure("Utilities is required.");
-        }
+        if (string.IsNullOrWhiteSpace(utilities)) return Result<Estate>.Failure("Utilities is required.");
 
-        if (string.IsNullOrWhiteSpace(description))
-        {
-            return Result<Estate>.Failure("Description is required.");
-        }
+        if (string.IsNullOrWhiteSpace(description)) return Result<Estate>.Failure("Description is required.");
 
-        if (string.IsNullOrWhiteSpace(image))
-        {
-            return Result<Estate>.Failure("Image is required.");
-        }
+        if (string.IsNullOrWhiteSpace(image)) return Result<Estate>.Failure("Image is required.");
 
         return Result<Estate>.Success(new Estate
         {
@@ -96,7 +68,7 @@ public sealed class Estate : BaseEntity
             TotalArea = totalArea,
             Utilities = utilities,
             Description = description,
-            Image = image,
+            Image = image
         });
     }
 }

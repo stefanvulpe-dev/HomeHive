@@ -2,6 +2,6 @@
 
 namespace HomeHive.Application.Persistence;
 
-public interface IEstateRepository: IAsyncRepository<Estate>
+public interface IEstateRepository : IAsyncRepository<Estate>
 {
 }

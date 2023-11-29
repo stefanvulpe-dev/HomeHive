@@ -2,6 +2,6 @@
 
 namespace HomeHive.Application.Features.Users.Commands.DeleteUserById;
 
-public class DeleteUserByIdCommandResponse: BaseResponse
+public class DeleteUserByIdCommandResponse : BaseResponse
 {
 }

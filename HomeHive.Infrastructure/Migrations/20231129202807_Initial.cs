@@ -12,27 +12,6 @@ namespace HomeHive.Infrastructure.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "Users",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    FirstName = table.Column<string>(type: "text", nullable: true),
-                    LastName = table.Column<string>(type: "text", nullable: true),
-                    Email = table.Column<string>(type: "text", nullable: true),
-                    Password = table.Column<string>(type: "text", nullable: true),
-                    PhoneNumber = table.Column<string>(type: "text", nullable: true),
-                    ProfilePicture = table.Column<string>(type: "text", nullable: true),
-                    CreatedBy = table.Column<string>(type: "text", nullable: true),
-                    CreatedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    LastModifiedBy = table.Column<string>(type: "text", nullable: true),
-                    LastModifiedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Users", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Estates",
                 columns: table => new
                 {
@@ -55,12 +34,6 @@ namespace HomeHive.Infrastructure.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Estates", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Estates_Users_OwnerId",
-                        column: x => x.OwnerId,
-                        principalTable: "Users",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -86,12 +59,6 @@ namespace HomeHive.Infrastructure.Migrations
                         name: "FK_Contracts_Estates_EstateId",
                         column: x => x.EstateId,
                         principalTable: "Estates",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_Contracts_Users_UserId",
-                        column: x => x.UserId,
-                        principalTable: "Users",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -151,16 +118,6 @@ namespace HomeHive.Infrastructure.Migrations
                 column: "EstateId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Contracts_UserId",
-                table: "Contracts",
-                column: "UserId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Estates_OwnerId",
-                table: "Estates",
-                column: "OwnerId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Photos_EstateId",
                 table: "Photos",
                 column: "EstateId");
@@ -169,12 +126,6 @@ namespace HomeHive.Infrastructure.Migrations
                 name: "IX_Rooms_EstateId",
                 table: "Rooms",
                 column: "EstateId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Users_Email",
-                table: "Users",
-                column: "Email",
-                unique: true);
         }
 
         /// <inheritdoc />
@@ -191,9 +142,6 @@ namespace HomeHive.Infrastructure.Migrations
 
             migrationBuilder.DropTable(
                 name: "Estates");
-
-            migrationBuilder.DropTable(
-                name: "Users");
         }
     }
 }

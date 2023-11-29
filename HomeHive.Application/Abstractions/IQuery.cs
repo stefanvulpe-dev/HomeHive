@@ -1,8 +1,7 @@
-﻿using HomeHive.Domain.Common;
-using MediatR;
+﻿using MediatR;
 
 namespace HomeHive.Application.Abstractions;
 
-public interface IQuery<TResponse>: IRequest<TResponse> where TResponse : class
+public interface IQuery<TResponse> : IRequest<TResponse> where TResponse : class
 {
 }

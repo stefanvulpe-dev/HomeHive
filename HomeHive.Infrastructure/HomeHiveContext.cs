@@ -3,22 +3,23 @@ using Microsoft.EntityFrameworkCore;
 
 namespace HomeHive.Infrastructure;
 
-public class HomeHiveContext: DbContext
+public class HomeHiveContext : DbContext
 {
-    public DbSet<User>? Users { get; set; }
-    public DbSet<Photo>? Photos { get; set; }
-    public DbSet<Contract>? Contracts { get; set; }
-    public DbSet<Estate>? Estates { get; set; }
-    public DbSet<Room>? Rooms { get; set; }
-
     public HomeHiveContext(
         DbContextOptions<HomeHiveContext> options) :
         base(options)
     {
     }
 
-    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    public DbSet<Photo>? Photos { get; set; }
+    public DbSet<Contract>? Contracts { get; set; }
+    public DbSet<Estate>? Estates { get; set; }
+    public DbSet<Room>? Rooms { get; set; }
+
+    protected override void OnModelCreating(ModelBuilder builder)
     {
-        modelBuilder.Entity<User>().HasIndex(p => p.Email).IsUnique(true);
+        base.OnModelCreating(builder);
+        builder.Entity<Estate>().Ignore(e => e.Owner);
+        builder.Entity<Contract>().Ignore(c => c.User);
     }
 }

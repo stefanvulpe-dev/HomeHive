@@ -21,35 +21,18 @@ public sealed class Contract : BaseEntity
     public Result<Contract> Create(ContractData contractData)
     {
         var (estate, user, contractType, startDate, endDate, description) = contractData;
-        if (user == null)
-        {
-            return Result<Contract>.Failure("User is required.");
-        }
+        if (user == null) return Result<Contract>.Failure("User is required.");
 
-        if (estate == null)
-        {
-            return Result<Contract>.Failure("Estate is required.");
-        }
+        if (estate == null) return Result<Contract>.Failure("Estate is required.");
 
         if (string.IsNullOrWhiteSpace(contractType) || !Enum.TryParse(contractType, out ContractType typeEnum))
-        {
             return Result<Contract>.Failure("Type is not valid.");
-        }
 
-        if (startDate == default)
-        {
-            return Result<Contract>.Failure("Start date should not be default!");
-        }
+        if (startDate == default) return Result<Contract>.Failure("Start date should not be default!");
 
-        if (endDate == default)
-        {
-            return Result<Contract>.Failure("End date should not be default!");
-        }
+        if (endDate == default) return Result<Contract>.Failure("End date should not be default!");
 
-        if (string.IsNullOrWhiteSpace(description))
-        {
-            return Result<Contract>.Failure("Description is not valid!");
-        }
+        if (string.IsNullOrWhiteSpace(description)) return Result<Contract>.Failure("Description is not valid!");
 
         return Result<Contract>.Success(new Contract
         {

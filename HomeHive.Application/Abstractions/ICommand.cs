@@ -1,5 +1,4 @@
-﻿using HomeHive.Domain.Common;
-using MediatR;
+﻿using MediatR;
 
 namespace HomeHive.Application.Abstractions;
 

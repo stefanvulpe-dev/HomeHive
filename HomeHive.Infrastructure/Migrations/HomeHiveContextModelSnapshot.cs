@@ -17,7 +17,7 @@ namespace HomeHive.Infrastructure.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "7.0.13")
+                .HasAnnotation("ProductVersion", "8.0.0")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
@@ -61,8 +61,6 @@ namespace HomeHive.Infrastructure.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("EstateId");
-
-                    b.HasIndex("UserId");
 
                     b.ToTable("Contracts");
                 });
@@ -116,8 +114,6 @@ namespace HomeHive.Infrastructure.Migrations
                         .HasColumnType("text");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("OwnerId");
 
                     b.ToTable("Estates");
                 });
@@ -193,50 +189,6 @@ namespace HomeHive.Infrastructure.Migrations
                     b.ToTable("Rooms");
                 });
 
-            modelBuilder.Entity("HomeHive.Domain.Entities.User", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
-                    b.Property<string>("CreatedBy")
-                        .HasColumnType("text");
-
-                    b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<string>("Email")
-                        .HasColumnType("text");
-
-                    b.Property<string>("FirstName")
-                        .HasColumnType("text");
-
-                    b.Property<string>("LastModifiedBy")
-                        .HasColumnType("text");
-
-                    b.Property<DateTime>("LastModifiedDate")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<string>("LastName")
-                        .HasColumnType("text");
-
-                    b.Property<string>("Password")
-                        .HasColumnType("text");
-
-                    b.Property<string>("PhoneNumber")
-                        .HasColumnType("text");
-
-                    b.Property<string>("ProfilePicture")
-                        .HasColumnType("text");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("Email")
-                        .IsUnique();
-
-                    b.ToTable("Users");
-                });
-
             modelBuilder.Entity("HomeHive.Domain.Entities.Contract", b =>
                 {
                     b.HasOne("HomeHive.Domain.Entities.Estate", "Estate")
@@ -245,26 +197,7 @@ namespace HomeHive.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("HomeHive.Domain.Entities.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.Navigation("Estate");
-
-                    b.Navigation("User");
-                });
-
-            modelBuilder.Entity("HomeHive.Domain.Entities.Estate", b =>
-                {
-                    b.HasOne("HomeHive.Domain.Entities.User", "Owner")
-                        .WithMany("Estates")
-                        .HasForeignKey("OwnerId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Owner");
                 });
 
             modelBuilder.Entity("HomeHive.Domain.Entities.Photo", b =>
@@ -296,11 +229,6 @@ namespace HomeHive.Infrastructure.Migrations
                     b.Navigation("Photos");
 
                     b.Navigation("Rooms");
-                });
-
-            modelBuilder.Entity("HomeHive.Domain.Entities.User", b =>
-                {
-                    b.Navigation("Estates");
                 });
 #pragma warning restore 612, 618
         }

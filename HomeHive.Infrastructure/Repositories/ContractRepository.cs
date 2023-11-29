@@ -7,6 +7,5 @@ public class ContractRepository : BaseRepository<Contract>, IContractRepository
 {
     public ContractRepository(HomeHiveContext context) : base(context)
     {
-        
     }
 }
