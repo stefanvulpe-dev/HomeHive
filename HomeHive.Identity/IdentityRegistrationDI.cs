@@ -1,7 +1,9 @@
 ﻿using System.Text;
+using HomeHive.Application.Contracts.Identity;
 using HomeHive.Application.Persistence;
-using HomeHive.Domain.Entities;
+using HomeHive.Domain.Models;
 using HomeHive.Identity.Repositories;
+using HomeHive.Identity.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -27,7 +29,7 @@ public static class IdentityRegistrationDI
                 options.User.RequireUniqueEmail = true;
             })
             .AddEntityFrameworkStores<HomeHiveIdentityContext>()
-            .AddDefaultTokenProviders();
+            .AddApiEndpoints();
         services.AddAuthentication(options =>
             {
                 options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -48,6 +50,7 @@ public static class IdentityRegistrationDI
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["JWT:Secret"]!))
                 };
             });
+        services.AddScoped<IAuthService, AuthService>();
         services.AddScoped<IUserRepository, UserRepository>();
     }
 }

@@ -1,4 +1,6 @@
-﻿namespace HomeHive.Application.Responses;
+﻿using System.Collections.Generic;
+
+namespace HomeHive.Application.Responses;
 
 public class BaseResponse
 {

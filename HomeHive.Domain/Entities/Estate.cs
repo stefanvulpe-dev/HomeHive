@@ -14,7 +14,6 @@ public sealed class Estate : BaseEntity
     }
 
     public Guid OwnerId { get; private set; }
-    public User? Owner { get; private set; }
     public EstateType? EstateType { get; private set; }
     public EstateCategory? EstateCategory { get; private set; }
     public string? Name { get; private set; }
@@ -30,10 +29,9 @@ public sealed class Estate : BaseEntity
 
     public static Result<Estate> Create(EstateData estateData)
     {
-        var (owner, estateType, estateCategory, name,
+        var (ownerId, estateType, estateCategory, name,
             location, price, totalArea, utilities,
             description, image) = estateData;
-        if (owner == null) return Result<Estate>.Failure("Owner is required.");
 
         if (string.IsNullOrWhiteSpace(estateType) || !Enum.TryParse(estateType, out EstateType typeEnum))
             return Result<Estate>.Failure("EstateType is not valid.");
@@ -58,8 +56,7 @@ public sealed class Estate : BaseEntity
 
         return Result<Estate>.Success(new Estate
         {
-            OwnerId = owner.Id,
-            Owner = owner,
+            OwnerId = ownerId,
             EstateType = Enum.Parse<EstateType>(estateType),
             EstateCategory = Enum.Parse<EstateCategory>(estateCategory),
             Name = name,

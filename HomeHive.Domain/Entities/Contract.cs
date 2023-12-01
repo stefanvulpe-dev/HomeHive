@@ -12,7 +12,6 @@ public sealed class Contract : BaseEntity
     public Guid UserId { get; private set; }
     public Guid EstateId { get; private set; }
     public Estate? Estate { get; private set; }
-    public User? User { get; private set; }
     public ContractType ContractType { get; private set; }
     public DateTime? StartDate { get; private set; }
     public DateTime? EndDate { get; private set; }
@@ -20,8 +19,7 @@ public sealed class Contract : BaseEntity
 
     public Result<Contract> Create(ContractData contractData)
     {
-        var (estate, user, contractType, startDate, endDate, description) = contractData;
-        if (user == null) return Result<Contract>.Failure("User is required.");
+        var (estate, userId, contractType, startDate, endDate, description) = contractData;
 
         if (estate == null) return Result<Contract>.Failure("Estate is required.");
 
@@ -36,9 +34,8 @@ public sealed class Contract : BaseEntity
 
         return Result<Contract>.Success(new Contract
         {
-            User = user,
             Estate = estate,
-            UserId = user.Id,
+            UserId = userId,
             EstateId = estate.Id,
             ContractType = Enum.Parse<ContractType>(contractType),
             StartDate = startDate,

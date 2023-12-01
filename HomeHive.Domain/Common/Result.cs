@@ -26,22 +26,34 @@ public sealed class Result<T> where T : class
 
 public sealed class Result
 {
-    private Result(bool isSuccess, string error)
+    private Result(bool isSuccess, string message, List<string> errors)
     {
         IsSuccess = isSuccess;
-        Error = error;
+        Message = message;
+        Errors = errors;
     }
 
     public bool IsSuccess { get; private set; }
-    public string Error { get; private set; }
-
+    public string Message { get; private set; }
+    public List<string> Errors { get; private set; }
+    
     public static Result Success()
     {
-        return new Result(true, null!);
+        return new Result(true, null!, null!);
+    }
+    
+    public static Result Success(string message)
+    {
+        return new Result(true, message, null!);
     }
 
-    public static Result Failure(string error)
+    public static Result Failure(string message)
     {
-        return new Result(false, error);
+        return new Result(false, message, null!);
+    }
+
+    public static Result Failure(string message, List<string> errors)
+    {
+        return new Result(false, message, errors);
     }
 }

@@ -1,4 +1,5 @@
-﻿using HomeHive.Application.Abstractions;
+﻿using System;
+using HomeHive.Application.Contracts.Commands;
 
 namespace HomeHive.Application.Features.Users.Commands.DeleteUserById;
 

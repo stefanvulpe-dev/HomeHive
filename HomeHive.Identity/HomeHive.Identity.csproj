@@ -22,8 +22,14 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\HomeHive.Application\HomeHive.Application.csproj"/>
         <ProjectReference Include="..\HomeHive.Domain\HomeHive.Domain.csproj"/>
+        <ProjectReference Include="..\HomeHive.Application\HomeHive.Application.csproj"/>
+    </ItemGroup>
+
+    <ItemGroup>
+      <Reference Include="Microsoft.Extensions.Identity.Stores">
+        <HintPath>..\..\..\..\..\..\..\Program Files\dotnet\shared\Microsoft.AspNetCore.App\8.0.0\Microsoft.Extensions.Identity.Stores.dll</HintPath>
+      </Reference>
     </ItemGroup>
 
 </Project>

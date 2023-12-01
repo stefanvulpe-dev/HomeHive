@@ -1,47 +1,80 @@
-﻿using HomeHive.Application.Features.Users.Commands.CreateUser;
+﻿using System.Security.Claims;
 using HomeHive.Application.Features.Users.Commands.DeleteUserById;
-using HomeHive.Application.Features.Users.Commands.UpdateUser;
+using HomeHive.Application.Features.Users.Queries.GetAllUsers;
 using HomeHive.Application.Features.Users.Queries.GetUserById;
-using HomeHive.Domain.Entities;
+using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace HomeHive.WebAPI.Controllers;
 
-public class UsersController : ApiBaseController
+public class UsersController(ILogger<UsersController> logger) : ApiBaseController
 {
-    [HttpPost]
-    [ProducesResponseType(StatusCodes.Status201Created)]
-    public async Task<IActionResult> Create(CreateUserCommand command)
-    {
-        var result = await Mediator.Send(command);
-        if (!result.Success) return BadRequest(result);
-        return CreatedAtAction(nameof(Create), result);
-    }
-
-    [HttpPut("{userId}", Name = "Update")]
-    [ProducesResponseType(StatusCodes.Status200OK)]
-    public async Task<IActionResult> Update([FromRoute] Guid userId, [FromBody] UserData data)
-    {
-        var result = await Mediator.Send(new UpdateUserCommand(userId, data));
-        if (!result.Success) return BadRequest(result);
-        return Ok(result);
-    }
-
-    [HttpDelete("{userId}")]
+    [Authorize(Roles = "User")]
+    [HttpDelete]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
-    public async Task<IActionResult> Delete(Guid userId)
+    public async Task<IActionResult> Delete()
     {
+        var userId = Guid.Parse(User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)!.Value);
+        if (userId == Guid.Empty)
+        {
+            logger.LogError("Invalid user id");
+            return BadRequest(new
+            {
+                error = "Invalid user id"
+            });
+        }
+
         var result = await Mediator.Send(new DeleteUserByIdCommand(userId));
-        if (!result.Success) return BadRequest(result);
+        if (!result.Success)
+        {
+            result.ValidationsErrors!.ForEach(error => logger.LogError(error));
+            return BadRequest(new { errors = result.ValidationsErrors });
+        }
+
         return NoContent();
     }
 
-    [HttpGet("{userId}")]
+    [Authorize(Roles = "User")]
+    [HttpGet]
     [ProducesResponseType(StatusCodes.Status200OK)]
-    public async Task<IActionResult> Get(Guid userId)
+    public async Task<IActionResult> Get()
     {
+        var userId = Guid.Parse(User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)!.Value);
+        if (userId == Guid.Empty)
+        {
+            logger.LogError("Invalid user id");
+            return BadRequest(new
+            {
+                error = "Invalid user id"
+            });
+        }
+
         var result = await Mediator.Send(new GetUserByIdQuery(userId));
-        if (!result.Success) return BadRequest(result);
-        return Ok(result);
+
+        if (!result.Success)
+        {
+            result.ValidationsErrors!.ForEach(error => logger.LogError(error));
+            return BadRequest(new { errors = result.ValidationsErrors });
+        }
+
+        return Ok(new { user = result.User });
+    }
+    
+    [Authorize(Roles = "Admin")]
+    [HttpGet("all")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> GetAll()
+    {
+        var result = await Mediator.Send(new GetAllUsersQuery());
+
+        if (!result.Success)
+        {
+            result.ValidationsErrors!.ForEach(error => logger.LogError(error));
+            return NotFound(new { errors = result.ValidationsErrors });
+        }
+
+        return Ok(new { users = result.Users });
     }
 }
