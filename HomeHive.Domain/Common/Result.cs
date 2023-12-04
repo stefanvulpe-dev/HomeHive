@@ -24,9 +24,9 @@ public sealed class Result<T> where T : class
     }
 }
 
-public sealed class Result
+public class Result
 {
-    private Result(bool isSuccess, string message, List<string> errors)
+    protected Result(bool isSuccess, string message, List<string> errors)
     {
         IsSuccess = isSuccess;
         Message = message;
@@ -55,5 +55,29 @@ public sealed class Result
     public static Result Failure(string message, List<string> errors)
     {
         return new Result(false, message, errors);
+    }
+}
+
+public sealed class LoginResult: Result
+{
+    public string? AccessToken { get; private set; }
+    public string? RefreshToken { get; private set; }
+
+    private LoginResult(bool isSuccess, string message, List<string> errors) : base(isSuccess, message, errors)
+    {
+    }
+    
+    public static LoginResult Success(string message, string accessToken, string refreshToken)
+    {
+        return new LoginResult(true, message, null!)
+        {
+            AccessToken = accessToken,
+            RefreshToken = refreshToken
+        };
+    }
+    
+    public new static LoginResult Failure(string message)
+    {
+        return new LoginResult(false, message, null!);
     }
 }

@@ -1,31 +1,21 @@
-﻿using System.Security.Claims;
+﻿using HomeHive.Application.Contracts.Interfaces;
 using HomeHive.Application.Features.Users.Commands.DeleteUserById;
 using HomeHive.Application.Features.Users.Queries.GetAllUsers;
 using HomeHive.Application.Features.Users.Queries.GetUserById;
-using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace HomeHive.WebAPI.Controllers;
 
-public class UsersController(ILogger<UsersController> logger) : ApiBaseController
+public class UsersController
+    (ICurrentUserService currentUserService, ILogger<UsersController> logger) : ApiBaseController
 {
-    [Authorize(Roles = "User")]
+    [Authorize(Roles = "User, Admin")]
     [HttpDelete]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     public async Task<IActionResult> Delete()
     {
-        var userId = Guid.Parse(User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)!.Value);
-        if (userId == Guid.Empty)
-        {
-            logger.LogError("Invalid user id");
-            return BadRequest(new
-            {
-                error = "Invalid user id"
-            });
-        }
-
-        var result = await Mediator.Send(new DeleteUserByIdCommand(userId));
+        var result = await Mediator.Send(new DeleteUserByIdCommand(currentUserService.GetCurrentUserId()));
         if (!result.Success)
         {
             result.ValidationsErrors!.ForEach(error => logger.LogError(error));
@@ -35,22 +25,12 @@ public class UsersController(ILogger<UsersController> logger) : ApiBaseControlle
         return NoContent();
     }
 
-    [Authorize(Roles = "User")]
+    [Authorize(Roles = "User, Admin")]
     [HttpGet]
     [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<IActionResult> Get()
     {
-        var userId = Guid.Parse(User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)!.Value);
-        if (userId == Guid.Empty)
-        {
-            logger.LogError("Invalid user id");
-            return BadRequest(new
-            {
-                error = "Invalid user id"
-            });
-        }
-
-        var result = await Mediator.Send(new GetUserByIdQuery(userId));
+        var result = await Mediator.Send(new GetUserByIdQuery(currentUserService.GetCurrentUserId()));
 
         if (!result.Success)
         {
@@ -60,7 +40,7 @@ public class UsersController(ILogger<UsersController> logger) : ApiBaseControlle
 
         return Ok(new { user = result.User });
     }
-    
+
     [Authorize(Roles = "Admin")]
     [HttpGet("all")]
     [ProducesResponseType(StatusCodes.Status200OK)]

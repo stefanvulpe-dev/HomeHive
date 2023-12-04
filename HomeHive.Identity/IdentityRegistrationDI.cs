@@ -4,6 +4,7 @@ using HomeHive.Application.Persistence;
 using HomeHive.Domain.Models;
 using HomeHive.Identity.Repositories;
 using HomeHive.Identity.Services;
+using HomeHive.Identity.Services.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -44,6 +45,8 @@ public static class IdentityRegistrationDI
                 {
                     ValidateIssuer = true,
                     ValidateAudience = true,
+                    ValidateLifetime = true,
+                    RequireExpirationTime = true,
                     ValidAudience = configuration["JWT:ValidAudience"],
                     ValidIssuer = configuration["JWT:ValidIssuer"],
                     ClockSkew = TimeSpan.Zero,

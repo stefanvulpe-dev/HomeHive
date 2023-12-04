@@ -1,7 +1,9 @@
 ﻿using HomeHive.Application.Contracts.Identity;
 using HomeHive.Application.Models;
 using HomeHive.Domain.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using StackExchange.Redis;
 
 namespace HomeHive.WebAPI.Controllers;
 
@@ -25,11 +27,11 @@ public class AuthenticationController(IAuthService authService, ILogger<Authenti
         
         if (!loginResult.IsSuccess)
         {
-            logger.LogError(loginResult.Error);
-            return BadRequest(new { error = loginResult.Error });
+            logger.LogError(loginResult.Message);
+            return BadRequest(new { error = loginResult.Message });
         }
         
-        return Ok(new { token = loginResult.Value });
+        return Ok(new { accessToken = loginResult.AccessToken, refreshToken = loginResult.RefreshToken });
     }
 
     [HttpPost]
@@ -54,5 +56,34 @@ public class AuthenticationController(IAuthService authService, ILogger<Authenti
         }
 
         return CreatedAtAction(nameof(Register), model);
+    }
+    
+    [Authorize(Roles = "User, Admin")]
+    [HttpDelete]
+    [Route("logout")]
+    public async Task<IActionResult> Logout()
+    {
+        var result = await authService.Logout();
+        if (!result.IsSuccess)
+        {
+            logger.LogError(result.Message);
+            return BadRequest(new { error = result.Message });
+        }
+
+        return NoContent();
+    }
+    
+    [HttpPost]
+    [Route("refresh")]
+    public async Task<IActionResult> Refresh()
+    {
+        var result = await authService.Refresh();
+        if (!result.IsSuccess)
+        {
+            logger.LogError(result.Message);
+            return BadRequest(new { error = result.Message });
+        }
+
+        return Ok(new { accessToken = result.AccessToken, refreshToken = result.RefreshToken });
     }
 }

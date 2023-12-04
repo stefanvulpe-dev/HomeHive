@@ -1,4 +1,6 @@
-﻿using HomeHive.Application.Persistence;
+﻿using HomeHive.Application.Contracts.Caching;
+using HomeHive.Application.Persistence;
+using HomeHive.Infrastructure.Caching;
 using HomeHive.Infrastructure.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -15,6 +17,11 @@ public static class InfrastructureRegistrationDI
             options.UseNpgsql(configuration.GetConnectionString("HomeHiveConnection"),
                 builder => builder.MigrationsAssembly(typeof(HomeHiveContext).Assembly.FullName)));
         services.AddScoped(typeof(IAsyncRepository<>), typeof(BaseRepository<>));
+        services.AddStackExchangeRedisCache(options =>
+        {
+            options.Configuration = configuration.GetConnectionString("AuthRedisConnection");
+        });
+        services.AddScoped<ICacheService, CacheService>();
         return services;
     }
 }

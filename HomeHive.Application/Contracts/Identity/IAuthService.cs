@@ -7,5 +7,7 @@ namespace HomeHive.Application.Contracts.Identity;
 public interface IAuthService
 {
     Task<Result> Register(RegistrationModel model, string role);
-    Task<Result<string>> Login(LoginModel model);
+    Task<LoginResult> Login(LoginModel model);
+    Task<LoginResult> Refresh();
+    Task<Result> Logout();
 }

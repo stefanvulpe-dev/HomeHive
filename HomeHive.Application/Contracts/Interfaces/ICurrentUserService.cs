@@ -1,6 +1,7 @@
 ﻿namespace HomeHive.Application.Contracts.Interfaces;
 
-public interface IEntityModifiedByTrackingService
+public interface ICurrentUserService
 {
+    Guid GetCurrentUserId();
     string GetCurrentUserName();
 }

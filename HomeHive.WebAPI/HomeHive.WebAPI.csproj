@@ -23,4 +23,8 @@
         <ProjectReference Include="..\HomeHive.Infrastructure\HomeHive.Infrastructure.csproj"/>
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="Attributes\" />
+    </ItemGroup>
+
 </Project>

@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 namespace HomeHive.Infrastructure;
 
 public class HomeHiveContext(DbContextOptions<HomeHiveContext> options,
-        IEntityModifiedByTrackingService entityModifiedByTrackingService)
+        ICurrentUserService currentUserService)
     : DbContext(options)
 {
     public DbSet<Photo>? Photos { get; set; }
@@ -22,13 +22,13 @@ public class HomeHiveContext(DbContextOptions<HomeHiveContext> options,
             switch (entry.State)
             {
                 case EntityState.Added:
-                    entry.Entity.CreatedBy = entityModifiedByTrackingService.GetCurrentUserName();
+                    entry.Entity.CreatedBy = currentUserService.GetCurrentUserName();
                     entry.Entity.CreatedDate = DateTime.UtcNow;
-                    entry.Entity.LastModifiedBy = entityModifiedByTrackingService.GetCurrentUserName();
+                    entry.Entity.LastModifiedBy = currentUserService.GetCurrentUserName();
                     entry.Entity.LastModifiedDate = DateTime.UtcNow;
                     break;
                 case EntityState.Modified:
-                    entry.Entity.LastModifiedBy = entityModifiedByTrackingService.GetCurrentUserName();
+                    entry.Entity.LastModifiedBy = currentUserService.GetCurrentUserName();
                     entry.Entity.LastModifiedDate = DateTime.UtcNow;
                     break;
             }
