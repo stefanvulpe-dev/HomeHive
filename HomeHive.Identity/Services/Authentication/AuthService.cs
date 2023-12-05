@@ -1,5 +1,4 @@
-﻿using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
+﻿using System.Security.Claims;
 using HomeHive.Application.Contracts.Caching;
 using HomeHive.Application.Contracts.Identity;
 using HomeHive.Application.Models;
@@ -8,7 +7,7 @@ using HomeHive.Domain.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
-using JwtRegisteredClaimNames = Microsoft.IdentityModel.JsonWebTokens.JwtRegisteredClaimNames;
+using Microsoft.IdentityModel.JsonWebTokens;
 
 namespace HomeHive.Identity.Services.Authentication;
 
@@ -64,12 +63,13 @@ public class AuthService(UserManager<User> userManager, RoleManager<IdentityRole
 
         if (!await userManager.CheckPasswordAsync(user, model.Password!))
             return LoginResult.Failure("Invalid credentials");
-          
+
         var userRoles = await userManager.GetRolesAsync(user);
-        
-        var (accessTokenId, accessToken, refreshToken, accessTokenExpiration) = AuthServiceUtils.GenerateTokens(user, userRoles, configuration);
-        
-        var tokens = new { accessToken, refreshToken };
+
+        var (accessTokenId, accessToken, refreshToken, accessTokenExpiration) =
+            AuthServiceUtils.GenerateTokens(user, userRoles, configuration);
+
+        var tokens = new { AccessToken = accessToken, RefreshToken = refreshToken };
         await cacheService.SetAsync($"{user.Id.ToString()}:{accessTokenId}",
             tokens, accessTokenExpiration - DateTime.UtcNow);
 
@@ -81,28 +81,29 @@ public class AuthService(UserManager<User> userManager, RoleManager<IdentityRole
         var token = httpContextAccessor.HttpContext?.Request.Headers["refreshToken"].ToString();
         if (string.IsNullOrEmpty(token))
             return LoginResult.Failure("Missing refresh token");
-        
+
         var refreshToken = await AuthServiceUtils.ValidateToken(token, configuration);
         if (refreshToken == null)
             return LoginResult.Failure("Invalid refresh token");
-        
+
         var userIdClaim = refreshToken.Claims.FirstOrDefault(claim => claim.Type == "nameid");
         if (userIdClaim == null)
             return LoginResult.Failure("Invalid user id");
-        
+
         var refreshTokenIdClaim = refreshToken.Claims.FirstOrDefault(claim => claim.Type == "jti");
         if (refreshTokenIdClaim == null)
             return LoginResult.Failure("Invalid refresh token id");
-        
+
         var user = await userManager.FindByIdAsync(userIdClaim.Value);
         if (user == null)
             return LoginResult.Failure("Invalid user id");
-        
+
         var userRoles = await userManager.GetRolesAsync(user);
-        
-        var (accessTokenId, accessToken, newRefreshToken, accessTokenExpiration) = AuthServiceUtils.GenerateTokens(user, userRoles, configuration);
-        
-        var tokens = new { accessToken, refreshToken };
+
+        var (accessTokenId, accessToken, newRefreshToken, accessTokenExpiration) =
+            AuthServiceUtils.GenerateTokens(user, userRoles, configuration);
+
+        var tokens = new { AccessToken = accessToken, RefreshToken = refreshToken };
         await cacheService.SetAsync($"{user.Id.ToString()}:{accessTokenId}",
             tokens, accessTokenExpiration - DateTime.UtcNow);
 
@@ -113,9 +114,9 @@ public class AuthService(UserManager<User> userManager, RoleManager<IdentityRole
     {
         var accessTokenId = httpContextAccessor.HttpContext?.User.FindFirstValue(JwtRegisteredClaimNames.Jti);
         var userId = httpContextAccessor.HttpContext?.User.FindFirstValue(ClaimTypes.NameIdentifier);
-        
+
         await cacheService.RemoveAsync($"{userId}:{accessTokenId}");
-        
+
         return Result.Success("User logged out successfully!");
     }
 }

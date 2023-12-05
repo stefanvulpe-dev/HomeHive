@@ -8,6 +8,7 @@ using Microsoft.IdentityModel.Tokens;
 namespace HomeHive.Identity.Services.Authentication;
 
 public record TokenData(string AccessTokenId, string AccessToken, string RefreshToken, DateTime AccessTokenExpiration);
+public record CachedTokenData(string AccessToken, string RefreshToken);
 
 public static class AuthServiceUtils
 {

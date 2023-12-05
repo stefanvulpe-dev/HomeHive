@@ -1,4 +1,5 @@
 using HomeHive.Application;
+using HomeHive.Application.Contracts.Caching;
 using HomeHive.Application.Contracts.Interfaces;
 using HomeHive.Domain.Entities;
 using HomeHive.Identity;
@@ -13,6 +14,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<ICurrentUserService, CurrentUserService>();
 builder.Services.AddInfrastructureServices(builder.Configuration);
+builder.Services.AddScoped<ITokenCacheService, TokenCacheService>();
 builder.Services.AddIdentityServices(builder.Configuration);
 builder.Services.AddApplicationServices();
 builder.Services.AddControllers();

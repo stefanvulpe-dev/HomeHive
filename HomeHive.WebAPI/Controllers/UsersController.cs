@@ -1,4 +1,5 @@
-﻿using HomeHive.Application.Contracts.Interfaces;
+﻿using HomeHive.Application.Contracts.Caching;
+using HomeHive.Application.Contracts.Interfaces;
 using HomeHive.Application.Features.Users.Commands.DeleteUserById;
 using HomeHive.Application.Features.Users.Queries.GetAllUsers;
 using HomeHive.Application.Features.Users.Queries.GetUserById;
@@ -8,7 +9,8 @@ using Microsoft.AspNetCore.Mvc;
 namespace HomeHive.WebAPI.Controllers;
 
 public class UsersController
-    (ICurrentUserService currentUserService, ILogger<UsersController> logger) : ApiBaseController
+(ICurrentUserService currentUserService, ITokenCacheService tokenCacheService,
+    ILogger<UsersController> logger) : ApiBaseController
 {
     [Authorize(Roles = "User, Admin")]
     [HttpDelete]
@@ -30,6 +32,9 @@ public class UsersController
     [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<IActionResult> Get()
     {
+        var isTokenRevoked = await tokenCacheService.IsTokenRevokedAsync();
+        if (isTokenRevoked) return Unauthorized(new { message = "Token is revoked" });
+
         var result = await Mediator.Send(new GetUserByIdQuery(currentUserService.GetCurrentUserId()));
 
         if (!result.Success)
