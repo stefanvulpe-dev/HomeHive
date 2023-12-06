@@ -23,7 +23,7 @@ public class CreateContractCommandHandler(IContractRepository contractRepository
             };
         }
         
-        var contract = Contract.Create(request.Data with { ContractType = request.Data.ContractType.GetType().Name });
+        var contract = Contract.Create(request.UserId, request.Data);
         if (!contract.IsSuccess)
         {
             return new CreateContractCommandResponse

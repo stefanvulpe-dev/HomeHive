@@ -1,3 +1,4 @@
+using HomeHive.Application.Contracts.Caching;
 using HomeHive.Application.Contracts.Interfaces;
 using HomeHive.Application.Features.Contracts.Commands.CreateContract;
 using HomeHive.Application.Features.Contracts.Commands.DeleteContractById;
@@ -10,87 +11,101 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace HomeHive.WebAPI.Controllers;
 
-public class ContractsController 
-    (ICurrentUserService currentUserService, ILogger<ContractsController> logger) : ApiBaseController
+public class ContractsController
+    (ICurrentUserService currentUserService, ITokenCacheService tokenCacheService, ILogger<ContractsController> logger) : ApiBaseController
 {
-    
     [Authorize(Roles = "User, Admin")]
     [HttpPost]
     [ProducesResponseType(StatusCodes.Status201Created)]
-    public async Task<IActionResult> Create(CreateContractCommand command)
+    public async Task<IActionResult> Create(ContractData contractData)
     {
-        CreateContractCommand newCommand = new(command.Data with { UserId = currentUserService.GetCurrentUserId() });
-        var result = await Mediator.Send(newCommand);
+        var isTokenRevoked = await tokenCacheService.IsTokenRevokedAsync();
+        if (isTokenRevoked) return Unauthorized(new { message = "Token is revoked" });
+        
+        var userId = currentUserService.GetCurrentUserId();
+        var result = await Mediator.Send(new CreateContractCommand(userId, contractData));
+        
         if (!result.Success)
         {
             result.ValidationsErrors!.ForEach(error => logger.LogError(error));
-            return BadRequest(new { errors = result.ValidationsErrors });
+            return BadRequest(result);
         }
 
-        return Ok(result);
+        return CreatedAtAction(nameof(Create), result);
     }
-    
+
     [Authorize(Roles = "User, Admin")]
     [HttpPut("{contractId}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
-    public async Task<IActionResult> Update([FromRoute]Guid contractId, [FromBody]ContractData contractData)
+    public async Task<IActionResult> Update([FromRoute] Guid contractId, [FromBody] ContractData contractData)
     {
+        var isTokenRevoked = await tokenCacheService.IsTokenRevokedAsync();
+        if (isTokenRevoked) return Unauthorized(new { message = "Token is revoked" });
+        
         var result = await Mediator.Send(new UpdateContractCommand(contractId, contractData));
         if (!result.Success)
         {
             result.ValidationsErrors!.ForEach(error => logger.LogError(error));
-            return BadRequest(new { errors = result.ValidationsErrors });
+            return BadRequest(result);
         }
 
         return Ok(result);
     }
-    
+
     [Authorize(Roles = "User, Admin")]
-    [HttpDelete]
+    [HttpDelete("{contractId}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
-    public async Task<IActionResult> Delete(Guid id)
+    public async Task<IActionResult> Delete(Guid contractId)
     {
-        var result = await Mediator.Send(new DeleteContractByIdCommand(id));
+        var isTokenRevoked = await tokenCacheService.IsTokenRevokedAsync();
+        if (isTokenRevoked) return Unauthorized(new { message = "Token is revoked" });
+        
+        var result = await Mediator.Send(new DeleteContractByIdCommand(contractId));
         if (!result.Success)
         {
             result.ValidationsErrors!.ForEach(error => logger.LogError(error));
-            return BadRequest(new { errors = result.ValidationsErrors });
+            return BadRequest(result);
         }
 
         return NoContent();
     }
-    
+
     [Authorize(Roles = "User, Admin")]
-    [HttpGet]
+    [HttpGet("{contractId}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
-    public async Task<IActionResult> Get(Guid id)
+    public async Task<IActionResult> Get(Guid contractId)
     {
-        var result = await Mediator.Send(new GetContractByIdQuery(id));
+        var isTokenRevoked = await tokenCacheService.IsTokenRevokedAsync();
+        if (isTokenRevoked) return Unauthorized(new { message = "Token is revoked" });
+        
+        var result = await Mediator.Send(new GetContractByIdQuery(contractId));
 
         if (!result.Success)
         {
-            result.ValidationsErrors!.ForEach(error => logger.LogError(error));
-            return BadRequest(new { errors = result.ValidationsErrors });
+            result.ValidationsErrors?.ForEach(error => logger.LogError(error));
+            return BadRequest(result);
         }
 
-        return Ok(new { contract = result.Contract });
+        return Ok(result);
     }
-    
-    [Authorize(Roles = "Admin")]
+
+    [Authorize(Roles = "User, Admin")]
     [HttpGet("all")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> GetAll()
     {
+        var isTokenRevoked = await tokenCacheService.IsTokenRevokedAsync();
+        if (isTokenRevoked) return Unauthorized(new { message = "Token is revoked" });
+        
         var result = await Mediator.Send(new GetAllContractsQuery());
 
         if (!result.Success)
         {
             result.ValidationsErrors!.ForEach(error => logger.LogError(error));
-            return NotFound(new { errors = result.ValidationsErrors });
+            return NotFound(result);
         }
 
-        return Ok(new { contracts = result.Contracts });
+        return Ok(result);
     }
-
 }

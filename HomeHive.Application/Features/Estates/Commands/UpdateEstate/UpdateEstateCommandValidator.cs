@@ -19,17 +19,17 @@ public class UpdateEstateCommandValidator : AbstractValidator<UpdateEstateComman
                 .NotEmpty().WithMessage("EstateId is required.");
             RuleFor(p => p.EstateData)
                 .NotNull().WithMessage("EstateData is required.")
-                .Custom((estatedata, context) =>
+                .Custom((estateData, context) =>
                 {
-                    if (string.IsNullOrWhiteSpace(estatedata.EstateType) &&
-                        string.IsNullOrWhiteSpace(estatedata.EstateCategory) &&
-                        string.IsNullOrWhiteSpace(estatedata.Name) &&
-                        string.IsNullOrWhiteSpace(estatedata.Location) &&
-                        (estatedata.Price <= 0) &&
-                        string.IsNullOrWhiteSpace(estatedata.TotalArea) &&
-                        string.IsNullOrWhiteSpace(estatedata.Utilities) &&
-                        string.IsNullOrWhiteSpace(estatedata.Description) &&
-                        string.IsNullOrWhiteSpace(estatedata.Image))
+                    if (string.IsNullOrWhiteSpace(estateData.EstateType) &&
+                        string.IsNullOrWhiteSpace(estateData.EstateCategory) &&
+                        string.IsNullOrWhiteSpace(estateData.Name) &&
+                        string.IsNullOrWhiteSpace(estateData.Location) &&
+                        (estateData.Price <= 0) &&
+                        string.IsNullOrWhiteSpace(estateData.TotalArea) &&
+                        string.IsNullOrWhiteSpace(estateData.Utilities) &&
+                        string.IsNullOrWhiteSpace(estateData.Description) &&
+                        string.IsNullOrWhiteSpace(estateData.Image))
                     {
                         context.AddFailure("At least one field in EstateData must be provided.");
                     }

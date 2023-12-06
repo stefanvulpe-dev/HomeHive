@@ -21,7 +21,7 @@ public class UsersController
         if (!result.Success)
         {
             result.ValidationsErrors!.ForEach(error => logger.LogError(error));
-            return BadRequest(new { errors = result.ValidationsErrors });
+            return BadRequest(result);
         }
 
         return NoContent();
@@ -40,10 +40,10 @@ public class UsersController
         if (!result.Success)
         {
             result.ValidationsErrors!.ForEach(error => logger.LogError(error));
-            return BadRequest(new { errors = result.ValidationsErrors });
+            return BadRequest(result);
         }
 
-        return Ok(new { user = result.User });
+        return Ok(result);
     }
 
     [Authorize(Roles = "Admin")]
@@ -52,14 +52,17 @@ public class UsersController
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> GetAll()
     {
+        var isTokenRevoked = await tokenCacheService.IsTokenRevokedAsync();
+        if (isTokenRevoked) return Unauthorized(new { message = "Token is revoked" });
+        
         var result = await Mediator.Send(new GetAllUsersQuery());
 
         if (!result.Success)
         {
             result.ValidationsErrors!.ForEach(error => logger.LogError(error));
-            return NotFound(new { errors = result.ValidationsErrors });
+            return NotFound(result);
         }
 
-        return Ok(new { users = result.Users });
+        return Ok(result);
     }
 }

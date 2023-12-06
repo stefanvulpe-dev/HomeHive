@@ -1,6 +1,6 @@
 ﻿using FluentValidation;
 
-namespace HomeHive.Application.Features.Users.Commands.CreateEstate;
+namespace HomeHive.Application.Features.Estates.Commands.CreateEstate;
 
 public class CreateEstateCommandValidator : AbstractValidator<CreateEstateCommand>
 {

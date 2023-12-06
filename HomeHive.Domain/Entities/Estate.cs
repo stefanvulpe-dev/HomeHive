@@ -18,7 +18,7 @@ public sealed class Estate : BaseEntity
     public EstateCategory? EstateCategory { get; private set; }
     public string? Name { get; private set; }
     public string? Location { get; private set; }
-    public decimal Price { get; private set; }
+    public decimal? Price { get; private set; }
     public string? TotalArea { get; private set; }
     public string? Utilities { get; private set; }
     public string? Description { get; private set; }
@@ -27,12 +27,14 @@ public sealed class Estate : BaseEntity
     public IReadOnlyList<Photo>? Photos => _photos;
     public IReadOnlyList<Room>? Rooms => _rooms;
 
-    public static Result<Estate> Create(EstateData estateData)
+    public static Result<Estate> Create(Guid ownerId, EstateData estateData)
     {
-        var (ownerId, estateType, estateCategory, name,
+        var (estateType, estateCategory, name,
             location, price, totalArea, utilities,
             description, image) = estateData;
-
+    
+        if (ownerId == Guid.Empty) return Result<Estate>.Failure("OwnerId is required.");
+        
         if (string.IsNullOrWhiteSpace(estateType) || !Enum.TryParse(estateType, out EstateType typeEnum))
             return Result<Estate>.Failure("EstateType is not valid.");
 
@@ -91,7 +93,7 @@ public sealed class Estate : BaseEntity
             Location = estateData.Location;
         }
         
-        if(estateData.Price != 0)
+        if(estateData.Price != null)
         {
             Price = estateData.Price;
         }

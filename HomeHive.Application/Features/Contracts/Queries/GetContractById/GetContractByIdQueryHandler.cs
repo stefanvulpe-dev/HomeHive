@@ -8,19 +8,22 @@ public class GetContractByIdQueryHandler(IContractRepository repository): IQuery
     public async Task<GetContractByIdResponse> Handle(GetContractByIdQuery request, CancellationToken cancellationToken)
     {
         var contractResult = await repository.FindByIdAsync(request.Id);
-        
+
         if (!contractResult.IsSuccess)
+        {
             return new GetContractByIdResponse
             {
                 Success = false,
-                Message = "Contract not found."
+                Message = "Contract not found.",
+                ValidationsErrors = new List<string> { contractResult.Error }
             };
+        }
 
         return new GetContractByIdResponse
         {
             Success = true,
             Contract = new ContractDto(contractResult.Value.UserId, contractResult.Value.EstateId,
-                contractResult.Value.ContractType.GetType().Name,
+                contractResult.Value.ContractType!.GetType().Name,
                 contractResult.Value.StartDate, contractResult.Value.EndDate, contractResult.Value.Description)
         };
     }

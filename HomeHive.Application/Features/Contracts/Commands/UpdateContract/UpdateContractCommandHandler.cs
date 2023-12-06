@@ -30,7 +30,7 @@ public class UpdateContractCommandHandler(IContractRepository contractRepository
             return new UpdateContractCommandResponse()
             {
                 Success = false,
-                Message = $"Contract with d {request.Id} does not exist",
+                Message = $"Contract with {request.Id} does not exist",
                 ValidationsErrors = new List<string> { contractResult.Error }
             };
         }

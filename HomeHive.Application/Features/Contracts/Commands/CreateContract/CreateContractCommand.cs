@@ -4,4 +4,4 @@ using MediatR;
 
 namespace HomeHive.Application.Features.Contracts.Commands.CreateContract;
 
-public record CreateContractCommand(ContractData Data) : ICommand<CreateContractCommandResponse>;
+public record CreateContractCommand(Guid UserId, ContractData Data) : ICommand<CreateContractCommandResponse>;
