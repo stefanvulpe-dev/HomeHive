@@ -24,21 +24,32 @@ public class UpdateContractCommandHandler(IContractRepository contractRepository
             };
         }
 
-        var newContract = await contractRepository.FindByIdAsync(request.Id);
-        newContract.Value.Update(request.Data);
+        var contractResult = await validator.ValidateContractExistence(request, cancellationToken);
+        if (!contractResult.IsSuccess)
+        {
+            return new UpdateContractCommandResponse()
+            {
+                Success = false,
+                Message = $"Contract with d {request.Id} does not exist",
+                ValidationsErrors = new List<string> { contractResult.Error }
+            };
+        }
+
+        var newContract = contractResult.Value;
+        newContract.Update(request.Data);
         
-        await contractRepository.UpdateAsync(newContract.Value);
+        await contractRepository.UpdateAsync(newContract);
         return new UpdateContractCommandResponse
         {
             Success = true,
             Contract = new CreateContractDto
             {
-                Estate = newContract.Value.Estate,
-                UserId = newContract.Value.UserId,
-                ContractType = newContract.Value.ContractType,
-                StartDate = newContract.Value.StartDate,
-                EndDate = newContract.Value.EndDate,
-                Description = newContract.Value.Description
+                EstateId = newContract.EstateId,
+                UserId = newContract.UserId,
+                ContractType = newContract.ContractType,
+                StartDate = newContract.StartDate,
+                EndDate = newContract.EndDate,
+                Description = newContract.Description
             }
         };
     }

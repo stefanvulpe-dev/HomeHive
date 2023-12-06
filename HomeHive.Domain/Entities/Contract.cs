@@ -19,9 +19,9 @@ public sealed class Contract : BaseEntity
 
     public static Result<Contract> Create(ContractData contractData)
     {
-        var (estate, userId, contractType, startDate, endDate, description) = contractData;
+        var (estateId, userId, contractType, startDate, endDate, description) = contractData;
 
-        if (estate == null) return Result<Contract>.Failure("Estate is required.");
+        if (estateId == Guid.Empty) return Result<Contract>.Failure("EstateId is required.");
 
         if (string.IsNullOrWhiteSpace(contractType) || !Enum.TryParse(contractType, out ContractType typeEnum))
             return Result<Contract>.Failure("Type is not valid.");
@@ -34,9 +34,9 @@ public sealed class Contract : BaseEntity
 
         return Result<Contract>.Success(new Contract
         {
-            Estate = estate,
+            Estate = null,
             UserId = userId,
-            EstateId = estate.Id,
+            EstateId = estateId,
             ContractType = Enum.Parse<ContractType>(contractType),
             StartDate = startDate,
             EndDate = endDate,
@@ -51,9 +51,9 @@ public sealed class Contract : BaseEntity
             UserId = data.UserId;
         }
         
-        if (data.Estate != null)
+        if (data.EstateId != Guid.Empty)
         {
-            Estate = data.Estate;
+            EstateId = data.EstateId;
         }
 
         if (data.Description != null)

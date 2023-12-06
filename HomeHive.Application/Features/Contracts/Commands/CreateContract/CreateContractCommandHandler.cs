@@ -23,7 +23,7 @@ public class CreateContractCommandHandler(IContractRepository contractRepository
             };
         }
         
-        var contract = Contract.Create(new ContractData(request.Data.Estate, request.Data.UserId,request.Data.ContractType, request.Data.StartDate, request.Data.EndDate, request.Data.Description));
+        var contract = Contract.Create(request.Data with { ContractType = request.Data.ContractType.GetType().Name });
         if (!contract.IsSuccess)
         {
             return new CreateContractCommandResponse
@@ -40,7 +40,7 @@ public class CreateContractCommandHandler(IContractRepository contractRepository
             Contract = new CreateContractDto
             {
                 ContractId = contract.Value.Id, 
-                Estate = contract.Value.Estate,
+                EstateId = contract.Value.EstateId,
                 UserId = contract.Value.UserId,
                 ContractType = contract.Value.ContractType,
                 StartDate = contract.Value.StartDate,

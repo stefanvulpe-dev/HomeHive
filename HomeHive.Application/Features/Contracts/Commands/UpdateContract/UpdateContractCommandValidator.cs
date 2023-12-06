@@ -21,8 +21,8 @@ public class UpdateContractCommandValidator: AbstractValidator<UpdateContractCom
                 .NotNull().WithMessage("ContractData is required.")
                 .Custom((contractData, context) =>
                 {
-                    if (string.IsNullOrWhiteSpace(contractData.ContractType)
-                        && contractData.Estate == null
+                    if (string.IsNullOrWhiteSpace(contractData.ContractType.GetType().Name)
+                        && contractData.EstateId == Guid.Empty
                         && contractData.StartDate == null
                         && contractData.EndDate == null
                         && string.IsNullOrWhiteSpace(contractData.Description)
