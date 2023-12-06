@@ -22,6 +22,7 @@ public static class InfrastructureRegistrationDI
             options.Configuration = configuration.GetConnectionString("AuthRedisConnection");
         });
         services.AddScoped<ICacheService, CacheService>();
+        services.AddScoped<IContractRepository, ContractRepository>();
         return services;
     }
 }
