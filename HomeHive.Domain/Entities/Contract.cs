@@ -17,7 +17,7 @@ public sealed class Contract : BaseEntity
     public DateTime? EndDate { get; private set; }
     public string? Description { get; private set; }
 
-    public Result<Contract> Create(ContractData contractData)
+    public static Result<Contract> Create(ContractData contractData)
     {
         var (estate, userId, contractType, startDate, endDate, description) = contractData;
 
@@ -42,5 +42,38 @@ public sealed class Contract : BaseEntity
             EndDate = endDate,
             Description = description
         });
+    }
+    
+    public void Update(ContractData data)
+    {
+        if (data.UserId != Guid.Empty)
+        {
+            UserId = data.UserId;
+        }
+        
+        if (data.Estate != null)
+        {
+            Estate = data.Estate;
+        }
+
+        if (data.Description != null)
+        {
+            Description = data.Description;
+        }
+        
+        if(data.StartDate != null)
+        {
+            StartDate = data.StartDate;
+        }
+        
+        if(data.EndDate != null)
+        {
+            EndDate = data.EndDate;
+        }
+        
+        if(data.ContractType != null)
+        {
+            ContractType = Enum.Parse<ContractType>(data.ContractType);
+        }
     }
 }
