@@ -10,8 +10,8 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace HomeHive.WebAPI.Controllers;
 
-public class ContractController 
-    (ICurrentUserService currentUserService, ILogger<ContractController> logger) : ApiBaseController
+public class ContractsController 
+    (ICurrentUserService currentUserService, ILogger<ContractsController> logger) : ApiBaseController
 {
     
     [Authorize(Roles = "User, Admin")]
