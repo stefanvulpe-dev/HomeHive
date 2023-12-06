@@ -68,4 +68,53 @@ public sealed class Estate : BaseEntity
             Image = image
         });
     }
+
+    public void UpdateEstate(EstateData estateData)
+    {
+        if(estateData.EstateType != null)
+        {
+            EstateType = Enum.Parse<EstateType>(estateData.EstateType);
+        }
+        
+        if(estateData.EstateCategory != null)
+        {
+            EstateCategory = Enum.Parse<EstateCategory>(estateData.EstateCategory);
+        }
+        
+        if(estateData.Name != null)
+        {
+            Name = estateData.Name;
+        }
+        
+        if(estateData.Location != null)
+        {
+            Location = estateData.Location;
+        }
+        
+        if(estateData.Price != 0)
+        {
+            Price = estateData.Price;
+        }
+        
+        if(estateData.TotalArea != null)
+        {
+            TotalArea = estateData.TotalArea;
+        }
+        
+        if(estateData.Utilities != null)
+        {
+            Utilities = estateData.Utilities;
+        }
+        
+        if(estateData.Description != null)
+        {
+            Description = estateData.Description;
+        }
+        
+        if(estateData.Image != null)
+        {
+            Image = estateData.Image;
+        }
+        
+    }
 }
