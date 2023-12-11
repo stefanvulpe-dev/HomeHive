@@ -24,7 +24,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{92B2958A-0
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HomeHive.WebAPI", "HomeHive.WebAPI\HomeHive.WebAPI.csproj", "{71AACE87-F70F-4EDB-9D33-673D1EA32E94}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlazorProject", "BlazorProject\BlazorProject.csproj", "{FC7A82B6-CA67-4C6E-8B91-F93908D97810}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HomeHive.UI", "HomeHive.UI\HomeHive.UI.csproj", "{FC7A82B6-CA67-4C6E-8B91-F93908D97810}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
