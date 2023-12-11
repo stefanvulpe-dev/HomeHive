@@ -7,6 +7,5 @@ public class PhotoRepository : BaseRepository<Photo>, IPhotoRepository
 {
     public PhotoRepository(HomeHiveContext context) : base(context)
     {
-        
     }
 }

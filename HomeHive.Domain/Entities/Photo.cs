@@ -14,15 +14,9 @@ public sealed class Photo : BaseEntity
 
     public static Result<Photo> Create(string? objectName, Estate? estate)
     {
-        if (string.IsNullOrWhiteSpace(objectName))
-        {
-            return Result<Photo>.Failure("Object name is not valid!");
-        }
+        if (string.IsNullOrWhiteSpace(objectName)) return Result<Photo>.Failure("Object name is not valid!");
 
-        if (estate == null)
-        {
-            return Result<Photo>.Failure("Estate is required.");
-        }
+        if (estate == null) return Result<Photo>.Failure("Estate is required.");
 
         return Result<Photo>.Success(new Photo { EstateId = estate.Id, Estate = estate, ObjectName = objectName });
     }
