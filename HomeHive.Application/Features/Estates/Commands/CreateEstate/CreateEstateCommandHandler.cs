@@ -1,20 +1,13 @@
 ﻿using HomeHive.Application.Contracts.Commands;
 using HomeHive.Application.Features.Users.Commands.CreateEstate;
 using HomeHive.Application.Persistence;
-using HomeHive.Domain.Common.EntitiesUtils.Estates;
 using HomeHive.Domain.Entities;
 
 namespace HomeHive.Application.Features.Estates.Commands.CreateEstate;
 
-public class CreateEstateCommandHandler : ICommandHandler<CreateEstateCommand, CreateEstateCommandResponse>
+public class CreateEstateCommandHandler(IEstateRepository repository)
+    : ICommandHandler<CreateEstateCommand, CreateEstateCommandResponse>
 {
-    private readonly IEstateRepository _repository;
-
-    public CreateEstateCommandHandler(IEstateRepository repository)
-    {
-        _repository = repository;
-    }
-
     public async Task<CreateEstateCommandResponse> Handle(CreateEstateCommand command,
         CancellationToken cancellationToken)
     {
@@ -24,27 +17,34 @@ public class CreateEstateCommandHandler : ICommandHandler<CreateEstateCommand, C
         if (!validatorResult.IsValid)
             return new CreateEstateCommandResponse
             {
-                Success = false,
-                ValidationsErrors = validatorResult.Errors.Select(e => e.ErrorMessage).ToList()
+                IsSuccess = false,
+                ValidationsErrors = validatorResult.Errors.ToDictionary(x => x.PropertyName, x => x.ErrorMessage)
             };
-        
+
         var result = Estate.Create(command.OwnerId, command.EstateData);
 
         if (!result.IsSuccess)
             return new CreateEstateCommandResponse
             {
-                Success = false,
-                ValidationsErrors = new List<string> { result.Error }
+                IsSuccess = false,
+                ValidationsErrors = new Dictionary<string, string> { { "Estate", result.Error } }
             };
         var estate = result.Value;
 
-        await _repository.AddAsync(estate);
+        await repository.AddAsync(estate);
 
         return new CreateEstateCommandResponse
         {
-            Success = true,
-            Estate = new CreateEstateDto(estate.Id, estate.OwnerId, estate.EstateType.ToString(),
-                estate.EstateCategory.ToString(), estate.Name, estate.Location)
+            IsSuccess = true,
+            Estate = new CreateEstateDto
+            {
+                Id = estate.Id,
+                OwnerId = estate.OwnerId,
+                EstateType = estate.EstateType.ToString(),
+                EstateCategory = estate.EstateCategory.ToString(),
+                Name = estate.Name,
+                Location = estate.Location
+            }
         };
     }
 }

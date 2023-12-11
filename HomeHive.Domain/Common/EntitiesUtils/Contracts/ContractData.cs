@@ -1,6 +1,8 @@
-﻿using HomeHive.Domain.Entities;
+﻿namespace HomeHive.Domain.Common.EntitiesUtils.Contracts;
 
-namespace HomeHive.Domain.Common.EntitiesUtils.Contracts;
-
-public record ContractData(Guid EstateId, string? ContractType, DateTime? StartDate, DateTime? EndDate,
+public record ContractData(
+    Guid EstateId,
+    string? ContractType,
+    DateTime? StartDate,
+    DateTime? EndDate,
     string? Description);

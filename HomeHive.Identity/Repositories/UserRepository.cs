@@ -14,18 +14,11 @@ public sealed class UserRepository(HomeHiveIdentityContext context, UserManager<
         return user == null ? Result<User>.Failure($"Entity with id {id} not found") : Result<User>.Success(user);
     }
 
-    public async Task<Result<User>> UpdateAsync(User entity)
-    {
-        context.Entry(entity).State = EntityState.Modified;
-        var result = await context.SaveChangesAsync();
-        return result == 0 ? Result<User>.Failure("Entity could not be updated") : Result<User>.Success(entity);
-    }
-
     public async Task<Result> DeleteByIdAsync(Guid id)
     {
         var userResult = await FindByIdAsync(id);
         if (!userResult.IsSuccess) return Result.Failure($"Entity with id {id} not found");
-        
+
         var result = await userManager.DeleteAsync(userResult.Value);
         if (!result.Succeeded) return Result.Failure($"Entity with id {id} not found");
 
@@ -36,5 +29,12 @@ public sealed class UserRepository(HomeHiveIdentityContext context, UserManager<
     {
         var result = await context.Set<User>().ToListAsync();
         return Result<IReadOnlyList<User>>.Success(result);
+    }
+
+    public async Task<Result<User>> UpdateAsync(User entity)
+    {
+        context.Entry(entity).State = EntityState.Modified;
+        var result = await context.SaveChangesAsync();
+        return result == 0 ? Result<User>.Failure("Entity could not be updated") : Result<User>.Success(entity);
     }
 }

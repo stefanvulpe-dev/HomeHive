@@ -26,7 +26,7 @@ public sealed class Result<T> where T : class
 
 public class Result
 {
-    protected Result(bool isSuccess, string message, List<string> errors)
+    protected Result(bool isSuccess, string message, Dictionary<string, string?> errors)
     {
         IsSuccess = isSuccess;
         Message = message;
@@ -35,13 +35,13 @@ public class Result
 
     public bool IsSuccess { get; private set; }
     public string Message { get; private set; }
-    public List<string> Errors { get; private set; }
-    
+    public Dictionary<string, string?> Errors { get; private set; }
+
     public static Result Success()
     {
         return new Result(true, null!, null!);
     }
-    
+
     public static Result Success(string message)
     {
         return new Result(true, message, null!);
@@ -52,21 +52,22 @@ public class Result
         return new Result(false, message, null!);
     }
 
-    public static Result Failure(string message, List<string> errors)
+    public static Result Failure(string message, Dictionary<string, string> errors)
     {
         return new Result(false, message, errors);
     }
 }
 
-public sealed class LoginResult: Result
+public sealed class LoginResult : Result
 {
+    private LoginResult(bool isSuccess, string message, Dictionary<string, string?> errors) : base(isSuccess, message,
+        errors)
+    {
+    }
+
     public string? AccessToken { get; private set; }
     public string? RefreshToken { get; private set; }
 
-    private LoginResult(bool isSuccess, string message, List<string> errors) : base(isSuccess, message, errors)
-    {
-    }
-    
     public static LoginResult Success(string message, string accessToken, string refreshToken)
     {
         return new LoginResult(true, message, null!)
@@ -75,7 +76,12 @@ public sealed class LoginResult: Result
             RefreshToken = refreshToken
         };
     }
-    
+
+    public new static LoginResult Failure(string message, Dictionary<string, string?> errors)
+    {
+        return new LoginResult(false, message, errors);
+    }
+
     public new static LoginResult Failure(string message)
     {
         return new LoginResult(false, message, null!);

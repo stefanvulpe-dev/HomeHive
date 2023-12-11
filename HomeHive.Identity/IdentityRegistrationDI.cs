@@ -3,7 +3,6 @@ using HomeHive.Application.Contracts.Identity;
 using HomeHive.Application.Persistence;
 using HomeHive.Domain.Models;
 using HomeHive.Identity.Repositories;
-using HomeHive.Identity.Services;
 using HomeHive.Identity.Services.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;

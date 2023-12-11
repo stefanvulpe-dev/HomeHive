@@ -3,8 +3,8 @@ using HomeHive.Application.Persistence;
 
 namespace HomeHive.Application.Features.Contracts.Queries.GetAllContracts;
 
-public class GetAllContractsQueryHandler
-    (IContractRepository repository) : IQueryHandler<GetAllContractsQuery, GetAllContractsQueryResponse>
+public class GetAllContractsQueryHandler(IContractRepository repository)
+    : IQueryHandler<GetAllContractsQuery, GetAllContractsQueryResponse>
 {
     public async Task<GetAllContractsQueryResponse> Handle(GetAllContractsQuery request,
         CancellationToken cancellationToken)
@@ -14,14 +14,20 @@ public class GetAllContractsQueryHandler
         if (!contractsResult.IsSuccess)
             return new GetAllContractsQueryResponse
             {
-                Success = false,
-                Message = "Contracts not found.",
-                ValidationsErrors = new List<string> { contractsResult.Error }
+                IsSuccess = false,
+                Message = "Contracts not found."
             };
 
         IReadOnlyList<ContractDto> contracts = contractsResult.Value.Select(contract =>
-            new ContractDto(contract.UserId, contract.EstateId, contract.ContractType!.GetType().Name,
-                contract.StartDate, contract.EndDate, contract.Description)).ToList();
+            new ContractDto
+            {
+                UserId = contract.UserId,
+                EstateId = contract.EstateId,
+                ContractType = contract.ContractType!.GetType().Name,
+                StartDate = contract.StartDate,
+                EndDate = contract.EndDate,
+                Description = contract.Description
+            }).ToList();
 
         return new GetAllContractsQueryResponse { Contracts = contracts };
     }

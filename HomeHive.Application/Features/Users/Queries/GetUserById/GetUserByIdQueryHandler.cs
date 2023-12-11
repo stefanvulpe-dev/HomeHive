@@ -12,15 +12,21 @@ public class GetUserByIdQueryHandler(IUserRepository repository) : IQueryHandler
         if (!userResult.IsSuccess)
             return new GetUserByIdResponse
             {
-                Success = false,
+                IsSuccess = false,
                 Message = "User not found."
             };
 
         return new GetUserByIdResponse
         {
-            Success = true,
-            User = new UserDto(userResult.Value.UserName, userResult.Value.FirstName, userResult.Value.LastName,
-                userResult.Value.Email, userResult.Value.PhoneNumber)
+            IsSuccess = true,
+            User = new UserDto
+            {
+                UserName = userResult.Value.UserName,
+                Email = userResult.Value.Email,
+                FirstName = userResult.Value.FirstName,
+                LastName = userResult.Value.LastName,
+                PhoneNumber = userResult.Value.PhoneNumber
+            }
         };
     }
 }

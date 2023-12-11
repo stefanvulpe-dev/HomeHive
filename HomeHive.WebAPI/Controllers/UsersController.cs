@@ -8,8 +8,9 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace HomeHive.WebAPI.Controllers;
 
-public class UsersController
-(ICurrentUserService currentUserService, ITokenCacheService tokenCacheService,
+public class UsersController(
+    ICurrentUserService currentUserService,
+    ITokenCacheService tokenCacheService,
     ILogger<UsersController> logger) : ApiBaseController
 {
     [Authorize(Roles = "User, Admin")]
@@ -18,9 +19,11 @@ public class UsersController
     public async Task<IActionResult> Delete()
     {
         var result = await Mediator.Send(new DeleteUserByIdCommand(currentUserService.GetCurrentUserId()));
-        if (!result.Success)
+        if (!result.IsSuccess)
         {
-            result.ValidationsErrors!.ForEach(error => logger.LogError(error));
+            if (result.ValidationsErrors != null)
+                foreach (var (field, error) in result.ValidationsErrors)
+                    logger.LogError($"Field: {field}, Error: {error}");
             return BadRequest(result);
         }
 
@@ -37,9 +40,11 @@ public class UsersController
 
         var result = await Mediator.Send(new GetUserByIdQuery(currentUserService.GetCurrentUserId()));
 
-        if (!result.Success)
+        if (!result.IsSuccess)
         {
-            result.ValidationsErrors!.ForEach(error => logger.LogError(error));
+            if (result.ValidationsErrors != null)
+                foreach (var (field, error) in result.ValidationsErrors)
+                    logger.LogError($"Field: {field}, Error: {error}");
             return BadRequest(result);
         }
 
@@ -54,12 +59,14 @@ public class UsersController
     {
         var isTokenRevoked = await tokenCacheService.IsTokenRevokedAsync();
         if (isTokenRevoked) return Unauthorized(new { message = "Token is revoked" });
-        
+
         var result = await Mediator.Send(new GetAllUsersQuery());
 
-        if (!result.Success)
+        if (!result.IsSuccess)
         {
-            result.ValidationsErrors!.ForEach(error => logger.LogError(error));
+            if (result.ValidationsErrors != null)
+                foreach (var (field, error) in result.ValidationsErrors)
+                    logger.LogError($"Field: {field}, Error: {error}");
             return NotFound(result);
         }
 

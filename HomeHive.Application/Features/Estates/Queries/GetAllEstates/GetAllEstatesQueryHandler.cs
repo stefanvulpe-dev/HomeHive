@@ -3,32 +3,34 @@ using HomeHive.Application.Persistence;
 
 namespace HomeHive.Application.Features.Estates.Queries.GetAllEstates;
 
-public class GetAllEstatesQueryHandler : IQueryHandler<GetAllEstatesQuery, GetAllEstatesResponse>
+public class GetAllEstatesQueryHandler(IEstateRepository estateRepository)
+    : IQueryHandler<GetAllEstatesQuery, GetAllEstatesResponse>
 {
-    private readonly IEstateRepository _estateRepository;
-
-    public GetAllEstatesQueryHandler(IEstateRepository estateRepository)
-    {
-        this._estateRepository = estateRepository;
-    }
-
     public async Task<GetAllEstatesResponse> Handle(GetAllEstatesQuery request, CancellationToken cancellationToken)
     {
-        var estates = await _estateRepository.GetAllAsync();
+        var estates = await estateRepository.GetAllAsync();
 
         if (!estates.IsSuccess)
             return new GetAllEstatesResponse
             {
-                Success = false,
-                Message = "Estates not found.",
-                ValidationsErrors = new List<string>() { estates.Error }
+                IsSuccess = false,
+                Message = "Estates not found."
             };
 
         IReadOnlyList<EstateDto>? mappedEstates = estates.Value.Select(estate =>
-                new EstateDto(estate.OwnerId, estate.EstateType.ToString(), estate.EstateCategory.ToString(),
-                    estate.Name,
-                    estate.Location, estate.Price, estate.TotalArea, estate.Utilities, estate.Description,
-                    estate.Image))
+                new EstateDto
+                {
+                    OwnerId = estate.OwnerId,
+                    EstateType = estate.EstateType.ToString(),
+                    EstateCategory = estate.EstateCategory.ToString(),
+                    Name = estate.Name,
+                    Location = estate.Location,
+                    Price = estate.Price,
+                    TotalArea = estate.TotalArea,
+                    Utilities = estate.Utilities,
+                    Description = estate.Description,
+                    Image = estate.Image
+                })
             .ToList();
 
         return new GetAllEstatesResponse { Estates = mappedEstates };

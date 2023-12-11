@@ -1,21 +1,19 @@
-﻿using System.Collections.Generic;
-
-namespace HomeHive.Application.Responses;
+﻿namespace HomeHive.Application.Responses;
 
 public class BaseResponse
 {
     protected BaseResponse()
     {
-        Success = true;
+        IsSuccess = true;
     }
 
-    public BaseResponse(string? message, bool success)
+    public BaseResponse(string? message, bool isSuccess)
     {
-        Success = success;
+        IsSuccess = isSuccess;
         Message = message;
     }
 
-    public bool Success { get; set; }
+    public bool IsSuccess { get; init; }
     public string? Message { get; set; }
-    public List<string>? ValidationsErrors { get; set; }
+    public Dictionary<string, string>? ValidationsErrors { get; init; }
 }

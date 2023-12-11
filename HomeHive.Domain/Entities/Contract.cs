@@ -22,9 +22,9 @@ public sealed class Contract : BaseEntity
         var (estateId, contractType, startDate, endDate, description) = contractData;
 
         if (estateId == Guid.Empty) return Result<Contract>.Failure("EstateId is required.");
-        
+
         if (userId == Guid.Empty) return Result<Contract>.Failure("UserId is required.");
-        
+
         if (string.IsNullOrWhiteSpace(contractType) || !Enum.TryParse(contractType, out ContractType typeEnum))
             return Result<Contract>.Failure("Type is not valid.");
 
@@ -45,32 +45,17 @@ public sealed class Contract : BaseEntity
             Description = description
         });
     }
-    
+
     public void Update(ContractData data)
     {
-        if (data.EstateId != Guid.Empty)
-        {
-            EstateId = data.EstateId;
-        }
+        if (data.EstateId != Guid.Empty) EstateId = data.EstateId;
 
-        if (data.Description != null)
-        {
-            Description = data.Description;
-        }
-        
-        if(data.StartDate != null)
-        {
-            StartDate = data.StartDate;
-        }
-        
-        if(data.EndDate != null)
-        {
-            EndDate = data.EndDate;
-        }
-        
-        if(data.ContractType != null)
-        {
-            ContractType = Enum.Parse<ContractType>(data.ContractType);
-        }
+        if (data.Description != null) Description = data.Description;
+
+        if (data.StartDate != null) StartDate = data.StartDate;
+
+        if (data.EndDate != null) EndDate = data.EndDate;
+
+        if (data.ContractType != null) ContractType = Enum.Parse<ContractType>(data.ContractType);
     }
 }

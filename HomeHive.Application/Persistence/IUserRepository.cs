@@ -1,5 +1,4 @@
-﻿using System.Threading.Tasks;
-using HomeHive.Domain.Common;
+﻿using HomeHive.Domain.Common;
 using HomeHive.Domain.Models;
 
 namespace HomeHive.Application.Persistence;

@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Concurrent;
+﻿using System.Collections.Concurrent;
 using System.Text.Json;
 using HomeHive.Application.Contracts.Caching;
 using Microsoft.Extensions.Caching.Distributed;
@@ -9,7 +8,7 @@ namespace HomeHive.Infrastructure.Caching;
 public class CacheService(IDistributedCache distributedCache) : ICacheService
 {
     private static readonly ConcurrentDictionary<string, bool> CacheKeys = new();
-    
+
     public async Task<T?> GetAsync<T>(string key, CancellationToken cancellationToken = default) where T : class
     {
         var cachedValue = await distributedCache.GetStringAsync(key, cancellationToken);

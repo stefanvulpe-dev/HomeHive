@@ -1,5 +1,4 @@
 using HomeHive.Domain.Common.EntitiesUtils.Contracts;
-using HomeHive.Domain.Entities;
 
 namespace HomeHive.Application.Features.Contracts.Commands.CreateContract;
 
@@ -12,5 +11,4 @@ public class CreateContractDto
     public string? Description { get; set; }
     public DateTime? StartDate { get; set; }
     public DateTime? EndDate { get; set; }
-    
 }

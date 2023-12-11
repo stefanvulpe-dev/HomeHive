@@ -11,8 +11,10 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace HomeHive.WebAPI.Controllers;
 
-public class ContractsController
-    (ICurrentUserService currentUserService, ITokenCacheService tokenCacheService, ILogger<ContractsController> logger) : ApiBaseController
+public class ContractsController(
+    ICurrentUserService currentUserService,
+    ITokenCacheService tokenCacheService,
+    ILogger<ContractsController> logger) : ApiBaseController
 {
     [Authorize(Roles = "User, Admin")]
     [HttpPost]
@@ -21,13 +23,15 @@ public class ContractsController
     {
         var isTokenRevoked = await tokenCacheService.IsTokenRevokedAsync();
         if (isTokenRevoked) return Unauthorized(new { message = "Token is revoked" });
-        
+
         var userId = currentUserService.GetCurrentUserId();
         var result = await Mediator.Send(new CreateContractCommand(userId, contractData));
-        
-        if (!result.Success)
+
+        if (!result.IsSuccess)
         {
-            result.ValidationsErrors!.ForEach(error => logger.LogError(error));
+            if (result.ValidationsErrors != null)
+                foreach (var (field, error) in result.ValidationsErrors)
+                    logger.LogError($"Field: {field}, Error: {error}");
             return BadRequest(result);
         }
 
@@ -41,11 +45,13 @@ public class ContractsController
     {
         var isTokenRevoked = await tokenCacheService.IsTokenRevokedAsync();
         if (isTokenRevoked) return Unauthorized(new { message = "Token is revoked" });
-        
+
         var result = await Mediator.Send(new UpdateContractCommand(contractId, contractData));
-        if (!result.Success)
+        if (!result.IsSuccess)
         {
-            result.ValidationsErrors!.ForEach(error => logger.LogError(error));
+            if (result.ValidationsErrors != null)
+                foreach (var (field, error) in result.ValidationsErrors)
+                    logger.LogError($"Field: {field}, Error: {error}");
             return BadRequest(result);
         }
 
@@ -59,11 +65,13 @@ public class ContractsController
     {
         var isTokenRevoked = await tokenCacheService.IsTokenRevokedAsync();
         if (isTokenRevoked) return Unauthorized(new { message = "Token is revoked" });
-        
+
         var result = await Mediator.Send(new DeleteContractByIdCommand(contractId));
-        if (!result.Success)
+        if (!result.IsSuccess)
         {
-            result.ValidationsErrors!.ForEach(error => logger.LogError(error));
+            if (result.ValidationsErrors != null)
+                foreach (var (field, error) in result.ValidationsErrors)
+                    logger.LogError($"Field: {field}, Error: {error}");
             return BadRequest(result);
         }
 
@@ -77,12 +85,14 @@ public class ContractsController
     {
         var isTokenRevoked = await tokenCacheService.IsTokenRevokedAsync();
         if (isTokenRevoked) return Unauthorized(new { message = "Token is revoked" });
-        
+
         var result = await Mediator.Send(new GetContractByIdQuery(contractId));
 
-        if (!result.Success)
+        if (!result.IsSuccess)
         {
-            result.ValidationsErrors?.ForEach(error => logger.LogError(error));
+            if (result.ValidationsErrors != null)
+                foreach (var (field, error) in result.ValidationsErrors)
+                    logger.LogError($"Field: {field}, Error: {error}");
             return BadRequest(result);
         }
 
@@ -97,12 +107,14 @@ public class ContractsController
     {
         var isTokenRevoked = await tokenCacheService.IsTokenRevokedAsync();
         if (isTokenRevoked) return Unauthorized(new { message = "Token is revoked" });
-        
+
         var result = await Mediator.Send(new GetAllContractsQuery());
 
-        if (!result.Success)
+        if (!result.IsSuccess)
         {
-            result.ValidationsErrors!.ForEach(error => logger.LogError(error));
+            if (result.ValidationsErrors != null)
+                foreach (var (field, error) in result.ValidationsErrors)
+                    logger.LogError($"Field: {field}, Error: {error}");
             return NotFound(result);
         }
 

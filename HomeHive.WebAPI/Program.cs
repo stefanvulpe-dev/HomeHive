@@ -1,7 +1,6 @@
 using HomeHive.Application;
 using HomeHive.Application.Contracts.Caching;
 using HomeHive.Application.Contracts.Interfaces;
-using HomeHive.Domain.Entities;
 using HomeHive.Identity;
 using HomeHive.Infrastructure;
 using HomeHive.WebAPI.Services;
@@ -20,7 +19,8 @@ builder.Services.AddApplicationServices();
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen(options => {
+builder.Services.AddSwaggerGen(options =>
+{
     options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
         In = ParameterLocation.Header,
