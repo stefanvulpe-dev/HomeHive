@@ -1,41 +1,92 @@
-@page "/register"
+@page "/"
 
-<div class="main-content">
-    <h1 class="title">Welcome to HomeHive</h1>
-    <div class="login-container">
-        <h3 class="text-center">Register</h3>
-    
-        <EditForm Model="@registerModel" class="mt-4" FormName="registerForm">
-            <DataAnnotationsValidator />
-    
-            <div class="form-group">
-                <label for="username">Username:</label>
-                <InputText id="username" class="form-control" @bind-Value="registerModel.Username" />
-                <ValidationMessage For="@(() => registerModel.Username)" />
+<section class="d-flex align-items-center justify-content-center vh-100">
+    <div class="container px-4 py-5 px-md-5 text-center text-lg-start my-5">
+        <div class="row align-items-center">
+            <div class="col-lg-6 mb-lg-0" style="z-index: 10">
+                <h1 class="my-5 display-5 fw-bold ls-tight" style="color: #F0A500">
+                    HomeHive <br/>
+                    <span style="color: #1A1C20">for the perfect nest.</span>
+                </h1>
+                <p class="mb-4 opacity-70" style="color: #1A1C20">
+                    Discover a world where every corner tells a story,
+                    and every room is designed for comfort and style.
+                    At HomeHive, we believe in creating spaces that reflect your unique personality and make every moment special.
+                    Are you ready to find your perfect nest?
+                </p>
             </div>
-    
-            <div class="form-group">
-                <label for="email">Email:</label>
-                <InputText id="email" type="email" class="form-control" @bind-Value="registerModel.Email" />
-                <ValidationMessage For="@(() => registerModel.Email)" />
+
+            <div class="col-lg-6 mb-lg-0">
+                <div class="card">
+                    <div class="card-body px-4 py-5 px-md-5">
+                        <EditForm Model="@registerModel" OnValidSubmit="HandleValidSubmit" FormName="registerForm">
+                            <DataAnnotationsValidator />
+
+                            <div class="row">
+                                <div class="col-md-6 mb-2">
+                                    <div class="form-outline">
+                                        <label class="form-label" for="first-name">First name</label>
+                                        <input type="text" id="first-name" class="form-control" placeholder="John" @bind="@registerModel.FirstName"/>
+                                        <ValidationMessage For="@(() => registerModel.FirstName)"/>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 mb-2">
+                                    <div class="form-outline">
+                                        <label class="form-label" for="last-name">Last name</label>
+                                        <input type="text" id="last-name" class="form-control" placeholder="Doe" @bind="@registerModel.LastName"/>
+                                        <ValidationMessage For="@(() => registerModel.LastName)"/>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="form-outline mb-2">
+                                <label class="form-label" for="username">Username</label>
+                                <input type="text" id="username" class="form-control" placeholder="john_doe123" @bind="@registerModel.Username"/>
+                                <ValidationMessage For="@(() => registerModel.Username)"/>
+                            </div>
+                            
+
+                            <div class="form-outline mb-2">
+                                <label class="form-label" for="email">Email address</label>
+                                <input type="email" id="email" class="form-control" placeholder="john.doe@example.com" @bind="@registerModel.Email"/>
+                                <ValidationMessage For="@(() => registerModel.Email)"/>
+                                <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>
+                            </div>
+                            
+                            <div class="row">
+                                <div class="col-md-6 mb-2">
+                                    <div class="form-outline mb-2">
+                                        <label class="form-label" for="password">Password</label>
+                                        <input type="password" id="password" class="form-control" placeholder="******" @bind="@registerModel.Password"/>
+                                        <ValidationMessage For="@(() => registerModel.Password)"/>
+                                    </div>
+                                </div>
+                            
+                                <div class="col-md-6 mb-2">
+                                    <div class="form-outline mb-4">
+                                        <label class="form-label" for="confirm-password">Confirm Password</label>
+                                        <input type="password" id="confirm-password" class="form-control" placeholder="******" @bind="@registerModel.ConfirmPassword"/>
+                                        <ValidationMessage For="@(() => registerModel.ConfirmPassword)"/>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="d-flex justify-content-center mb-4">
+                                <button type="submit" class="btn btn-primary btn-lg">
+                                    Sign up
+                                </button>
+                            </div>
+
+                            <div class="text-center">
+                                <a href="login">Already a user?</a>
+                            </div>
+                        </EditForm>
+                    </div>
+                </div>
             </div>
-    
-            <div class="form-group">
-                <label for="password">Password:</label>
-                <InputText id="password" type="password" class="form-control" @bind-Value="registerModel.Password" />
-                <ValidationMessage For="@(() => registerModel.Password)" />
-            </div>
-    
-            <div class="center-text">
-                <button type="submit" class="btn btn-primary">Register</button>
-            </div>
-            
-            <div class="center-text pass-link">
-                <a href="">Already an user?</a>
-            </div>
-        </EditForm>
+        </div>
     </div>
-</div>
+</section>
 
 @code {
     private RegisterModel registerModel = new RegisterModel();
@@ -44,12 +95,19 @@
     {
         [Required(ErrorMessage = "Username is required.")]
         public string Username { get; set; }
-
+        [Required(ErrorMessage = "FirstName is required.")]
+        public string FirstName { get; set; }
+        [Required(ErrorMessage = "LastName is required.")]
+        public string LastName { get; set; }
         [Required(ErrorMessage = "Email is required.")]
-        [EmailAddress(ErrorMessage = "Invalid email address.")]
         public string Email { get; set; }
-
         [Required(ErrorMessage = "Password is required.")]
         public string Password { get; set; }
+        [Required(ErrorMessage = "ConfirmPassword is required.")]
+        public string ConfirmPassword { get; set; }
+    }
+
+    private void HandleValidSubmit()
+    {
     }
 }
