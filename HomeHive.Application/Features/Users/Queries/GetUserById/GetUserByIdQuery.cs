@@ -1,4 +1,3 @@
-using System;
 using HomeHive.Application.Contracts.Queries;
 
 namespace HomeHive.Application.Features.Users.Queries.GetUserById;

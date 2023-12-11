@@ -6,10 +6,6 @@ namespace HomeHive.Domain.Models;
 public sealed class User : IdentityUser<Guid>
 {
     private readonly List<Estate>? _estates = null;
-    
-    public User()
-    {
-    }
 
     public string? FirstName { get; set; }
     public string? LastName { get; set; }

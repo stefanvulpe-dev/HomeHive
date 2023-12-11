@@ -5,15 +5,18 @@ using HomeHive.Application.Features.Estates.Commands.DeleteEstateById;
 using HomeHive.Application.Features.Estates.Commands.UpdateEstate;
 using HomeHive.Application.Features.Estates.Queries.GetAllEstates;
 using HomeHive.Application.Features.Estates.Queries.GetEstateById;
-using HomeHive.Application.Features.Users.Commands.CreateEstate;
 using HomeHive.Domain.Common.EntitiesUtils.Estates;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace HomeHive.WebAPI.Controllers;
 
-public class EstatesController(ICurrentUserService currentUserService, ITokenCacheService tokenCacheService) : ApiBaseController
-{   
+public class EstatesController(
+    ICurrentUserService currentUserService,
+    ITokenCacheService tokenCacheService,
+    ILogger<EstatesController> logger)
+    : ApiBaseController
+{
     [Authorize(Roles = "User, Admin")]
     [HttpPost]
     [ProducesResponseType(StatusCodes.Status201Created)]
@@ -21,17 +24,19 @@ public class EstatesController(ICurrentUserService currentUserService, ITokenCac
     {
         var isTokenRevoked = await tokenCacheService.IsTokenRevokedAsync();
         if (isTokenRevoked) return Unauthorized(new { message = "Token is revoked" });
-        
+
         var ownerId = currentUserService.GetCurrentUserId();
         var result = await Mediator.Send(new CreateEstateCommand(ownerId, data));
-        if (!result.Success)
+        if (!result.IsSuccess)
         {
+            foreach (var (field, error) in result.ValidationsErrors!)
+                logger.LogError($"Field: {field}, Error: {error}");
             return BadRequest(result);
         }
 
         return CreatedAtAction(nameof(Create), result);
     }
-    
+
     [Authorize(Roles = "User, Admin")]
     [HttpPut("{estateId}", Name = "Update")]
     [ProducesResponseType(StatusCodes.Status200OK)]
@@ -39,16 +44,18 @@ public class EstatesController(ICurrentUserService currentUserService, ITokenCac
     {
         var isTokenRevoked = await tokenCacheService.IsTokenRevokedAsync();
         if (isTokenRevoked) return Unauthorized(new { message = "Token is revoked" });
-        
+
         var result = await Mediator.Send(new UpdateEstateCommand(estateId, data));
-        if (!result.Success)
+        if (!result.IsSuccess)
         {
+            foreach (var (field, error) in result.ValidationsErrors!)
+                logger.LogError($"Field: {field}, Error: {error}");
             return BadRequest(result);
         }
 
         return Ok(result);
     }
-    
+
     [Authorize(Roles = "User, Admin")]
     [HttpDelete("{estateId}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
@@ -56,10 +63,12 @@ public class EstatesController(ICurrentUserService currentUserService, ITokenCac
     {
         var isTokenRevoked = await tokenCacheService.IsTokenRevokedAsync();
         if (isTokenRevoked) return Unauthorized(new { message = "Token is revoked" });
-        
+
         var result = await Mediator.Send(new DeleteEstateByIdCommand(estateId));
-        if (!result.Success)
+        if (!result.IsSuccess)
         {
+            foreach (var (field, error) in result.ValidationsErrors!)
+                logger.LogError($"Field: {field}, Error: {error}");
             return BadRequest(result);
         }
 
@@ -73,11 +82,15 @@ public class EstatesController(ICurrentUserService currentUserService, ITokenCac
     {
         var isTokenRevoked = await tokenCacheService.IsTokenRevokedAsync();
         if (isTokenRevoked) return Unauthorized(new { message = "Token is revoked" });
-        
+
         var result = await Mediator.Send(new GetEstateByIdQuery(estateId));
 
-        if (!result.Success)
+        if (!result.IsSuccess)
         {
+            if (result.ValidationsErrors != null)
+                foreach (var (field, error) in result.ValidationsErrors)
+                    logger.LogError($"Field: {field}, Error: {error}");
+
             return BadRequest(result);
         }
 
@@ -92,11 +105,15 @@ public class EstatesController(ICurrentUserService currentUserService, ITokenCac
     {
         var isTokenRevoked = await tokenCacheService.IsTokenRevokedAsync();
         if (isTokenRevoked) return Unauthorized(new { message = "Token is revoked" });
-        
+
         var result = await Mediator.Send(new GetAllEstatesQuery());
 
-        if (!result.Success)
+        if (!result.IsSuccess)
         {
+            if (result.ValidationsErrors != null)
+                foreach (var (field, error) in result.ValidationsErrors)
+                    logger.LogError($"Field: {field}, Error: {error}");
+
             return BadRequest(result);
         }
 

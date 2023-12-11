@@ -5,8 +5,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace HomeHive.Infrastructure;
 
-public class HomeHiveContext(DbContextOptions<HomeHiveContext> options,
-        ICurrentUserService currentUserService)
+public class HomeHiveContext(
+    DbContextOptions<HomeHiveContext> options,
+    ICurrentUserService currentUserService)
     : DbContext(options)
 {
     public DbSet<Photo>? Photos { get; set; }
@@ -18,7 +19,6 @@ public class HomeHiveContext(DbContextOptions<HomeHiveContext> options,
         CancellationToken cancellationToken = default)
     {
         foreach (var entry in ChangeTracker.Entries<BaseEntity>())
-        {
             switch (entry.State)
             {
                 case EntityState.Added:
@@ -32,7 +32,6 @@ public class HomeHiveContext(DbContextOptions<HomeHiveContext> options,
                     entry.Entity.LastModifiedDate = DateTime.UtcNow;
                     break;
             }
-        }
 
         return base.SaveChangesAsync(acceptAllChangesOnSuccess, cancellationToken);
     }

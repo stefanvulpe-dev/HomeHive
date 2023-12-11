@@ -32,9 +32,9 @@ public sealed class Estate : BaseEntity
         var (estateType, estateCategory, name,
             location, price, totalArea, utilities,
             description, image) = estateData;
-    
+
         if (ownerId == Guid.Empty) return Result<Estate>.Failure("OwnerId is required.");
-        
+
         if (string.IsNullOrWhiteSpace(estateType) || !Enum.TryParse(estateType, out EstateType typeEnum))
             return Result<Estate>.Failure("EstateType is not valid.");
 
@@ -73,50 +73,22 @@ public sealed class Estate : BaseEntity
 
     public void UpdateEstate(EstateData estateData)
     {
-        if(estateData.EstateType != null)
-        {
-            EstateType = Enum.Parse<EstateType>(estateData.EstateType);
-        }
-        
-        if(estateData.EstateCategory != null)
-        {
-            EstateCategory = Enum.Parse<EstateCategory>(estateData.EstateCategory);
-        }
-        
-        if(estateData.Name != null)
-        {
-            Name = estateData.Name;
-        }
-        
-        if(estateData.Location != null)
-        {
-            Location = estateData.Location;
-        }
-        
-        if(estateData.Price != null)
-        {
-            Price = estateData.Price;
-        }
-        
-        if(estateData.TotalArea != null)
-        {
-            TotalArea = estateData.TotalArea;
-        }
-        
-        if(estateData.Utilities != null)
-        {
-            Utilities = estateData.Utilities;
-        }
-        
-        if(estateData.Description != null)
-        {
-            Description = estateData.Description;
-        }
-        
-        if(estateData.Image != null)
-        {
-            Image = estateData.Image;
-        }
-        
+        if (estateData.EstateType != null) EstateType = Enum.Parse<EstateType>(estateData.EstateType);
+
+        if (estateData.EstateCategory != null) EstateCategory = Enum.Parse<EstateCategory>(estateData.EstateCategory);
+
+        if (estateData.Name != null) Name = estateData.Name;
+
+        if (estateData.Location != null) Location = estateData.Location;
+
+        if (estateData.Price != null) Price = estateData.Price;
+
+        if (estateData.TotalArea != null) TotalArea = estateData.TotalArea;
+
+        if (estateData.Utilities != null) Utilities = estateData.Utilities;
+
+        if (estateData.Description != null) Description = estateData.Description;
+
+        if (estateData.Image != null) Image = estateData.Image;
     }
 }

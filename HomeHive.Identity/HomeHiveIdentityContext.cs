@@ -1,5 +1,4 @@
-﻿using HomeHive.Domain.Entities;
-using HomeHive.Domain.Models;
+﻿using HomeHive.Domain.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
@@ -18,10 +17,9 @@ public class HomeHiveIdentityContext : IdentityDbContext<User, IdentityRole<Guid
         builder.Entity<User>().Ignore(u => u.Estates);
     }
 
-    public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = new CancellationToken())
+    public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = new())
     {
         foreach (var entry in ChangeTracker.Entries<User>())
-        {
             switch (entry.State)
             {
                 case EntityState.Added:
@@ -32,7 +30,7 @@ public class HomeHiveIdentityContext : IdentityDbContext<User, IdentityRole<Guid
                     entry.Entity.LastModifiedDate = DateTime.UtcNow;
                     break;
             }
-        }
+
         return await base.SaveChangesAsync(cancellationToken);
     }
 }

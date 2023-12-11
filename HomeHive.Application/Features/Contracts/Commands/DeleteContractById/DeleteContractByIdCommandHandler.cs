@@ -3,31 +3,26 @@ using HomeHive.Application.Persistence;
 
 namespace HomeHive.Application.Features.Contracts.Commands.DeleteContractById;
 
-public class DeleteContractByIdCommandHandler: ICommandHandler<DeleteContractByIdCommand, DeleteContractByIdCommandResponse>
+public class DeleteContractByIdCommandHandler(IContractRepository contractRepository)
+    : ICommandHandler<DeleteContractByIdCommand, DeleteContractByIdCommandResponse>
 {
-    private readonly IContractRepository _contractRepository;
-
-    public DeleteContractByIdCommandHandler(IContractRepository contractRepository)
+    public async Task<DeleteContractByIdCommandResponse> Handle(DeleteContractByIdCommand request,
+        CancellationToken cancellationToken)
     {
-        _contractRepository = contractRepository;
-    }
-
-    public async Task<DeleteContractByIdCommandResponse> Handle(DeleteContractByIdCommand request, CancellationToken cancellationToken)
-    {
-        var validator = new DeleteContractByIdCommandValidator(_contractRepository);
+        var validator = new DeleteContractByIdCommandValidator(contractRepository);
         var validationResult = await validator.ValidateAsync(request, cancellationToken);
         if (!validationResult.IsValid)
             return new DeleteContractByIdCommandResponse
             {
-                Success = false,
-                ValidationsErrors = validationResult.Errors.Select(e => e.ErrorMessage).ToList()
+                IsSuccess = false,
+                ValidationsErrors = validationResult.Errors.ToDictionary(x => x.PropertyName, x => x.ErrorMessage)
             };
-        
-        var result = await _contractRepository.DeleteByIdAsync(request.ContractId);
+
+        var result = await contractRepository.DeleteByIdAsync(request.ContractId);
         if (!result.IsSuccess)
             return new DeleteContractByIdCommandResponse
             {
-                Success = false,
+                IsSuccess = false,
                 Message = $"Error deleting contract with Id {request.ContractId}"
             };
 

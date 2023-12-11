@@ -7,8 +7,10 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace HomeHive.WebAPI.Controllers;
 
-public class AuthenticationController(IAuthService authService, ITokenCacheService tokenCacheService,
-        ILogger<AuthenticationController> logger)
+public class AuthenticationController(
+    IAuthService authService,
+    ITokenCacheService tokenCacheService,
+    ILogger<AuthenticationController> logger)
     : ApiBaseController
 {
     [HttpPost]
@@ -29,10 +31,10 @@ public class AuthenticationController(IAuthService authService, ITokenCacheServi
         if (!loginResult.IsSuccess)
         {
             logger.LogError(loginResult.Message);
-            return BadRequest(new { error = loginResult.Message });
+            return BadRequest(loginResult);
         }
 
-        return Ok(new { accessToken = loginResult.AccessToken, refreshToken = loginResult.RefreshToken });
+        return Ok(loginResult);
     }
 
     [HttpPost]
@@ -50,11 +52,7 @@ public class AuthenticationController(IAuthService authService, ITokenCacheServi
 
         var registrationResult = await authService.Register(model, UserRole.User);
 
-        if (!registrationResult.IsSuccess)
-        {
-            registrationResult.Errors.ForEach(error => logger.LogError(error));
-            return BadRequest(new { errors = registrationResult.Errors });
-        }
+        if (!registrationResult.IsSuccess) return BadRequest(registrationResult);
 
         return CreatedAtAction(nameof(Register), model);
     }
@@ -71,7 +69,7 @@ public class AuthenticationController(IAuthService authService, ITokenCacheServi
         if (!result.IsSuccess)
         {
             logger.LogError(result.Message);
-            return BadRequest(new { error = result.Message });
+            return BadRequest(result);
         }
 
         return NoContent();
@@ -85,9 +83,9 @@ public class AuthenticationController(IAuthService authService, ITokenCacheServi
         if (!result.IsSuccess)
         {
             logger.LogError(result.Message);
-            return Unauthorized(new { error = result.Message });
+            return Unauthorized(result);
         }
 
-        return Ok(new { accessToken = result.AccessToken, refreshToken = result.RefreshToken });
+        return Ok(result);
     }
 }

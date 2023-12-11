@@ -1,5 +1,4 @@
-﻿using System.Threading.Tasks;
-using HomeHive.Application.Models;
+﻿using HomeHive.Application.Models;
 using HomeHive.Domain.Common;
 
 namespace HomeHive.Application.Contracts.Identity;

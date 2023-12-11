@@ -12,22 +12,19 @@ public class UpdateContractCommandValidator : AbstractValidator<UpdateContractCo
     public UpdateContractCommandValidator(IContractRepository contractRepository)
     {
         _contractRepository = contractRepository;
-        RuleSet("UpdateContract", () =>
-        {
-            RuleFor(p => p.Id)
-                .NotEmpty().WithMessage("ContractId is required.");
-            RuleFor(p => p.Data)
-                .NotNull().WithMessage("ContractData is required.")
-                .Custom((contractData, context) =>
-                {
-                    if (string.IsNullOrWhiteSpace(contractData.ContractType!.GetType().Name)
-                        && contractData.EstateId == Guid.Empty
-                        && contractData.StartDate == null
-                        && contractData.EndDate == null
-                        && string.IsNullOrWhiteSpace(contractData.Description))
-                        context.AddFailure("At least one property of ContractData must be filled.");
-                });
-        });
+        RuleFor(p => p.Id)
+            .NotEmpty().WithMessage("ContractId is required.");
+        RuleFor(p => p.Data)
+            .NotNull().WithMessage("ContractData is required.")
+            .Custom((contractData, context) =>
+            {
+                if (string.IsNullOrWhiteSpace(contractData.ContractType!.GetType().Name)
+                    && contractData.EstateId == Guid.Empty
+                    && contractData.StartDate == null
+                    && contractData.EndDate == null
+                    && string.IsNullOrWhiteSpace(contractData.Description))
+                    context.AddFailure("At least one property of ContractData must be filled.");
+            });
     }
 
     public async Task<Result<Contract>> ValidateContractExistence(UpdateContractCommand command, CancellationToken arg2)

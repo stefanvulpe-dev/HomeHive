@@ -1,6 +1,5 @@
 ﻿using HomeHive.Application.Contracts.Commands;
 using HomeHive.Application.Features.Estates.Commands.CreateEstate;
-using HomeHive.Application.Features.Users.Commands.CreateEstate;
 using HomeHive.Application.Persistence;
 
 namespace HomeHive.Application.Features.Estates.Commands.UpdateEstate;
@@ -21,38 +20,39 @@ public class UpdateEstateCommandHandler : ICommandHandler<UpdateEstateCommand, U
         var validationResult = await validator.ValidateAsync(command, cancellationToken);
 
         if (!validationResult.IsValid)
-        {
-            return new UpdateEstateCommandResponse()
+            return new UpdateEstateCommandResponse
             {
-                Success = false,
+                IsSuccess = false,
                 Message = "Error updating estate",
-                ValidationsErrors = validationResult.Errors.Select(e => e.ErrorMessage).ToList()
+                ValidationsErrors = validationResult.Errors.ToDictionary(x => x.PropertyName, x => x.ErrorMessage)
             };
-        }
 
         var estateResult = await validator.EstateExist(command, cancellationToken);
         if (!estateResult.IsSuccess)
-        {
-            return new UpdateEstateCommandResponse()
+            return new UpdateEstateCommandResponse
             {
-                Success = false,
-                Message = $"Estate {command.EstateId} not found",
-                ValidationsErrors = new List<string> { estateResult.Error }
+                IsSuccess = false,
+                Message = $"Estate {command.EstateId} not found"
             };
-        }
 
         var existingEstate = estateResult.Value;
         existingEstate.UpdateEstate(command.EstateData);
 
         await _estateRepository.UpdateAsync(existingEstate);
 
-        return new UpdateEstateCommandResponse()
+        return new UpdateEstateCommandResponse
         {
-            Success = true,
+            IsSuccess = true,
             Message = "Estate updated successfully",
-            Estate = new CreateEstateDto(existingEstate.Id, existingEstate.OwnerId,
-                existingEstate.EstateType.ToString(), existingEstate.EstateCategory.ToString(), existingEstate.Name,
-                existingEstate.Location)
+            Estate = new CreateEstateDto
+            {
+                Id = existingEstate.Id,
+                OwnerId = existingEstate.OwnerId,
+                EstateType = existingEstate.EstateType.ToString(),
+                EstateCategory = existingEstate.EstateCategory.ToString(),
+                Name = existingEstate.Name,
+                Location = existingEstate.Location
+            }
         };
     }
 }

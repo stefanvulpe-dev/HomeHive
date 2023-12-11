@@ -8,6 +8,7 @@ using Microsoft.IdentityModel.Tokens;
 namespace HomeHive.Identity.Services.Authentication;
 
 public record TokenData(string AccessTokenId, string AccessToken, string RefreshToken, DateTime AccessTokenExpiration);
+
 public record CachedTokenData(string AccessToken);
 
 public static class AuthServiceUtils
@@ -75,7 +76,7 @@ public static class AuthServiceUtils
             IssuerSigningKey =
                 new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["JWT:Secret"]!))
         });
-        
+
         return !tokenValidationResult.IsValid ? null : tokenHandler.ReadJwtToken(token);
     }
 }

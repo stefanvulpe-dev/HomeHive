@@ -11,44 +11,78 @@ using Microsoft.IdentityModel.JsonWebTokens;
 
 namespace HomeHive.Identity.Services.Authentication;
 
-public class AuthService(UserManager<User> userManager, RoleManager<IdentityRole<Guid>> roleManager,
-        ICacheService cacheService,
-        IHttpContextAccessor httpContextAccessor,
-        IConfiguration configuration)
+public class AuthService(
+    UserManager<User> userManager,
+    RoleManager<IdentityRole<Guid>> roleManager,
+    ICacheService cacheService,
+    IHttpContextAccessor httpContextAccessor,
+    IConfiguration configuration)
     : IAuthService
 {
     public async Task<Result> Register(RegistrationModel model, string role)
     {
+        var userRegistrationValidator = new UserRegistrationValidator();
+        
+        var validationResult = await userRegistrationValidator.ValidateAsync(model);
+
+        if (!validationResult.IsValid)
+            return Result.Failure("Failed to create identity user",
+                validationResult.Errors.ToDictionary(x => x.PropertyName, x => x.ErrorMessage));
+        
         var identityUser = new User
         {
             Email = model.Email,
             UserName = model.UserName,
             FirstName = model.FirstName,
             LastName = model.LastName,
-            ProfilePicture = model.ProfilePicture,
             PhoneNumber = model.PhoneNumber
         };
-
+        
         var result = await userManager.CreateAsync(identityUser, model.Password!);
 
         if (!result.Succeeded)
-            return Result.Failure("Failed to create the identity user",
-                result.Errors.Select(error => error.Description).ToList());
+        {
+            var errorDictionary = new Dictionary<string, string>();
+            foreach (var error in result.Errors)
+            {
+                if (error.Description.Contains("Email"))
+                    errorDictionary.Add("Email", error.Description);
+                else if (error.Description.Contains("Username"))
+                    errorDictionary.Add("UserName", error.Description);
+                else if (error.Description.Contains("Password"))
+                    errorDictionary.Add("Password", error.Description);
+            }
+            return Result.Failure("Failed to create identity user", errorDictionary);
+        }
 
         if (!await roleManager.RoleExistsAsync(role))
         {
             var roleResult = await roleManager.CreateAsync(new IdentityRole<Guid>(role));
             if (!roleResult.Succeeded)
-                return Result.Failure("Failed to create the role",
-                    roleResult.Errors.Select(error => error.Description).ToList());
+            {
+                var errorDictionary = new Dictionary<string, string>();
+                foreach (var error in result.Errors)
+                {
+                    if (error.Description.Contains("Name"))
+                        errorDictionary.Add("Name", error.Description);
+                }
+                return Result.Failure("Failed to create identity role", errorDictionary);
+            }
         }
 
         if (await roleManager.RoleExistsAsync(role))
         {
             var addToRoleResult = await userManager.AddToRoleAsync(identityUser, role);
             if (!addToRoleResult.Succeeded)
-                return Result.Failure("Failed to add the user to the role",
-                    addToRoleResult.Errors.Select(error => error.Description).ToList());
+            {
+                var errorDictionary = new Dictionary<string, string>();
+                foreach (var error in result.Errors)
+                {
+                    if (error.Description.Contains("Role"))
+                        errorDictionary.Add("Role", error.Description);
+                }
+                return Result.Failure("Failed to add the user to the role", errorDictionary);
+            }
         }
 
         return Result.Success("User created successfully!");
@@ -80,23 +114,38 @@ public class AuthService(UserManager<User> userManager, RoleManager<IdentityRole
     {
         var token = httpContextAccessor.HttpContext?.Request.Headers["refreshToken"].ToString();
         if (string.IsNullOrEmpty(token))
-            return LoginResult.Failure("Missing refresh token");
+            return LoginResult.Failure("Failed to refresh", new Dictionary<string, string?>
+            {
+                { "refreshToken", "Missing refresh token" }
+            });
 
         var refreshToken = await AuthServiceUtils.ValidateToken(token, configuration);
         if (refreshToken == null)
-            return LoginResult.Failure("Invalid refresh token");
+            return LoginResult.Failure("Failed to refresh", new Dictionary<string, string?>
+            {
+                { "refreshToken", "Invalid refresh token" }
+            });
 
         var userIdClaim = refreshToken.Claims.FirstOrDefault(claim => claim.Type == "nameid");
         if (userIdClaim == null)
-            return LoginResult.Failure("Invalid user id");
+            return LoginResult.Failure("Failed to refresh", new Dictionary<string, string?>
+            {
+                { "refreshToken", "Missing user id claim" }
+            });
 
         var refreshTokenIdClaim = refreshToken.Claims.FirstOrDefault(claim => claim.Type == "jti");
         if (refreshTokenIdClaim == null)
-            return LoginResult.Failure("Invalid refresh token id");
+            return LoginResult.Failure("Failed to refresh", new Dictionary<string, string?>
+            {
+                { "refreshToken", "Invalid refresh token id" }
+            });
 
         var user = await userManager.FindByIdAsync(userIdClaim.Value);
         if (user == null)
-            return LoginResult.Failure("Invalid user id");
+            return LoginResult.Failure("Failed to refresh", new Dictionary<string, string?>
+            {
+                { "refreshToken", "Invalid user id" }
+            });
 
         var userRoles = await userManager.GetRolesAsync(user);
 

@@ -1,3 +1,10 @@
 namespace HomeHive.Application.Features.Users.Queries;
 
-public record UserDto(string?  UserName, string? FirstName, string? LastName, string? Email, string? PhoneNumber);
+public record UserDto
+{
+    public string? UserName { get; init; }
+    public string? FirstName { get; init; }
+    public string? LastName { get; init; }
+    public string? Email { get; init; }
+    public string? PhoneNumber { get; init; }
+}
