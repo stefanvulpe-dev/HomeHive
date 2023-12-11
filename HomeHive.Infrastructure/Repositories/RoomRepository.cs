@@ -7,6 +7,5 @@ public class RoomRepository : BaseRepository<Room>, IRoomRepository
 {
     public RoomRepository(HomeHiveContext context) : base(context)
     {
-        
     }
 }

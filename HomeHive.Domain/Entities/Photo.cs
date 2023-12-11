@@ -8,21 +8,15 @@ public sealed class Photo : BaseEntity
     {
     }
 
-    public Guid EstateId { get; set; }
-    public Estate? Estate { get; set; }
-    public string? ObjectName { get; set; }
+    public Guid EstateId { get; private set; }
+    public Estate? Estate { get; private set; }
+    public string? ObjectName { get; private set; }
 
     public static Result<Photo> Create(string? objectName, Estate? estate)
     {
-        if (string.IsNullOrWhiteSpace(objectName))
-        {
-            return Result<Photo>.Failure("Object name is not valid!");
-        }
+        if (string.IsNullOrWhiteSpace(objectName)) return Result<Photo>.Failure("Object name is not valid!");
 
-        if (estate == null)
-        {
-            return Result<Photo>.Failure("Estate is required.");
-        }
+        if (estate == null) return Result<Photo>.Failure("Estate is required.");
 
         return Result<Photo>.Success(new Photo { EstateId = estate.Id, Estate = estate, ObjectName = objectName });
     }

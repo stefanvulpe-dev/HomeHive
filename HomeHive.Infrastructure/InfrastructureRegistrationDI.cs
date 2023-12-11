@@ -1,5 +1,6 @@
-﻿using System.Reflection;
+﻿using HomeHive.Application.Contracts.Caching;
 using HomeHive.Application.Persistence;
+using HomeHive.Infrastructure.Caching;
 using HomeHive.Infrastructure.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -9,13 +10,20 @@ namespace HomeHive.Infrastructure;
 
 public static class InfrastructureRegistrationDI
 {
-    public static IServiceCollection AddInfrastructureServices(this IServiceCollection services, IConfiguration configuration)
+    public static IServiceCollection AddInfrastructureServices(this IServiceCollection services,
+        IConfiguration configuration)
     {
         services.AddDbContext<HomeHiveContext>(options =>
-            options.UseNpgsql(configuration.GetConnectionString("HomeHiveConnection"), 
+            options.UseNpgsql(configuration.GetConnectionString("HomeHiveConnection"),
                 builder => builder.MigrationsAssembly(typeof(HomeHiveContext).Assembly.FullName)));
         services.AddScoped(typeof(IAsyncRepository<>), typeof(BaseRepository<>));
-        services.AddScoped<IUserRepository, UserRepository>();
+        services.AddStackExchangeRedisCache(options =>
+        {
+            options.Configuration = configuration.GetConnectionString("AuthRedisConnection");
+        });
+        services.AddScoped<ICacheService, CacheService>();
+        services.AddScoped<IContractRepository, ContractRepository>();
+        services.AddScoped<IEstateRepository, EstateRepository>();
         return services;
     }
 }

@@ -12,5 +12,5 @@ public enum EstateType
     Penthouse,
     Studio,
     Duplex,
-    Flat,
+    Flat
 }

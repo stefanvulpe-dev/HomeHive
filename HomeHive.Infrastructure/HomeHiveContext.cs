@@ -1,41 +1,39 @@
-﻿using HomeHive.Domain.Entities;
+﻿using HomeHive.Application.Contracts.Interfaces;
+using HomeHive.Domain.Common;
+using HomeHive.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.FileProviders;
 
 namespace HomeHive.Infrastructure;
 
-public class HomeHiveContext: DbContext
+public class HomeHiveContext(DbContextOptions<HomeHiveContext> options,
+        ICurrentUserService currentUserService)
+    : DbContext(options)
 {
-    public DbSet<User>? Users { get; set; }
     public DbSet<Photo>? Photos { get; set; }
     public DbSet<Contract>? Contracts { get; set; }
     public DbSet<Estate>? Estates { get; set; }
     public DbSet<Room>? Rooms { get; set; }
 
-    public HomeHiveContext()
+    public override Task<int> SaveChangesAsync(bool acceptAllChangesOnSuccess,
+        CancellationToken cancellationToken = default)
     {
-    }
+        foreach (var entry in ChangeTracker.Entries<BaseEntity>())
+        {
+            switch (entry.State)
+            {
+                case EntityState.Added:
+                    entry.Entity.CreatedBy = currentUserService.GetCurrentUserName();
+                    entry.Entity.CreatedDate = DateTime.UtcNow;
+                    entry.Entity.LastModifiedBy = currentUserService.GetCurrentUserName();
+                    entry.Entity.LastModifiedDate = DateTime.UtcNow;
+                    break;
+                case EntityState.Modified:
+                    entry.Entity.LastModifiedBy = currentUserService.GetCurrentUserName();
+                    entry.Entity.LastModifiedDate = DateTime.UtcNow;
+                    break;
+            }
+        }
 
-    public HomeHiveContext(
-        DbContextOptions<HomeHiveContext> options) :
-        base(options)
-    {
-
-    }
-
-    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-    {
-        var configuration = new ConfigurationBuilder()
-            .SetBasePath(AppDomain.CurrentDomain.BaseDirectory)
-            .SetFileProvider(new PhysicalFileProvider(AppDomain.CurrentDomain.BaseDirectory))
-            .AddJsonFile("appsettings.json")
-            .Build();
-        optionsBuilder.UseNpgsql(configuration.GetConnectionString("HomeHiveConnection"));
-    }
-
-    protected override void OnModelCreating(ModelBuilder modelBuilder)
-    {
-        modelBuilder.Entity<User>().HasIndex(p => p.Email).IsUnique(true);
+        return base.SaveChangesAsync(acceptAllChangesOnSuccess, cancellationToken);
     }
 }

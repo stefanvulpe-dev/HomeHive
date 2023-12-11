@@ -2,6 +2,6 @@
 
 namespace HomeHive.Application.Persistence;
 
-public interface IContractRepository: IAsyncRepository<Contract>
+public interface IContractRepository : IAsyncRepository<Contract>
 {
 }

@@ -2,7 +2,6 @@
 
 namespace HomeHive.Application.Persistence;
 
-public interface IRoomRepository: IAsyncRepository<Room>
+public interface IRoomRepository : IAsyncRepository<Room>
 {
-    
 }

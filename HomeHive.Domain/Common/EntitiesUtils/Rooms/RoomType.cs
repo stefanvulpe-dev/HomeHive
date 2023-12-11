@@ -6,5 +6,5 @@ public enum RoomType
     Bedroom,
     Kitchen,
     Bathroom,
-    Balcony,
+    Balcony
 }
