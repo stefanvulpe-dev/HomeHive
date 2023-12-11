@@ -69,9 +69,9 @@ public class AuthService(UserManager<User> userManager, RoleManager<IdentityRole
         var (accessTokenId, accessToken, refreshToken, accessTokenExpiration) =
             AuthServiceUtils.GenerateTokens(user, userRoles, configuration);
 
-        var tokens = new { AccessToken = accessToken, RefreshToken = refreshToken };
+        var tokenData = new { AccessToken = accessToken };
         await cacheService.SetAsync($"{user.Id.ToString()}:{accessTokenId}",
-            tokens, accessTokenExpiration - DateTime.UtcNow);
+            tokenData, accessTokenExpiration - DateTime.UtcNow);
 
         return LoginResult.Success("User logged in successfully!", accessToken, refreshToken);
     }
@@ -103,9 +103,9 @@ public class AuthService(UserManager<User> userManager, RoleManager<IdentityRole
         var (accessTokenId, accessToken, newRefreshToken, accessTokenExpiration) =
             AuthServiceUtils.GenerateTokens(user, userRoles, configuration);
 
-        var tokens = new { AccessToken = accessToken, RefreshToken = refreshToken };
-        await cacheService.SetAsync($"{user.Id.ToString()}:{accessTokenId}",
-            tokens, accessTokenExpiration - DateTime.UtcNow);
+        var tokenData = new { AccessToken = accessToken };
+        await cacheService.SetAsync($"{user.Id.ToString()}:{accessTokenId}", tokenData,
+            accessTokenExpiration - DateTime.UtcNow);
 
         return LoginResult.Success("User logged in successfully!", accessToken, newRefreshToken);
     }
