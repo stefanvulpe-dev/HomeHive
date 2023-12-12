@@ -1,0 +1,47 @@
+<EditForm Model="@userProfile" OnValidSubmit="@HandleValidSubmit" FormName="editProfileForm">
+    <div class="mb-3">
+        <label for="profileImage" class="form-label">Profile Image</label>
+        <InputFile class="form-control" id="profileImage" />
+    </div>
+    <div class="mb-3">
+        <label for="username" class="form-label">Username</label>
+        <InputText class="form-control" id="username" @bind-Value="userProfile.Username"/>
+    </div>
+    <div class="mb-3">
+        <label for="firstName" class="form-label">First Name</label>
+        <InputText class="form-control" id="firstName" @bind-Value="userProfile.FirstName"/>
+    </div>
+    <div class="mb-3">
+            <label for="lastName" class="form-label">Last Name</label>
+            <InputText class="form-control" id="lastName" @bind-Value="userProfile.LastName"/>
+        </div>
+    <div class="mb-3">
+        <label for="email" class="form-label">Email address</label>
+        <InputText class="form-control" id="email" @bind-Value="userProfile.Email"/>
+    </div>
+    <div class="mb-3">
+        <label for="phone" class="form-label">Phone Number</label>
+        <InputText class="form-control" id="phone" @bind-Value="userProfile.PhoneNumber"/>
+    </div>
+    <button type="submit" class="btn btn-primary">Save Changes</button>
+</EditForm>
+
+@code {
+    private UserProfile userProfile = new UserProfile();
+
+    public class UserProfile
+    {
+        public string Username { get; set; }
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
+        public string Email { get; set; }
+        public string PhoneNumber { get; set; }
+    }
+
+   
+    private void HandleValidSubmit()
+    {
+        throw new NotImplementedException();
+    }
+
+}

@@ -1,6 +1,6 @@
 ﻿@inherits LayoutComponentBase
 @using HomeHive.UI.Components.Profile
-
+@using HomeHive.UI.Components.General
 <HeadContent>
   <!-- Custom styles for this template -->
   <link href="sidebars.css" rel="stylesheet">
@@ -84,7 +84,12 @@
   <aside>
     <ProfileSidebar />
   </aside>
-  @Body
+  <div style="flex:1">
+    @Body
+  </div>
+    
 </main>
+@* <Footer></Footer> *@
+
 <script src="sidebars.js"></script>
 
