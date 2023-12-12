@@ -1,0 +1,37 @@
+@page "/getallusers"
+
+@using HomeHive.Application.Features.Users.Queries
+
+
+<h1 class="about-title pad-fields">User List</h1>
+
+@if (_users != null && _users.Any())
+{
+    <div class="container">
+        @foreach (var user in _users)
+        {
+            <div class="card single-about-items spaced-card">
+                <div class="items-content">
+                    <h2 class="items-title">@user.UserName</h2>
+                    <p class="text pad-fields bold-field">First Name: @user.FirstName</p>
+                    <p class="text pad-fields bold-field">Last Name: @user.LastName</p>
+                    <p class="text pad-fields bold-field">Phone Number: @user.PhoneNumber</p>
+                    <p class="text pad-fields bold-field">Email: @user.Email</p>
+                </div>
+            </div>
+        }
+    </div>
+}
+else
+{
+    <p class="validation-message">No users available.</p>
+}
+
+@code {
+   private List<UserDto>? _users = new()
+   {
+       new() { FirstName = "John", LastName = "Doe", Email = "john@gmail.com", UserName = "JohnDoeTheFirst", PhoneNumber = "0743243232" },
+       new() { FirstName = "Giovanni", LastName = "Becali", Email = "giobec@yahoo.com", UserName = "GiovaniTheUnique", PhoneNumber = "402318231232" }
+   };
+    
+}
