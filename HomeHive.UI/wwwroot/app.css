@@ -133,3 +133,103 @@ h1:focus {
 .about-one .single-about-items .items-content .text {
     color: var(--dark-3);
 }
+
+.add-form {
+    max-width: 600px;
+    margin: auto;
+    padding: 10px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+label {
+    font-weight: bold;
+}
+
+.btn-primary {
+    color: #fff;
+    background-color: #1A1C20;
+    border-color: #1A1C20;
+    border-radius: 8px;
+}
+
+.btn-primary:hover {
+    background-color: #141618;
+    border-color: #141618;
+}
+
+.d-flex {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.justify-content-center {
+    justify-content: center;
+}
+
+.mb-4 {
+    margin-bottom: 1rem;
+}
+
+.btn-lg {
+    padding: 10px 20px;
+    font-size: 1.25rem;
+}
+
+.validation-message {
+    color: #e50000;
+    margin-top: 4px;
+}
+.form-group{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+}
+
+.form-label{
+    width: 100%;
+    text-align: left;
+}
+
+.form-group input[type="text"],
+.form-group input[type="number"] {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+    margin-top: 4px;
+    margin-bottom: 8px;
+}
+
+.form-group select {
+    width: 100%;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+    margin-top: 4px;
+    margin-bottom: 8px;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    background-position: right center;
+    background-repeat: no-repeat;
+    padding-right: 20px; /* Adjust the padding to accommodate the arrow icon */
+}
+
+.form-group input{
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+    margin-top: 4px;
+    margin-bottom: 8px;
+}
