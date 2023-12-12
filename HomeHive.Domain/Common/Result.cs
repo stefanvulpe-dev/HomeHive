@@ -2,40 +2,59 @@
 
 public sealed class Result<T> where T : class
 {
-    private Result(bool isSuccess, T value, string error)
+    private Result(bool isSuccess, string message, Dictionary<string, string>? validationErrors)
+    {
+        IsSuccess = isSuccess;
+        Message = message;
+        ValidationErrors = validationErrors;
+    }
+
+    private Result(bool isSuccess, T value, string message)
     {
         IsSuccess = isSuccess;
         Value = value;
-        Error = error;
+        Message = message;
     }
 
     public bool IsSuccess { get; private set; }
-    public T Value { get; private set; }
-    public string Error { get; private set; }
+    public T Value { get; private set; } = null!;
+    public string Message { get; private set; }
+
+    public Dictionary<string, string>? ValidationErrors { get; private set; }
 
     public static Result<T> Success(T value)
     {
         return new Result<T>(true, value, null!);
     }
 
+    public static Result<T> Success(T value, string message)
+    {
+        return new Result<T>(true, value, message);
+    }
+
     public static Result<T> Failure(string error)
     {
         return new Result<T>(false, null!, error);
+    }
+
+    public static Result<T> Failure(string message, Dictionary<string, string> validationErrors)
+    {
+        return new Result<T>(false, message, validationErrors);
     }
 }
 
 public class Result
 {
-    protected Result(bool isSuccess, string message, Dictionary<string, string?> errors)
+    private Result(bool isSuccess, string message, Dictionary<string, string>? validationErrors)
     {
         IsSuccess = isSuccess;
         Message = message;
-        Errors = errors;
+        ValidationErrors = validationErrors;
     }
 
     public bool IsSuccess { get; private set; }
     public string Message { get; private set; }
-    public Dictionary<string, string?> Errors { get; private set; }
+    public Dictionary<string, string>? ValidationErrors { get; private set; }
 
     public static Result Success()
     {
@@ -55,35 +74,5 @@ public class Result
     public static Result Failure(string message, Dictionary<string, string> errors)
     {
         return new Result(false, message, errors);
-    }
-}
-
-public sealed class LoginResult : Result
-{
-    private LoginResult(bool isSuccess, string message, Dictionary<string, string?> errors) : base(isSuccess, message,
-        errors)
-    {
-    }
-
-    public string? AccessToken { get; private set; }
-    public string? RefreshToken { get; private set; }
-
-    public static LoginResult Success(string message, string accessToken, string refreshToken)
-    {
-        return new LoginResult(true, message, null!)
-        {
-            AccessToken = accessToken,
-            RefreshToken = refreshToken
-        };
-    }
-
-    public new static LoginResult Failure(string message, Dictionary<string, string?> errors)
-    {
-        return new LoginResult(false, message, errors);
-    }
-
-    public new static LoginResult Failure(string message)
-    {
-        return new LoginResult(false, message, null!);
     }
 }

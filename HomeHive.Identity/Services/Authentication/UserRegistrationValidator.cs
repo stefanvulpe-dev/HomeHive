@@ -49,9 +49,9 @@ public sealed class UserRegistrationValidator : AbstractValidator<RegistrationMo
             .NotEmpty()
             .WithMessage("{PropertyName} is required")
             .Matches("^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$ %^&*-]).{8,}$")
-            .WithMessage("{PropertyName} must contain at least 8 characters, one uppercase, one lowercase, one number and one special character: #?!@$ %^&*-")
+            .WithMessage(
+                "{PropertyName} must contain at least 8 characters, one uppercase, one lowercase, one number and one special character: #?!@$ %^&*-")
             .MaximumLength(25)
             .WithMessage("{PropertyName} must not exceed 25 characters");
-
     }
 }

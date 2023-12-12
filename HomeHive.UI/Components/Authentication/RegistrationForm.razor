@@ -1,0 +1,121 @@
+﻿@using HomeHive.UI.ViewModels.Users
+@using HomeHive.UI.Services.Authentication
+@rendermode InteractiveServer
+@inject NavigationManager NavigationManager
+@inject AuthService AuthService
+@inject ILogger<RegistrationForm> Logger
+
+<EditForm Model="@RegistrationModel" OnValidSubmit="@HandleValidSubmit" FormName="registerForm">
+    <DataAnnotationsValidator/>
+    <CustomValidation @ref="@_customValidation"/>
+
+    <div class="row">
+        <div class="col-md-6 mb-2">
+            <div class="form-outline">
+                <label class="form-label" for="first-name">First name</label>
+                <InputText id="first-name" class="form-control" placeholder="John" @bind-Value="@RegistrationModel!.FirstName"/>
+                <ValidationMessage For="@(() => RegistrationModel.FirstName)"/>
+            </div>
+        </div>
+        <div class="col-md-6 mb-2">
+            <div class="form-outline">
+                <label class="form-label" for="last-name">Last name</label>
+                <InputText id="last-name" class="form-control" placeholder="Doe" @bind-Value="@RegistrationModel.LastName"/>
+                <ValidationMessage For="@(() => RegistrationModel.LastName)"/>
+            </div>
+        </div>
+    </div>
+
+    <div class="form-outline mb-2">
+        <label class="form-label" for="username">Username</label>
+        <InputText id="username" class="form-control" placeholder="john_doe123" @bind-Value="@RegistrationModel.UserName"/>
+        <ValidationMessage For="@(() => RegistrationModel.UserName)"/>
+    </div>
+
+
+    <div class="form-outline mb-2">
+        <label class="form-label" for="email">Email address</label>
+        <InputText id="email" class="form-control" placeholder="john.doe@example.com" @bind-Value="@RegistrationModel.Email"/>
+        <ValidationMessage For="@(() => RegistrationModel.Email)"/>
+        <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>
+    </div>
+
+    <div class="form-outline mb-2">
+        <label class="form-label" for="email">Phone number</label>
+        <InputText id="phone" class="form-control" placeholder="+40-744-438-924" @bind-Value="@RegistrationModel.PhoneNumber"/>
+        <ValidationMessage For="@(() => RegistrationModel.PhoneNumber)"/>
+        <small id="phoneHelp" class="form-text text-muted">We'll never share your number with anyone else.</small>
+    </div>
+
+    <div class="row">
+        <div class="col-md-6 mb-2">
+            <div class="form-outline mb-2">
+                <label class="form-label" for="password">Password</label>
+                <InputText type="password" id="password" class="form-control" placeholder="******" @bind-Value="@RegistrationModel.Password"/>
+                <ValidationMessage For="@(() => RegistrationModel.Password)"/>
+            </div>
+        </div>
+
+        <div class="col-md-6 mb-2">
+            <div class="form-outline mb-4">
+                <label class="form-label" for="confirm-password">Confirm Password</label>
+                <InputText type="password" id="confirm-password" class="form-control" placeholder="******" @bind-Value="@RegistrationModel.ConfirmPassword"/>
+                <ValidationMessage For="@(() => RegistrationModel.ConfirmPassword)"/>
+            </div>
+        </div>
+    </div>
+
+    <div class="d-flex justify-content-center mb-4">
+        <button type="submit" class="btn btn-primary btn-lg" disabled="@_isSubmitting">Sign up</button>
+    </div>
+
+    <div class="text-center">
+        <NavLink href="/login">Already have an account? Login</NavLink>
+    </div>
+</EditForm>
+
+@code {
+    [SupplyParameterFromForm] private RegistrationModel? RegistrationModel { get; set; }
+
+    private CustomValidation? _customValidation;
+    private bool _isSubmitting;
+
+    protected override void OnInitialized()
+    {
+        RegistrationModel ??= new RegistrationModel();
+    }
+
+    private async Task HandleValidSubmit(EditContext editContext)
+    {
+        _customValidation?.ClearErrors();
+        try
+        {
+            _isSubmitting = true;
+            var result = await AuthService.Register(RegistrationModel!);
+
+            if (result != null)
+            {
+                if (result.IsSuccess)
+                {
+                    Logger.LogInformation(result.Message);
+                    NavigationManager.NavigateTo("/login");
+                }
+                else
+                {
+                    Logger.LogError(result.Message);
+                    if (result.ValidationErrors != null)
+                        _customValidation?.DisplayErrors(result.ValidationErrors);
+                }
+            }
+        }
+        catch (Exception)
+        {
+            Logger.LogError("An error occurred while registering");
+        }
+        finally
+        {
+            _isSubmitting = false;
+        }
+    }
+
+}

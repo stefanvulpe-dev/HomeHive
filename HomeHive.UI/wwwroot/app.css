@@ -14,7 +14,7 @@ a, .btn-link, a:hover, .btn-link:hover {
 }
 
 .btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
-  box-shadow: 0 0 0 0.1rem white;
+    box-shadow: 0 0 0 0.1rem white;
 }
 
 .content {
@@ -45,15 +45,15 @@ h1:focus {
     color: white;
 }
 
-    .blazor-error-boundary::after {
-        content: "An error has occurred."
-    }
+.blazor-error-boundary::after {
+    content: "An error has occurred."
+}
 
 .darker-border-checkbox.form-check-input {
     border-color: #929292;
 }
 
 .card {
-    border-radius: 15px; 
-    box-shadow: 0 0 15px rgba(0, 0, 0, 0.1); 
+    border-radius: 15px;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
 }

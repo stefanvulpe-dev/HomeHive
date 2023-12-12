@@ -1,0 +1,112 @@
+﻿@using HomeHive.UI.ViewModels.Users
+@using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
+@using HomeHive.UI.Services.Authentication
+@rendermode InteractiveServer
+@inject AuthService AuthService
+@inject NavigationManager NavigationManager
+@inject ILogger<LoginForm> Logger
+@inject ProtectedLocalStorage LocalStorage
+
+<EditForm Model="@LoginModel" OnValidSubmit="@HandleValidSubmit" FormName="loginForm">
+    <DataAnnotationsValidator/>
+    <CustomValidation @ref="@_customValidation"/>
+
+    <div class="form-outline mb-2">
+        <label class="form-label" for="login-email">Username</label>
+        <InputText id="login-username" class="form-control" placeholder="john_doe123" @bind-Value="@LoginModel!.UserName"/>
+        <ValidationMessage For="@(() => LoginModel.UserName)"/>
+    </div>
+
+    <div class="form-outline mb-4">
+        <label class="form-label" for="login-password">Password</label>
+        <InputText type="password" id="login-password" class="form-control" placeholder="******" @bind-Value="@LoginModel.Password"/>
+        <ValidationMessage For="@(() => LoginModel.Password)"/>
+    </div>
+
+    <div class="d-flex justify-content-center mb-4">
+        <button type="submit" class="btn btn-primary btn-lg" disabled="@_isSubmitting">
+            Log in
+        </button>
+    </div>
+
+    <div class="text-center">
+        <NavLink href="/change-password">Forgot your password?</NavLink>
+    </div>
+
+    <div class="text-center mt-4">
+        <NavLink href="/register">Register here</NavLink>
+    </div>
+</EditForm>
+
+@code {
+    [SupplyParameterFromForm] private LoginModel? LoginModel { get; set; }
+
+    private CustomValidation? _customValidation;
+
+    private bool _isSubmitting = false;
+
+    private bool _isSubmitted = false;
+
+    private Dictionary<string, string>? _loginResult;
+
+    protected override void OnInitialized()
+    {
+        LoginModel ??= new LoginModel();
+    }
+
+    private async Task SaveToLocalStorage(string key, string value)
+    {
+        await LocalStorage.SetAsync(key, value);
+    }
+
+    private async Task HandleValidSubmit(EditContext editContext)
+    {
+        _customValidation?.ClearErrors();
+        try
+        {
+            _isSubmitting = true;
+            var result = await AuthService.Login(LoginModel!);
+
+            if (result != null)
+            {
+                if (result.IsSuccess)
+                {
+                    Logger.LogInformation(result.Message);
+                    _loginResult = result.Value!;
+                    _isSubmitted = true;
+                }
+                else
+                {
+                    Logger.LogError(result.Message);
+                    if (result.ValidationErrors != null)
+                        _customValidation?.DisplayErrors(result.ValidationErrors);
+                }
+            }
+        }
+        catch (Exception)
+        {
+            Logger.LogError("An error occurred while registering");
+        }
+        finally
+        {
+            _isSubmitting = false;
+        }
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (_isSubmitted)
+        {
+            if (_loginResult != null)
+            {
+                await SaveToLocalStorage("accessToken", _loginResult["accessToken"]);
+                await SaveToLocalStorage("refreshToken", _loginResult["refreshToken"]);
+                NavigationManager.NavigateTo("/");
+            }
+
+            // Reset the flag
+            _isSubmitted = false;
+        }
+    }
+
+}

@@ -11,6 +11,8 @@ using Microsoft.IdentityModel.JsonWebTokens;
 
 namespace HomeHive.Identity.Services.Authentication;
 
+using TDictResponse = Dictionary<string, string>;
+
 public class AuthService(
     UserManager<User> userManager,
     RoleManager<IdentityRole<Guid>> roleManager,
@@ -21,14 +23,6 @@ public class AuthService(
 {
     public async Task<Result> Register(RegistrationModel model, string role)
     {
-        var userRegistrationValidator = new UserRegistrationValidator();
-        
-        var validationResult = await userRegistrationValidator.ValidateAsync(model);
-
-        if (!validationResult.IsValid)
-            return Result.Failure("Failed to create identity user",
-                validationResult.Errors.ToDictionary(x => x.PropertyName, x => x.ErrorMessage));
-        
         var identityUser = new User
         {
             Email = model.Email,
@@ -37,21 +31,27 @@ public class AuthService(
             LastName = model.LastName,
             PhoneNumber = model.PhoneNumber
         };
-        
-        var result = await userManager.CreateAsync(identityUser, model.Password!);
+
+        var result = await userManager.CreateAsync(identityUser, model.Password);
 
         if (!result.Succeeded)
         {
-            var errorDictionary = new Dictionary<string, string>();
+            var errorDictionary = new TDictResponse();
             foreach (var error in result.Errors)
-            {
                 if (error.Description.Contains("Email"))
                     errorDictionary.Add("Email", error.Description);
                 else if (error.Description.Contains("Username"))
                     errorDictionary.Add("UserName", error.Description);
                 else if (error.Description.Contains("Password"))
                     errorDictionary.Add("Password", error.Description);
-            }
+                else if (error.Description.Contains("Phone"))
+                    errorDictionary.Add("PhoneNumber", error.Description);
+                else if (error.Description.Contains("First"))
+                    errorDictionary.Add("FirstName", error.Description);
+                else if (error.Description.Contains("Last"))
+                    errorDictionary.Add("LastName", error.Description);
+                else if (error.Description.Contains("Confirm"))
+                    errorDictionary.Add("ConfirmPassword", error.Description);
             return Result.Failure("Failed to create identity user", errorDictionary);
         }
 
@@ -60,12 +60,10 @@ public class AuthService(
             var roleResult = await roleManager.CreateAsync(new IdentityRole<Guid>(role));
             if (!roleResult.Succeeded)
             {
-                var errorDictionary = new Dictionary<string, string>();
+                var errorDictionary = new TDictResponse();
                 foreach (var error in result.Errors)
-                {
                     if (error.Description.Contains("Name"))
                         errorDictionary.Add("Name", error.Description);
-                }
                 return Result.Failure("Failed to create identity role", errorDictionary);
             }
         }
@@ -75,12 +73,10 @@ public class AuthService(
             var addToRoleResult = await userManager.AddToRoleAsync(identityUser, role);
             if (!addToRoleResult.Succeeded)
             {
-                var errorDictionary = new Dictionary<string, string>();
+                var errorDictionary = new TDictResponse();
                 foreach (var error in result.Errors)
-                {
                     if (error.Description.Contains("Role"))
                         errorDictionary.Add("Role", error.Description);
-                }
                 return Result.Failure("Failed to add the user to the role", errorDictionary);
             }
         }
@@ -88,15 +84,23 @@ public class AuthService(
         return Result.Success("User created successfully!");
     }
 
-    public async Task<LoginResult> Login(LoginModel model)
+    public async Task<Result<TDictResponse>> Login(LoginModel model)
     {
-        var user = await userManager.FindByNameAsync(model.UserName!);
+        var user = await userManager.FindByNameAsync(model.UserName);
 
         if (user == null)
-            return LoginResult.Failure("Invalid credentials");
+            return Result<TDictResponse>.Failure("Invalid credentials", new TDictResponse
+            {
+                { "UserName", "Invalid credentials" },
+                { "Password", "Invalid credentials" }
+            });
 
-        if (!await userManager.CheckPasswordAsync(user, model.Password!))
-            return LoginResult.Failure("Invalid credentials");
+        if (!await userManager.CheckPasswordAsync(user, model.Password))
+            return Result<TDictResponse>.Failure("Invalid credentials", new TDictResponse
+            {
+                { "UserName", "Invalid credentials" },
+                { "Password", "Invalid credentials" }
+            });
 
         var userRoles = await userManager.GetRolesAsync(user);
 
@@ -107,42 +111,58 @@ public class AuthService(
         await cacheService.SetAsync($"{user.Id.ToString()}:{accessTokenId}",
             tokenData, accessTokenExpiration - DateTime.UtcNow);
 
-        return LoginResult.Success("User logged in successfully!", accessToken, refreshToken);
+        var tokens = new TDictResponse
+        {
+            { "accessToken", accessToken },
+            { "refreshToken", refreshToken }
+        };
+
+        return Result<TDictResponse>.Success(tokens, "User logged in successfully!");
     }
 
-    public async Task<LoginResult> Refresh()
+    public async Task<Result> Logout()
+    {
+        var accessTokenId = httpContextAccessor.HttpContext?.User.FindFirstValue(JwtRegisteredClaimNames.Jti);
+        var userId = httpContextAccessor.HttpContext?.User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+        await cacheService.RemoveAsync($"{userId}:{accessTokenId}");
+
+        return Result.Success("User logged out successfully!");
+    }
+
+    public async Task<Result<TDictResponse>> Refresh()
     {
         var token = httpContextAccessor.HttpContext?.Request.Headers["refreshToken"].ToString();
         if (string.IsNullOrEmpty(token))
-            return LoginResult.Failure("Failed to refresh", new Dictionary<string, string?>
+            return Result<TDictResponse>.Failure("Failed to refresh", new TDictResponse
             {
                 { "refreshToken", "Missing refresh token" }
             });
 
         var refreshToken = await AuthServiceUtils.ValidateToken(token, configuration);
         if (refreshToken == null)
-            return LoginResult.Failure("Failed to refresh", new Dictionary<string, string?>
+            return Result<TDictResponse>.Failure("Failed to refresh", new TDictResponse
             {
                 { "refreshToken", "Invalid refresh token" }
             });
 
         var userIdClaim = refreshToken.Claims.FirstOrDefault(claim => claim.Type == "nameid");
         if (userIdClaim == null)
-            return LoginResult.Failure("Failed to refresh", new Dictionary<string, string?>
+            return Result<TDictResponse>.Failure("Failed to refresh", new TDictResponse
             {
                 { "refreshToken", "Missing user id claim" }
             });
 
         var refreshTokenIdClaim = refreshToken.Claims.FirstOrDefault(claim => claim.Type == "jti");
         if (refreshTokenIdClaim == null)
-            return LoginResult.Failure("Failed to refresh", new Dictionary<string, string?>
+            return Result<TDictResponse>.Failure("Failed to refresh", new TDictResponse
             {
                 { "refreshToken", "Invalid refresh token id" }
             });
 
         var user = await userManager.FindByIdAsync(userIdClaim.Value);
         if (user == null)
-            return LoginResult.Failure("Failed to refresh", new Dictionary<string, string?>
+            return Result<TDictResponse>.Failure("Failed to refresh", new TDictResponse
             {
                 { "refreshToken", "Invalid user id" }
             });
@@ -156,16 +176,12 @@ public class AuthService(
         await cacheService.SetAsync($"{user.Id.ToString()}:{accessTokenId}", tokenData,
             accessTokenExpiration - DateTime.UtcNow);
 
-        return LoginResult.Success("User logged in successfully!", accessToken, newRefreshToken);
-    }
+        var tokens = new TDictResponse
+        {
+            { "accessToken", accessToken },
+            { "refreshToken", newRefreshToken }
+        };
 
-    public async Task<Result> Logout()
-    {
-        var accessTokenId = httpContextAccessor.HttpContext?.User.FindFirstValue(JwtRegisteredClaimNames.Jti);
-        var userId = httpContextAccessor.HttpContext?.User.FindFirstValue(ClaimTypes.NameIdentifier);
-
-        await cacheService.RemoveAsync($"{userId}:{accessTokenId}");
-
-        return Result.Success("User logged out successfully!");
+        return Result<TDictResponse>.Success(tokens, "User logged in successfully!");
     }
 }

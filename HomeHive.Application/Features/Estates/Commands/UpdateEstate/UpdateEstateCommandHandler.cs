@@ -23,7 +23,7 @@ public class UpdateEstateCommandHandler : ICommandHandler<UpdateEstateCommand, U
             return new UpdateEstateCommandResponse
             {
                 IsSuccess = false,
-                Message = "Error updating estate",
+                Message = "Message updating estate",
                 ValidationsErrors = validationResult.Errors.ToDictionary(x => x.PropertyName, x => x.ErrorMessage)
             };
 

@@ -27,7 +27,7 @@ public class CreateEstateCommandHandler(IEstateRepository repository)
             return new CreateEstateCommandResponse
             {
                 IsSuccess = false,
-                ValidationsErrors = new Dictionary<string, string> { { "Estate", result.Error } }
+                ValidationsErrors = new Dictionary<string, string> { { "Estate", result.Message } }
             };
         var estate = result.Value;
 

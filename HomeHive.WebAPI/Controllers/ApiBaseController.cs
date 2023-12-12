@@ -7,7 +7,7 @@ namespace HomeHive.WebAPI.Controllers;
 [ApiController]
 public class ApiBaseController : ControllerBase
 {
-    private ISender _mediator = null!;
+    private ISender? _mediator;
 
     protected ISender Mediator => _mediator
         ??= HttpContext.RequestServices
