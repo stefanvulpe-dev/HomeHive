@@ -1,6 +1,18 @@
 html, body {
     font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
 }
+body{
+    background-image: url("background4.jpg");
+    background-repeat: repeat;
+    background-size: cover;
+}
+
+@media (max-width: 767px) {
+    body {
+        background-size: contain;
+    }
+}
+
 
 a, .btn-link, a:hover, .btn-link:hover {
     color: #1A1C20;
@@ -15,12 +27,6 @@ a, .btn-link, a:hover, .btn-link:hover {
 
 .btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
     box-shadow: 0 0 0 0.1rem white;
-}
-
-.content {
-    background-image: url("background4.jpg");
-    background-repeat: repeat-y;
-    background-size: cover;
 }
 
 h1:focus {
@@ -56,4 +62,74 @@ h1:focus {
 .card {
     border-radius: 15px;
     box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+}
+
+:root {
+    --light-3: #f4f4f4;
+    --white: #ffffff;
+    --shadow-2: 0 2px 4px rgba(0, 0, 0, 0.1);
+    --shadow-4: 0 4px 8px rgba(0, 0, 0, 0.1);
+    --primary: #007bff;
+    --black: #000000;
+    --dark-3: #333333;
+}
+
+.about-one {
+    padding-top: 120px;
+    padding-bottom: 120px;
+}
+.about-one .about-title {
+    margin-bottom: 20px;
+}
+.about-one .single-about-items {
+    margin-top: 30px;
+    padding: 35px;
+    background-color: var(--white);
+    border-radius: 10px;
+    box-shadow: var(--shadow-2);
+    position: relative;
+    overflow: hidden;
+    -webkit-transition: all 0.3s ease-out 0s;
+    -moz-transition: all 0.3s ease-out 0s;
+    -ms-transition: all 0.3s ease-out 0s;
+    -o-transition: all 0.3s ease-out 0s;
+    transition: all 0.3s ease-out 0s;
+}
+.about-one .single-about-items:hover {
+    box-shadow: var(--shadow-4);
+}
+.about-one .single-about-items::before {
+    position: absolute;
+    content: "";
+    right: 0;
+    top: 0;
+    height: 80px;
+    width: 50px;
+    border: 1px solid var(--primary);
+    border-radius: 0 0 0 30px;
+    opacity: 0.1;
+}
+.about-one .single-about-items::after {
+    position: absolute;
+    content: "";
+    right: 0;
+    top: 0;
+    height: 40px;
+    width: 40px;
+    border: 1px solid var(--primary);
+    border-radius: 50px;
+    opacity: 0.1;
+}
+
+.about-one .single-about-items .items-content {
+    margin-top: 32px;
+}
+
+.about-one .single-about-items .items-content .items-title {
+    color: var(--black);
+    margin-bottom: 15px;
+    font-weight: 600;
+}
+.about-one .single-about-items .items-content .text {
+    color: var(--dark-3);
 }
