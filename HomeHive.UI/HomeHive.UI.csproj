@@ -12,4 +12,8 @@
         <ProjectReference Include="..\HomeHive.Domain\HomeHive.Domain.csproj"/>
     </ItemGroup>
 
+    <ItemGroup>
+      <PackageReference Include="BlazorStrap" Version="5.1.102.51923" />
+    </ItemGroup>
+
 </Project>
