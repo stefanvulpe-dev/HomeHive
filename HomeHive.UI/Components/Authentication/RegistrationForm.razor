@@ -1,6 +1,6 @@
 ﻿@using HomeHive.UI.ViewModels.Users
 @using HomeHive.UI.Services.Authentication
-@rendermode InteractiveServer
+@rendermode @(new InteractiveServerRenderMode(false))
 @inject NavigationManager NavigationManager
 @inject AuthService AuthService
 @inject ILogger<RegistrationForm> Logger

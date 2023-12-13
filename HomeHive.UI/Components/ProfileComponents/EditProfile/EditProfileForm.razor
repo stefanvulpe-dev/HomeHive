@@ -1,7 +1,7 @@
-<EditForm Model="@userProfile" OnValidSubmit="@HandleValidSubmit" FormName="editProfileForm">
+<EditForm Model="@userProfile" OnValidSubmit="@HandleValidSubmit" FormName="editProfileComponentsForm">
     <div class="mb-3">
-        <label for="profileImage" class="form-label">Profile Image</label>
-        <InputFile class="form-control" id="profileImage" />
+        <label for="profileImage" class="form-label">ProfileComponents Image</label>
+        <InputFile class="form-control" id="profileImage"/>
     </div>
     <div class="mb-3">
         <label for="username" class="form-label">Username</label>
@@ -12,9 +12,9 @@
         <InputText class="form-control" id="firstName" @bind-Value="userProfile.FirstName"/>
     </div>
     <div class="mb-3">
-            <label for="lastName" class="form-label">Last Name</label>
-            <InputText class="form-control" id="lastName" @bind-Value="userProfile.LastName"/>
-        </div>
+        <label for="lastName" class="form-label">Last Name</label>
+        <InputText class="form-control" id="lastName" @bind-Value="userProfile.LastName"/>
+    </div>
     <div class="mb-3">
         <label for="email" class="form-label">Email address</label>
         <InputText class="form-control" id="email" @bind-Value="userProfile.Email"/>
@@ -27,7 +27,7 @@
 </EditForm>
 
 @code {
-    private UserProfile userProfile = new UserProfile();
+    private UserProfile userProfile = new();
 
     public class UserProfile
     {
@@ -38,7 +38,7 @@
         public string PhoneNumber { get; set; }
     }
 
-   
+
     private void HandleValidSubmit()
     {
         throw new NotImplementedException();

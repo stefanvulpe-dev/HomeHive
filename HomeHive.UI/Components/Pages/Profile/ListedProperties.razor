@@ -1,0 +1,75 @@
+@page "/listed-properties"
+@using HomeHive.UI.ViewModels.Estates
+@using Blazored.LocalStorage
+@using HomeHive.UI.Components.Layout
+@using HomeHive.UI.Components.ProfileComponents.ListedProperties
+@using HomeHive.UI.Utils.Interfaces
+@rendermode @(new InteractiveServerRenderMode(false))
+@inject ILocalStorageService LocalStorage
+@inject NavigationManager NavigationManager
+@inject IEstateDataService EstateService
+@inject ILogger<ListedProperties> Logger
+@layout ProfileLayout
+
+<div class="card min-vh-100">
+    <div class="card-header">
+        <h1>Listed Properties</h1>
+    </div>
+    <div class="card-body">
+        <div class="row">
+            @if (Estates != null)
+            {
+                @foreach (var estate in Estates)
+                {
+                    <PropertyCard Estate="@estate"></PropertyCard>
+                }
+            }
+            else
+            {
+                <div class="col-12">
+                    <p class="text-center">You have no listed properties</p>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+@code {
+    private List<EstateModel>? Estates { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        var token = await LocalStorage.GetItemAsync<string>("accessToken");
+        if (string.IsNullOrEmpty(token))
+        {
+            NavigationManager.NavigateTo("/login");
+        }
+        else
+        {
+            EstateService.SetAccessToken(token);
+            var result = await EstateService.GetAll();
+
+            if (result is { IsSuccess: true })
+            {
+                if (result.Estates != null)
+                    Estates = result.Estates.Select(e => new EstateModel
+                    {
+                        EstateCategory = e.EstateCategory,
+                        EstateType = e.EstateType,
+                        Name = e.Name,
+                        Location = e.Location,
+                        Price = e.Price.ToString(),
+                        TotalArea = e.TotalArea,
+                        Utilities = e.Utilities,
+                        Description = e.Description,
+                        Image = e.Image
+                    }).ToList();
+            }
+            else
+            {
+                Logger.LogError($"Error getting estates: {result?.Message}");
+            }
+        }
+    }
+
+}

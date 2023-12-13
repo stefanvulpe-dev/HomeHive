@@ -1,7 +1,8 @@
 html, body {
     font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
 }
-body{
+
+body {
     background-image: url("background4.jpg");
     background-repeat: repeat;
     background-size: cover;
@@ -78,9 +79,11 @@ h1:focus {
     padding-top: 120px;
     padding-bottom: 120px;
 }
+
 .about-one .about-title {
     margin-bottom: 20px;
 }
+
 .about-one .single-about-items {
     margin-top: 30px;
     padding: 35px;
@@ -95,9 +98,11 @@ h1:focus {
     -o-transition: all 0.3s ease-out 0s;
     transition: all 0.3s ease-out 0s;
 }
+
 .about-one .single-about-items:hover {
     box-shadow: var(--shadow-4);
 }
+
 .about-one .single-about-items::before {
     position: absolute;
     content: "";
@@ -109,6 +114,7 @@ h1:focus {
     border-radius: 0 0 0 30px;
     opacity: 0.1;
 }
+
 .about-one .single-about-items::after {
     position: absolute;
     content: "";
@@ -130,6 +136,7 @@ h1:focus {
     margin-bottom: 15px;
     font-weight: 600;
 }
+
 .about-one .single-about-items .items-content .text {
     color: var(--dark-3);
 }
