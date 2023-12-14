@@ -20,7 +20,7 @@ public sealed class Estate : BaseEntity
     public string? Location { get; private set; }
     public decimal? Price { get; private set; }
     public string? TotalArea { get; private set; }
-    public string? Utilities { get; private set; }
+    public List<Utility>? Utilities { get; private set; }
     public string? Description { get; private set; }
     public string? Image { get; private set; }
     public IReadOnlyList<Contract>? Contracts => _contracts;
@@ -52,6 +52,19 @@ public sealed class Estate : BaseEntity
 
         if (string.IsNullOrWhiteSpace(utilities)) return Result<Estate>.Failure("Utilities is required.");
 
+        var validUtilities = new List<Utility>();
+        foreach (var utility in utilities.Split(","))
+        {
+            if (Enum.TryParse(utility, out Utility utilityEnum))
+            {
+                validUtilities.Add(utilityEnum);
+            }
+            else
+            {
+                return Result<Estate>.Failure($"Invalid utility: {utility}");
+            }
+        }
+
         if (string.IsNullOrWhiteSpace(description)) return Result<Estate>.Failure("Description is required.");
 
         if (string.IsNullOrWhiteSpace(image)) return Result<Estate>.Failure("Image is required.");
@@ -65,7 +78,7 @@ public sealed class Estate : BaseEntity
             Location = location,
             Price = price,
             TotalArea = totalArea,
-            Utilities = utilities,
+            Utilities = validUtilities,
             Description = description,
             Image = image
         });
@@ -85,7 +98,17 @@ public sealed class Estate : BaseEntity
 
         if (estateData.TotalArea != null) TotalArea = estateData.TotalArea;
 
-        if (estateData.Utilities != null) Utilities = estateData.Utilities;
+        if (estateData.Utilities != null)
+        {
+            Utilities = new List<Utility>();
+            foreach (var utility in estateData.Utilities.Split(","))
+            {
+                if (Enum.TryParse(utility, out Utility utilityEnum))
+                {
+                    Utilities.Add(utilityEnum);
+                }
+            }
+        }
 
         if (estateData.Description != null) Description = estateData.Description;
 
