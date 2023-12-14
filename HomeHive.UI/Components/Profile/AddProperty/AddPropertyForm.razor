@@ -1,12 +1,10 @@
 @using HomeHive.UI.ViewModels.Estates
 @using HomeHive.UI.Components.Authentication
-@using HomeHive.UI.Utils.Interfaces
-@using Blazored.LocalStorage
+@using HomeHive.UI.Interfaces
+@using HomeHive.UI.Utils
 @using HomeHive.Domain.Common.EntitiesUtils.Estates
-@rendermode @(new InteractiveServerRenderMode(false))
 @inject NavigationManager NavigationManager
 @inject ILogger<LoginForm> Logger
-@inject ILocalStorageService LocalStorage
 @inject IEstateDataService EstateService
 
 <EditForm Model="@EstateModel" OnValidSubmit="@HandleValidSubmit" FormName="addEstateForm">
@@ -82,7 +80,7 @@
 
     private CustomValidation? _customValidation;
 
-    private bool _isSubmitting = false;
+    private bool _isSubmitting;
 
     protected override void OnInitialized()
     {
@@ -96,15 +94,6 @@
         {
             _isSubmitting = true;
 
-            var accessToken = await LocalStorage.GetItemAsync<string>("accessToken");
-
-            if (string.IsNullOrEmpty(accessToken))
-            {
-                Logger.LogError("An error occurred while retrieving the access token");
-                return;
-            }
-
-            EstateService.SetAccessToken(accessToken);
             var result = await EstateService.Add(EstateModel!);
 
             if (result != null)

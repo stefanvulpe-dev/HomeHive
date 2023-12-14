@@ -1,40 +1,29 @@
 using Blazored.LocalStorage;
-using HomeHive.UI.Components;
+using Microsoft.AspNetCore.Components.Web;
+using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
+using HomeHive.UI;
+using HomeHive.UI.Interfaces;
 using HomeHive.UI.Services.Api;
 using HomeHive.UI.Services.Authentication;
-using HomeHive.UI.Utils.Interfaces;
+using HomeHive.UI.Utils;
 
-var builder = WebApplication.CreateBuilder(args);
+var builder = WebAssemblyHostBuilder.CreateDefault(args);
+builder.RootComponents.Add<App>("#app");
+builder.RootComponents.Add<HeadOutlet>("head::after");
 
-// Add services to the container.
-builder.Services.AddRazorComponents()
-    .AddInteractiveServerComponents();
-builder.Services.AddHttpClient("HomeHive.API",
-    client =>
-    {
-        client.BaseAddress = new Uri(builder.Configuration["HomeHive.API:BaseAddress"] ?? "https://localhost:5001/");
-    });
 builder.Services.AddBlazoredLocalStorage();
-builder.Services.AddScoped<AuthService>();
+builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IEstateDataService, EstatesDataService>();
 
-var app = builder.Build();
-
-// Configure the HTTP request pipeline.
-if (!app.Environment.IsDevelopment())
-{
-    app.UseExceptionHandler("/Message", true);
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
-    app.UseHsts();
-}
-
-app.UseHttpsRedirection();
+builder.Services.AddHttpClient("HomeHive.API", client =>
+    {
+        client.BaseAddress = new Uri(builder.Configuration["HomeHive.API:BaseAddress"] ?? "https://localhost:5001");
+    })
+    .ConfigurePrimaryHttpMessageHandler(services =>
+    {
+        var tokenService = services.GetRequiredService<ILocalStorageService>();
+        return new CustomHttpClientHandler(tokenService, builder.Configuration["HomeHive.API:BaseAddress"]!);
+    });
 
 
-app.UseStaticFiles();
-app.UseAntiforgery();
-
-app.MapRazorComponents<App>()
-    .AddInteractiveServerRenderMode();
-
-app.Run();
+await builder.Build().RunAsync();

@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Home Hive</title>
+    <base href="/" />
+    <link rel="stylesheet" href="css/bootstrap/bootstrap.min.css" />
+    <link rel="stylesheet" href="css/app.css" />
+    <link rel="icon" type="image/png" href="HomeHive.png" />
+</head>
+
+<body>
+    <div id="app">
+        <!-- App rendered here -->
+        <div style="position:absolute; top:30vh; width:100%; text-align:center">
+            <h1>Home Hive</h1>
+            <div style="display:flex; gap:10px; justify-content:center; align-items:center">
+                <div class="spinner-border" role="status"></div>
+                The application is loading...
+            </div>
+        </div>
+    </div>
+    
+    <noscript>
+        <div>Blazor requires JavaScript to run. Please enable JavaScript in your browser to visit this site.</div>
+    </noscript>
+    <script src="_framework/blazor.webassembly.js"></script>
+</body>
+
+</html>

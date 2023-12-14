@@ -1,8 +1,9 @@
 ﻿@using HomeHive.UI.ViewModels.Users
 @using HomeHive.UI.Services.Authentication
-@rendermode @(new InteractiveServerRenderMode(false))
+@using HomeHive.UI.Utils
+@using HomeHive.UI.Interfaces
 @inject NavigationManager NavigationManager
-@inject AuthService AuthService
+@inject IAuthService AuthService
 @inject ILogger<RegistrationForm> Logger
 
 <EditForm Model="@RegistrationModel" OnValidSubmit="@HandleValidSubmit" FormName="registerForm">

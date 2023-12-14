@@ -1,11 +1,12 @@
 ﻿@using HomeHive.UI.ViewModels.Users
 @using HomeHive.UI.Services.Authentication
 @using Blazored.LocalStorage
-@rendermode @(new InteractiveServerRenderMode(false))
-@inject AuthService AuthService
+@using HomeHive.UI.Interfaces
+@using HomeHive.UI.Utils
 @inject NavigationManager NavigationManager
 @inject ILogger<LoginForm> Logger
-@inject ILocalStorageService LocalStorage
+@inject IAuthService AuthService
+@inject ILocalStorageService LocalStorageService
 
 <EditForm Model="@LoginModel" OnValidSubmit="@HandleValidSubmit" FormName="loginForm">
     <DataAnnotationsValidator/>
@@ -57,14 +58,14 @@
         {
             _isSubmitting = true;
             var result = await AuthService.Login(LoginModel!);
-
+    
             if (result != null)
             {
                 if (result.IsSuccess)
                 {
                     Logger.LogInformation(result.Message);
-                    await LocalStorage.SetItemAsync("accessToken", result.Value!["accessToken"]);
-                    await LocalStorage.SetItemAsync("refreshToken", result.Value!["refreshToken"]);
+                    await LocalStorageService.SetItemAsync("accessToken", result.Value!["accessToken"]);
+                    await LocalStorageService.SetItemAsync("refreshToken", result.Value!["refreshToken"]);
                     NavigationManager.NavigateTo("/");
                 }
                 else
@@ -84,5 +85,4 @@
             _isSubmitting = false;
         }
     }
-
 }

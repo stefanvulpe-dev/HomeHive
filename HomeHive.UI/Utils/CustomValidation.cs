@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
 
-namespace HomeHive.UI.Components.Authentication;
+namespace HomeHive.UI.Utils;
 
 public class CustomValidation : ComponentBase
 {

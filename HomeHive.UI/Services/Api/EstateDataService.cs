@@ -1,10 +1,10 @@
-﻿using System.Net.Http.Headers;
+﻿using System.Net.Http.Json;
 using HomeHive.Application.Features.Estates.Commands.DeleteEstateById;
 using HomeHive.Application.Features.Estates.Commands.UpdateEstate;
 using HomeHive.Application.Features.Estates.Queries.GetAllEstates;
 using HomeHive.Application.Features.Estates.Queries.GetEstateById;
 using HomeHive.Application.Features.Users.Commands.CreateEstate;
-using HomeHive.UI.Utils.Interfaces;
+using HomeHive.UI.Interfaces;
 using HomeHive.UI.ViewModels.Estates;
 
 namespace HomeHive.UI.Services.Api;
@@ -12,15 +12,14 @@ namespace HomeHive.UI.Services.Api;
 public class EstatesDataService(IHttpClientFactory httpClientFactory) : IEstateDataService
 {
     private readonly HttpClient _httpClient = httpClientFactory.CreateClient("HomeHive.API");
-
-    public void SetAccessToken(string token)
-    {
-        _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-    }
-
+    
     public async Task<GetAllEstatesResponse?> GetAll()
     {
-        var responseMessage = await _httpClient.GetAsync("/api/v1/Estates");
+        var responseMessage = await _httpClient.GetAsync("api/v1/Estates");
+        if (!responseMessage.IsSuccessStatusCode)
+        {
+            return null;
+        }
         return await responseMessage.Content.ReadFromJsonAsync<GetAllEstatesResponse>();
     }
 
