@@ -43,7 +43,7 @@ namespace HomeHive.Infrastructure.Migrations
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
                     UserId = table.Column<Guid>(type: "uuid", nullable: false),
                     EstateId = table.Column<Guid>(type: "uuid", nullable: false),
-                    ContractType = table.Column<int>(type: "integer", nullable: false),
+                    ContractType = table.Column<int>(type: "text", nullable: false),
                     StartDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
                     EndDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
                     Description = table.Column<string>(type: "text", nullable: true),
