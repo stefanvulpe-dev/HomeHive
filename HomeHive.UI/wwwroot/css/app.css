@@ -140,3 +140,7 @@ h1:focus {
 .about-one .single-about-items .items-content .text {
     color: var(--dark-3);
 }
+
+.profile-card{
+    background-color: rgb(255,255,255,0.5);
+}
