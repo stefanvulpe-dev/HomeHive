@@ -27,7 +27,7 @@ public class GetAllEstatesQueryHandler(IEstateRepository estateRepository)
                     Location = estate.Location,
                     Price = estate.Price,
                     TotalArea = estate.TotalArea,
-                    Utilities = string.Join(",", estate.Utilities!.Select(u => u.ToString())),
+                    Utilities = estate.Utilities,
                     Description = estate.Description,
                     Image = estate.Image
                 })
