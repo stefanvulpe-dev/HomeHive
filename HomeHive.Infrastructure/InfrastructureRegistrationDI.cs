@@ -24,6 +24,7 @@ public static class InfrastructureRegistrationDI
         services.AddScoped<ICacheService, CacheService>();
         services.AddScoped<IContractRepository, ContractRepository>();
         services.AddScoped<IEstateRepository, EstateRepository>();
+        services.AddScoped<IUtilityRepository, UtilityRepository>();
         return services;
     }
 }

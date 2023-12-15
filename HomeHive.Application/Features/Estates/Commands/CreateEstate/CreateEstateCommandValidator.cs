@@ -1,11 +1,16 @@
 ﻿using FluentValidation;
+using HomeHive.Application.Persistence;
+using HomeHive.Domain.Entities;
 
 namespace HomeHive.Application.Features.Estates.Commands.CreateEstate;
 
 public class CreateEstateCommandValidator : AbstractValidator<CreateEstateCommand>
 {
-    public CreateEstateCommandValidator()
+    private readonly IUtilityRepository _utilityRepository;
+    public List<Utility>? Utilities { get; private set; }
+    public CreateEstateCommandValidator(IUtilityRepository utilityRepository)
     {
+        _utilityRepository = utilityRepository;
         RuleFor(p => p.EstateData.EstateType)
             .NotEmpty().WithMessage("{PropertyName} is required.")
             .NotNull();
@@ -28,12 +33,26 @@ public class CreateEstateCommandValidator : AbstractValidator<CreateEstateComman
             .NotNull();
         RuleFor(p => p.EstateData.Utilities)
             .NotEmpty().WithMessage("{PropertyName} is required.")
-            .NotNull();
+            .NotNull()
+            .MustAsync(ValidateUtilitiesExistence!).WithMessage("Utility does not exist.");
         RuleFor(p => p.EstateData.Description)
             .NotEmpty().WithMessage("{PropertyName} is required.")
             .NotNull();
         RuleFor(p => p.EstateData.Image)
             .NotEmpty().WithMessage("{PropertyName} is required.")
             .NotNull();
+    }
+    private async Task<bool> ValidateUtilitiesExistence(List<string> utilities, CancellationToken cancellationToken)
+    {
+        var utilitiesResult = await _utilityRepository.GetAllAsync();
+        var utilitiesNames = utilitiesResult.Value.Select(u => u.UtilityName).ToList();
+        foreach (var utility in utilities)
+        {
+            Console.WriteLine(utility);
+            if (!utilitiesNames.Contains(utility))
+                return false;
+        }
+        Utilities = utilitiesResult.Value.Where(u => utilities.Contains(u.UtilityName!)).ToList();
+        return true;
     }
 }

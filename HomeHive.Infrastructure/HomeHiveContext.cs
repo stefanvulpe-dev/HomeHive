@@ -14,6 +14,7 @@ public class HomeHiveContext(
     public DbSet<Contract>? Contracts { get; set; }
     public DbSet<Estate>? Estates { get; set; }
     public DbSet<Room>? Rooms { get; set; }
+    public DbSet<Utility>? Utilities { get; set; }
 
     public override Task<int> SaveChangesAsync(bool acceptAllChangesOnSuccess,
         CancellationToken cancellationToken = default)

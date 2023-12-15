@@ -8,10 +8,13 @@ namespace HomeHive.Application.Features.Estates.Commands.UpdateEstate;
 public class UpdateEstateCommandValidator : AbstractValidator<UpdateEstateCommand>
 {
     private readonly IEstateRepository _estateRepository;
+    private readonly IUtilityRepository _utilityRepository;
+    public List<Utility>? Utilities { get; private set; } = new ();
 
-    public UpdateEstateCommandValidator(IEstateRepository estateRepository)
+    public UpdateEstateCommandValidator(IEstateRepository estateRepository, IUtilityRepository utilityRepository)
     {
         _estateRepository = estateRepository;
+        _utilityRepository = utilityRepository;
 
         RuleFor(v => v.EstateId)
             .NotEmpty().WithMessage("EstateId is required.");
@@ -25,11 +28,14 @@ public class UpdateEstateCommandValidator : AbstractValidator<UpdateEstateComman
                     string.IsNullOrWhiteSpace(estateData.Location) &&
                     estateData.Price <= 0 &&
                     string.IsNullOrWhiteSpace(estateData.TotalArea) &&
-                    string.IsNullOrWhiteSpace(estateData.Utilities) &&
+                    (estateData.Utilities == null || estateData.Utilities.Count == 0) &&
                     string.IsNullOrWhiteSpace(estateData.Description) &&
                     string.IsNullOrWhiteSpace(estateData.Image))
                     context.AddFailure("At least one field in EstateData must be provided.");
             });
+        RuleFor(v => v.EstateData.Utilities)
+            .MustAsync(ValidateUtilitiesExistence).WithMessage("Utility does not exist.")
+            .When(v => v.EstateData.Utilities != null && v.EstateData.Utilities.Count > 0);
     }
 
     public async Task<Result<Estate>> EstateExist(UpdateEstateCommand command, CancellationToken arg2)
@@ -38,5 +44,18 @@ public class UpdateEstateCommandValidator : AbstractValidator<UpdateEstateComman
         return result.IsSuccess
             ? Result<Estate>.Success(result.Value)
             : Result<Estate>.Failure("Estate does not exist.");
+    }
+    
+    private async Task<bool> ValidateUtilitiesExistence(List<string>? utilities, CancellationToken cancellationToken)
+    {
+        var utilitiesResult = await _utilityRepository.GetAllAsync();
+        var utilitiesNames = utilitiesResult.Value.Select(u => u.UtilityName).ToList();
+        foreach (var utility in utilities)
+        {
+            if (!utilitiesNames.Contains(utility))
+                return false;
+        }
+        Utilities = utilitiesResult.Value.Where(u => utilities.Contains(u.UtilityName!)).ToList();
+        return true;
     }
 }

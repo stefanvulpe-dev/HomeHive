@@ -9,7 +9,7 @@ public record EstateDto
     public string? Location { get; init; }
     public decimal? Price { get; init; }
     public string? TotalArea { get; init; }
-    public string? Utilities { get; init; }
+    public List<string>? Utilities { get; init; }
     public string? Description { get; init; }
     public string? Image { get; init; }
 }

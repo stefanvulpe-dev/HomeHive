@@ -20,17 +20,17 @@ public sealed class Estate : BaseEntity
     public string? Location { get; private set; }
     public decimal? Price { get; private set; }
     public string? TotalArea { get; private set; }
-    public string? Utilities { get; private set; }
+    public List<Utility>? Utilities { get; private set; }
     public string? Description { get; private set; }
     public string? Image { get; private set; }
     public IReadOnlyList<Contract>? Contracts => _contracts;
     public IReadOnlyList<Photo>? Photos => _photos;
     public IReadOnlyList<Room>? Rooms => _rooms;
 
-    public static Result<Estate> Create(Guid ownerId, EstateData estateData)
+    public static Result<Estate> Create(Guid ownerId, List<Utility> utilities, EstateData estateData)
     {
         var (estateType, estateCategory, name,
-            location, price, totalArea, utilities,
+            location, price, totalArea, utilitiesNames,
             description, image) = estateData;
 
         if (ownerId == Guid.Empty) return Result<Estate>.Failure("OwnerId is required.");
@@ -49,8 +49,6 @@ public sealed class Estate : BaseEntity
         if (price <= 0) return Result<Estate>.Failure("Price is required.");
 
         if (string.IsNullOrWhiteSpace(totalArea)) return Result<Estate>.Failure("Total Area is required.");
-
-        if (string.IsNullOrWhiteSpace(utilities)) return Result<Estate>.Failure("Utilities is required.");
 
         if (string.IsNullOrWhiteSpace(description)) return Result<Estate>.Failure("Description is required.");
 
@@ -71,7 +69,7 @@ public sealed class Estate : BaseEntity
         });
     }
 
-    public void UpdateEstate(EstateData estateData)
+    public void Update(List<Utility> utilities, EstateData estateData)
     {
         if (estateData.EstateType != null) EstateType = Enum.Parse<EstateType>(estateData.EstateType);
 
@@ -84,8 +82,8 @@ public sealed class Estate : BaseEntity
         if (estateData.Price != null) Price = estateData.Price;
 
         if (estateData.TotalArea != null) TotalArea = estateData.TotalArea;
-
-        if (estateData.Utilities != null) Utilities = estateData.Utilities;
+        
+        if (estateData.Utilities != null) Utilities = utilities;
 
         if (estateData.Description != null) Description = estateData.Description;
 
