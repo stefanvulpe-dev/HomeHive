@@ -6,6 +6,7 @@ using HomeHive.UI.Interfaces;
 using HomeHive.UI.Services.Api;
 using HomeHive.UI.Services.Authentication;
 using HomeHive.UI.Utils;
+using Microsoft.AspNetCore.Components.Authorization;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");
@@ -25,5 +26,7 @@ builder.Services.AddHttpClient("HomeHive.API", client =>
         return new CustomHttpClientHandler(tokenService, builder.Configuration["HomeHive.API:BaseAddress"]!);
     });
 
+builder.Services.AddOptions();
+builder.Services.AddAuthorizationCore();
 
 await builder.Build().RunAsync();
