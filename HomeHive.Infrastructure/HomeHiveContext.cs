@@ -36,12 +36,12 @@ public class HomeHiveContext(
 
         return base.SaveChangesAsync(acceptAllChangesOnSuccess, cancellationToken);
     }
-    
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-       modelBuilder.Entity<Contract>().Property(c => c.ContractType)
-           .HasConversion(
-               v => v.ToString(),
-               v => (ContractType) Enum.Parse(typeof(ContractType), v!));
+        modelBuilder.Entity<Contract>().Property(c => c.ContractType)
+            .HasConversion(
+                v => v.ToString(),
+                v => (ContractType)Enum.Parse(typeof(ContractType), v!));
     }
 }

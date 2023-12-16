@@ -22,5 +22,5 @@
         <ProjectReference Include="..\HomeHive.Identity\HomeHive.Identity.csproj"/>
         <ProjectReference Include="..\HomeHive.Infrastructure\HomeHive.Infrastructure.csproj"/>
     </ItemGroup>
-    
+
 </Project>
