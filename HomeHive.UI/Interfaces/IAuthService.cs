@@ -10,5 +10,7 @@ public interface IAuthService
 {
     Task<ApiResponse<TLoginResponse>?> Login(LoginModel loginModel);
     Task<ApiResponse?> Register(RegistrationModel registrationModel);
-    Task Logout();
+    Task<bool> Refresh();
+    Task<bool> Logout();
+    Task<string> GetAccessTokenFromBrowserStorage();
 }

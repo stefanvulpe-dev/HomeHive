@@ -1,12 +1,11 @@
 ﻿@using HomeHive.UI.ViewModels.Users
-@using HomeHive.UI.Services.Authentication
 @using Blazored.LocalStorage
 @using HomeHive.UI.Interfaces
 @using HomeHive.UI.Utils
 @inject NavigationManager NavigationManager
 @inject ILogger<LoginForm> Logger
 @inject IAuthService AuthService
-@inject ILocalStorageService LocalStorageService
+@inject HomeHiveAuthStateProvider AuthStateProvider 
 
 <EditForm Model="@LoginModel" OnValidSubmit="@HandleValidSubmit" FormName="loginForm">
     <DataAnnotationsValidator/>
@@ -64,8 +63,7 @@
                 if (result.IsSuccess)
                 {
                     Logger.LogInformation(result.Message);
-                    await LocalStorageService.SetItemAsync("accessToken", result.Value!["accessToken"]);
-                    await LocalStorageService.SetItemAsync("refreshToken", result.Value!["refreshToken"]);
+                    await AuthStateProvider.LoginAsync();
                     NavigationManager.NavigateTo("/");
                 }
                 else
