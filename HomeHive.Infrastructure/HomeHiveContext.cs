@@ -1,5 +1,6 @@
 ﻿using HomeHive.Application.Contracts.Interfaces;
 using HomeHive.Domain.Common;
+using HomeHive.Domain.Common.EntitiesUtils.Contracts;
 using HomeHive.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 
@@ -34,5 +35,13 @@ public class HomeHiveContext(
             }
 
         return base.SaveChangesAsync(acceptAllChangesOnSuccess, cancellationToken);
+    }
+    
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+       modelBuilder.Entity<Contract>().Property(c => c.ContractType)
+           .HasConversion(
+               v => v.ToString(),
+               v => (ContractType) Enum.Parse(typeof(ContractType), v!));
     }
 }
