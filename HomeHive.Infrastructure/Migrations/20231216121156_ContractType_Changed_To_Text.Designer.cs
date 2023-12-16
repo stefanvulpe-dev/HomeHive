@@ -3,6 +3,7 @@ using System;
 using HomeHive.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace HomeHive.Infrastructure.Migrations
 {
     [DbContext(typeof(HomeHiveContext))]
-    partial class HomeHiveContextModelSnapshot : ModelSnapshot
+    [Migration("20231216121156_ContractType_Changed_To_Text")]
+    partial class ContractType_Changed_To_Text
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -21,21 +24,6 @@ namespace HomeHive.Infrastructure.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
-
-            modelBuilder.Entity("EstateUtility", b =>
-                {
-                    b.Property<Guid>("EstatesId")
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid>("UtilitiesId")
-                        .HasColumnType("uuid");
-
-                    b.HasKey("EstatesId", "UtilitiesId");
-
-                    b.HasIndex("UtilitiesId");
-
-                    b.ToTable("EstateUtility");
-                });
 
             modelBuilder.Entity("HomeHive.Domain.Entities.Contract", b =>
                 {
@@ -95,13 +83,13 @@ namespace HomeHive.Infrastructure.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("text");
 
-                    b.Property<string>("EstateAvatar")
-                        .HasColumnType("text");
+                    b.Property<int?>("EstateCategory")
+                        .HasColumnType("integer");
 
-                    b.Property<string>("EstateCategory")
-                        .HasColumnType("text");
+                    b.Property<int?>("EstateType")
+                        .HasColumnType("integer");
 
-                    b.Property<string>("EstateType")
+                    b.Property<string>("Image")
                         .HasColumnType("text");
 
                     b.Property<string>("LastModifiedBy")
@@ -125,12 +113,15 @@ namespace HomeHive.Infrastructure.Migrations
                     b.Property<string>("TotalArea")
                         .HasColumnType("text");
 
+                    b.Property<string>("Utilities")
+                        .HasColumnType("text");
+
                     b.HasKey("Id");
 
                     b.ToTable("Estates");
                 });
 
-            modelBuilder.Entity("HomeHive.Domain.Entities.EstatePhoto", b =>
+            modelBuilder.Entity("HomeHive.Domain.Entities.Photo", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -158,7 +149,7 @@ namespace HomeHive.Infrastructure.Migrations
 
                     b.HasIndex("EstateId");
 
-                    b.ToTable("EstatePhotos");
+                    b.ToTable("Photos");
                 });
 
             modelBuilder.Entity("HomeHive.Domain.Entities.Room", b =>
@@ -201,47 +192,6 @@ namespace HomeHive.Infrastructure.Migrations
                     b.ToTable("Rooms");
                 });
 
-            modelBuilder.Entity("HomeHive.Domain.Entities.Utility", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
-                    b.Property<string>("CreatedBy")
-                        .HasColumnType("text");
-
-                    b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<string>("LastModifiedBy")
-                        .HasColumnType("text");
-
-                    b.Property<DateTime>("LastModifiedDate")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<string>("UtilityName")
-                        .HasColumnType("text");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Utilities");
-                });
-
-            modelBuilder.Entity("EstateUtility", b =>
-                {
-                    b.HasOne("HomeHive.Domain.Entities.Estate", null)
-                        .WithMany()
-                        .HasForeignKey("EstatesId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("HomeHive.Domain.Entities.Utility", null)
-                        .WithMany()
-                        .HasForeignKey("UtilitiesId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
             modelBuilder.Entity("HomeHive.Domain.Entities.Contract", b =>
                 {
                     b.HasOne("HomeHive.Domain.Entities.Estate", "Estate")
@@ -253,10 +203,10 @@ namespace HomeHive.Infrastructure.Migrations
                     b.Navigation("Estate");
                 });
 
-            modelBuilder.Entity("HomeHive.Domain.Entities.EstatePhoto", b =>
+            modelBuilder.Entity("HomeHive.Domain.Entities.Photo", b =>
                 {
                     b.HasOne("HomeHive.Domain.Entities.Estate", "Estate")
-                        .WithMany("EstatePhotos")
+                        .WithMany("Photos")
                         .HasForeignKey("EstateId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -279,7 +229,7 @@ namespace HomeHive.Infrastructure.Migrations
                 {
                     b.Navigation("Contracts");
 
-                    b.Navigation("EstatePhotos");
+                    b.Navigation("Photos");
 
                     b.Navigation("Rooms");
                 });

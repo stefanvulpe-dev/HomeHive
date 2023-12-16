@@ -1,6 +1,7 @@
 ﻿using HomeHive.Application.Contracts.Interfaces;
 using HomeHive.Domain.Common;
 using HomeHive.Domain.Common.EntitiesUtils.Estates;
+using HomeHive.Domain.Common.EntitiesUtils.Contracts;
 using HomeHive.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 
@@ -51,5 +52,9 @@ public class HomeHiveContext(
                 v => v.ToString(),
                 v => (EstateCategory)Enum.Parse(typeof(EstateCategory), v!));
         
+       modelBuilder.Entity<Contract>().Property(c => c.ContractType)
+           .HasConversion(
+               v => v.ToString(),
+               v => (ContractType) Enum.Parse(typeof(ContractType), v!));
     }
 }
