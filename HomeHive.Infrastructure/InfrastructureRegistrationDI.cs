@@ -1,7 +1,10 @@
-﻿using HomeHive.Application.Contracts.Caching;
+﻿using Azure.Storage.Blobs;
+using HomeHive.Application.Contracts.Caching;
+using HomeHive.Application.Contracts.Interfaces;
 using HomeHive.Application.Persistence;
 using HomeHive.Infrastructure.Caching;
 using HomeHive.Infrastructure.Repositories;
+using HomeHive.Infrastructure.Services.BlobStorage;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -24,6 +27,9 @@ public static class InfrastructureRegistrationDI
         services.AddScoped<ICacheService, CacheService>();
         services.AddScoped<IContractRepository, ContractRepository>();
         services.AddScoped<IEstateRepository, EstateRepository>();
+        services.AddSingleton(x => new BlobServiceClient(configuration["AzureBlobStorage:ConnectionString"]));
+        services.Configure<BlobStorageOptions>(configuration.GetSection("AzureBlobStorage"));
+        services.AddSingleton<IBlobStorageService, BlobStorageService>();
         return services;
     }
 }
