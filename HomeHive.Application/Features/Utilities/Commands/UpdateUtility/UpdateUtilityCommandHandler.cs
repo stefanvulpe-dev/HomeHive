@@ -29,7 +29,7 @@ public class UpdateUtilityCommandHandler(IUtilityRepository utilityRepository)
             };
         
         var existingUtility = utilityResult.Value;
-        existingUtility.Update(request.UtilityData.UtilityName!);
+        existingUtility.Update(request.UtilityName);
         
         await utilityRepository.UpdateAsync(existingUtility);
         

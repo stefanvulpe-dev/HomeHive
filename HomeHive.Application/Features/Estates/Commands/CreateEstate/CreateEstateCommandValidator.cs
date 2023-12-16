@@ -45,13 +45,12 @@ public class CreateEstateCommandValidator : AbstractValidator<CreateEstateComman
     private async Task<bool> ValidateUtilitiesExistence(List<string> utilities, CancellationToken cancellationToken)
     {
         var utilitiesResult = await _utilityRepository.GetAllAsync();
-        var utilitiesNames = utilitiesResult.Value.Select(u => u.UtilityName).ToList();
-        foreach (var utility in utilities)
-        {
-            if (!utilitiesNames.Contains(utility))
-                return false;
-        }
+        
         Utilities = utilitiesResult.Value.Where(u => utilities.Contains(u.UtilityName!)).ToList();
+        
+        if (Utilities == null || Utilities.Count != utilities.Count)
+            return false;
+        
         return true;
     }
 }

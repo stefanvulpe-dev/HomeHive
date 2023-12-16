@@ -3,7 +3,6 @@ using HomeHive.Application.Features.Utilities.Commands.CreateUtility;
 using HomeHive.Application.Features.Utilities.Commands.DeleteUtilityById;
 using HomeHive.Application.Features.Utilities.Commands.UpdateUtility;
 using HomeHive.Application.Features.Utilities.Queries.GetAllUtilities;
-using HomeHive.Domain.Common.EntitiesUtils.Utilities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -16,12 +15,12 @@ public class UtilitiesController(
     [Authorize(Roles = "User, Admin")]
     [HttpPost]
     [ProducesResponseType(StatusCodes.Status201Created)]
-    public async Task<IActionResult> Create([FromBody] UtilityData data)
+    public async Task<IActionResult> Create([FromBody] string utilityName)
     {
         var isTokenRevoked = await tokenCacheService.IsTokenRevokedAsync();
         if (isTokenRevoked) return Unauthorized(new { message = "Token is revoked" });
 
-        var result = await Mediator.Send(new CreateUtilityCommand(data));
+        var result = await Mediator.Send(new CreateUtilityCommand(utilityName));
         if (!result.IsSuccess)
         {
             foreach (var (field, error) in result.ValidationsErrors!)
@@ -35,12 +34,12 @@ public class UtilitiesController(
     [Authorize(Roles = "User, Admin")]
     [HttpPut ("{utilityId}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
-    public async Task<IActionResult> Update([FromRoute] Guid utilityId, [FromBody] UtilityData data)
+    public async Task<IActionResult> Update([FromRoute] Guid utilityId, [FromBody] string utilityName)
     {
         var isTokenRevoked = await tokenCacheService.IsTokenRevokedAsync();
         if (isTokenRevoked) return Unauthorized(new { message = "Token is revoked" });
 
-        var result = await Mediator.Send(new UpdateUtilityCommand(utilityId, data));
+        var result = await Mediator.Send(new UpdateUtilityCommand(utilityId, utilityName));
         if (!result.IsSuccess)
         {
             foreach (var (field, error) in result.ValidationsErrors!)

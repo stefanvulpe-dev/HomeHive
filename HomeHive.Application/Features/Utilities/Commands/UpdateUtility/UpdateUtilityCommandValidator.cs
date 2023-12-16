@@ -16,7 +16,7 @@ public class UpdateUtilityCommandValidator : AbstractValidator<UpdateUtilityComm
             .NotEmpty().WithMessage("{PropertyName} is required.")
             .NotNull();
 
-        RuleFor(v => v.UtilityData.UtilityName)
+        RuleFor(v => v.UtilityName)
             .NotEmpty().WithMessage("{PropertyName} is required.")
             .NotNull();
     }

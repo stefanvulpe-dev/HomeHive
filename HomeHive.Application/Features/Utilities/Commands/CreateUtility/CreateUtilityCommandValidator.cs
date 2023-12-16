@@ -9,7 +9,7 @@ public class CreateUtilityCommandValidator: AbstractValidator<CreateUtilityComma
     public CreateUtilityCommandValidator(IUtilityRepository utilityRepository)
     {
         _utilityRepository = utilityRepository;
-        RuleFor(p => p.UtilityData.UtilityName)
+        RuleFor(p => p.UtilityName)
             .NotEmpty().WithMessage("{PropertyName} is required.")
             .NotNull()
             .MaximumLength(50).WithMessage("{PropertyName} must not exceed 50 characters.")

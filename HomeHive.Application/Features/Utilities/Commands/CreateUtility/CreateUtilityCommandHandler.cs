@@ -16,7 +16,7 @@ public class CreateUtilityCommandHandler(IUtilityRepository utilityRepository) :
                 IsSuccess = false,
                 ValidationsErrors = validationResult.Errors.ToDictionary(x => x.PropertyName, x => x.ErrorMessage)
             };
-        var utilityResult = Utility.Create(request.UtilityData.UtilityName!);
+        var utilityResult = Utility.Create(request.UtilityName);
         
         if(!utilityResult.IsSuccess)
             return new CreateUtilityCommandResponse
