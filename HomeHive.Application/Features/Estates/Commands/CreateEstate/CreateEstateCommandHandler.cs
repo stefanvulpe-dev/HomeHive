@@ -1,5 +1,4 @@
 ﻿using HomeHive.Application.Contracts.Commands;
-using HomeHive.Application.Features.Users.Commands.CreateEstate;
 using HomeHive.Application.Persistence;
 using HomeHive.Domain.Entities;
 

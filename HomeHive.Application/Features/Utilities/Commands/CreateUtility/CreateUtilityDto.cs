@@ -1,4 +1,4 @@
-﻿namespace HomeHive.Application.Features.Utilities.Commands;
+﻿namespace HomeHive.Application.Features.Utilities.Commands.CreateUtility;
 
 public record CreateUtilityDto
 {

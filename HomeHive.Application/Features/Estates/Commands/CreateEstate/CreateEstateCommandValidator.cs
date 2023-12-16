@@ -48,7 +48,6 @@ public class CreateEstateCommandValidator : AbstractValidator<CreateEstateComman
         var utilitiesNames = utilitiesResult.Value.Select(u => u.UtilityName).ToList();
         foreach (var utility in utilities)
         {
-            Console.WriteLine(utility);
             if (!utilitiesNames.Contains(utility))
                 return false;
         }

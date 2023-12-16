@@ -1,5 +1,4 @@
 ﻿using HomeHive.Application.Responses;
-using HomeHive.Domain.Entities;
 
 namespace HomeHive.Application.Features.Utilities.Commands.CreateUtility;
 

@@ -20,7 +20,6 @@ public class UtilitiesController(
     {
         var isTokenRevoked = await tokenCacheService.IsTokenRevokedAsync();
         if (isTokenRevoked) return Unauthorized(new { message = "Token is revoked" });
-        Console.WriteLine(data.UtilityName);
 
         var result = await Mediator.Send(new CreateUtilityCommand(data));
         if (!result.IsSuccess)

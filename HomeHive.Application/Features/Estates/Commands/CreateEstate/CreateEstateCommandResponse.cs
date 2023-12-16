@@ -1,7 +1,6 @@
-﻿using HomeHive.Application.Features.Estates.Commands.CreateEstate;
-using HomeHive.Application.Responses;
+﻿using HomeHive.Application.Responses;
 
-namespace HomeHive.Application.Features.Users.Commands.CreateEstate;
+namespace HomeHive.Application.Features.Estates.Commands.CreateEstate;
 
 public class CreateEstateCommandResponse : BaseResponse
 {
