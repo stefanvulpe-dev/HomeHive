@@ -29,7 +29,7 @@ public class GetEstateByIdQueryHandler(IEstateRepository repository)
                 Location = estateResult.Value.Location,
                 Price = estateResult.Value.Price,
                 TotalArea = estateResult.Value.TotalArea,
-                Utilities = string.Join(",", estateResult.Value.Utilities!.Select(u => u.ToString())),
+                Utilities = estateResult.Value.Utilities,
                 Description = estateResult.Value.Description,
                 Image = estateResult.Value.Image
             }

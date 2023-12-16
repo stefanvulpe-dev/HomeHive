@@ -1,14 +1,13 @@
-@page "/listed-properties"
+@page "/listed-estates"
 @using HomeHive.UI.ViewModels.Estates
-@using HomeHive.UI.Components.Profile.ListedProperties
 @using HomeHive.UI.Interfaces
 @inject IEstateDataService EstateService
-@inject ILogger<ListedProperties> Logger
+@inject ILogger<ListedEstates> Logger
 @layout ProfileLayout
 
-<div class="card min-vh-100">
+<div class="profile-card col d-flex flex-column h-sm-100">
     <div class="card-header">
-        <h1>Listed Properties</h1>
+        <h2>Listed Properties</h2>
     </div>
     <div class="card-body">
         <div class="row">
@@ -22,7 +21,7 @@
             else
             {
                 <div class="col-12">
-                    <p class="text-center">You have no listed properties</p>
+                <p class="text-center">You have no listed properties.</p>
                 </div>
             }
         </div>

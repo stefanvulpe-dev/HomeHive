@@ -1,4 +1,5 @@
 ﻿@using HomeHive.UI.Components.Profile
+@using HomeHive.UI.Components.General
 @inherits LayoutComponentBase
 
 <HeadContent>
@@ -81,14 +82,12 @@
 </svg>
 
 <main>
-    <aside>
-        <ProfileSidebar/>
-    </aside>
-    <div style="flex:1">
-        @Body
+    <div class="container-fluid overflow-hidden">
+        <div class="row vh-100 overflow-auto">
+            <ProfileSidebar/>
+            @Body
+        </div>
     </div>
-
 </main>
-@* <Footer></Footer> *@
 
 <script src="js/sidebars.js"></script>

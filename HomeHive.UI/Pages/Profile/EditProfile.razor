@@ -1,12 +1,12 @@
-@page "/profilecard"
+@page "/profile"
 @using HomeHive.UI.Components.Profile.EditProfile
 @using Microsoft.AspNetCore.Authorization
 @layout ProfileLayout
 @attribute [Authorize(Roles = "User, Admin")]
 
-<div class="card min-vh-100">
+<div class="profile-card col d-flex flex-column h-sm-100">
     <div class="card-header">
-        Edit Profile
+        <h2>Edit Profile</h2>
     </div>
     <div class="card-body">
         <div class="row">
