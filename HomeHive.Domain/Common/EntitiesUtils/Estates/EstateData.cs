@@ -9,4 +9,4 @@ public record EstateData(
     string? TotalArea,
     List<string>? Utilities,
     string? Description,
-    string? Image);
+    string? EstateAvatar);

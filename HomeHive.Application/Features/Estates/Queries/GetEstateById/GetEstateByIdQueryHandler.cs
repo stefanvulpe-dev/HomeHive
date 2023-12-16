@@ -31,7 +31,7 @@ public class GetEstateByIdQueryHandler(IEstateRepository repository)
                 TotalArea = estateResult.Value.TotalArea,
                 Utilities = estateResult.Value.Utilities.Select(u => u.UtilityName).ToList(),
                 Description = estateResult.Value.Description,
-                Image = estateResult.Value.Image
+                EstateAvatar = estateResult.Value.EstateAvatar
             }
         };
     }

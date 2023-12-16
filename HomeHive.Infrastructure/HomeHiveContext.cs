@@ -3,7 +3,6 @@ using HomeHive.Domain.Common;
 using HomeHive.Domain.Common.EntitiesUtils.Estates;
 using HomeHive.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace HomeHive.Infrastructure;
 
@@ -12,7 +11,7 @@ public class HomeHiveContext(
     ICurrentUserService currentUserService)
     : DbContext(options)
 {
-    public DbSet<Photo>? Photos { get; set; }
+    public DbSet<EstatePhoto>? EstatePhotos { get; set; }
     public DbSet<Contract>? Contracts { get; set; }
     public DbSet<Estate>? Estates { get; set; }
     public DbSet<Room>? Rooms { get; set; }

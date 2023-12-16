@@ -6,7 +6,7 @@ namespace HomeHive.Domain.Entities;
 public sealed class Estate : BaseEntity
 {
     private readonly List<Contract>? _contracts = null;
-    private readonly List<Photo>? _photos = null;
+    private readonly List<EstatePhoto>? _estatePhotos = null;
     private readonly List<Room>? _rooms = null;
 
     private Estate()
@@ -22,9 +22,9 @@ public sealed class Estate : BaseEntity
     public string? TotalArea { get; private set; }
     public List<Utility>? Utilities { get; private set; }
     public string? Description { get; private set; }
-    public string? Image { get; private set; }
+    public string? EstateAvatar { get; private set; }
     public IReadOnlyList<Contract>? Contracts => _contracts;
-    public IReadOnlyList<Photo>? Photos => _photos;
+    public IReadOnlyList<EstatePhoto>? EstatePhotos => _estatePhotos;
     public IReadOnlyList<Room>? Rooms => _rooms;
 
     public static Result<Estate> Create(Guid ownerId, List<Utility> utilities, EstateData estateData)
@@ -65,7 +65,7 @@ public sealed class Estate : BaseEntity
             TotalArea = totalArea,
             Utilities = utilities,
             Description = description,
-            Image = image
+            EstateAvatar = image
         });
     }
 
@@ -87,6 +87,6 @@ public sealed class Estate : BaseEntity
 
         if (estateData.Description != null) Description = estateData.Description;
 
-        if (estateData.Image != null) Image = estateData.Image;
+        if (estateData.EstateAvatar != null) EstateAvatar = estateData.EstateAvatar;
     }
 }

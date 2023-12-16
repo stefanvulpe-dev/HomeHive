@@ -2,6 +2,6 @@
 
 namespace HomeHive.Application.Persistence;
 
-public interface IPhotoRepository : IAsyncRepository<Photo>
+public interface IEstatePhotoRepository : IAsyncRepository<EstatePhoto>
 {
 }

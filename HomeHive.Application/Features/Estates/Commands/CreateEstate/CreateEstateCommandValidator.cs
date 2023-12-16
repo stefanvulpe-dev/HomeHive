@@ -38,7 +38,7 @@ public class CreateEstateCommandValidator : AbstractValidator<CreateEstateComman
         RuleFor(p => p.EstateData.Description)
             .NotEmpty().WithMessage("{PropertyName} is required.")
             .NotNull();
-        RuleFor(p => p.EstateData.Image)
+        RuleFor(p => p.EstateData.EstateAvatar)
             .NotEmpty().WithMessage("{PropertyName} is required.")
             .NotNull();
     }

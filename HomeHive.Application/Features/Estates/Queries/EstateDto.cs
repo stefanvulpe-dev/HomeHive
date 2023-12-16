@@ -11,5 +11,5 @@ public record EstateDto
     public string? TotalArea { get; init; }
     public List<string>? Utilities { get; init; }
     public string? Description { get; init; }
-    public string? Image { get; init; }
+    public string? EstateAvatar { get; init; }
 }

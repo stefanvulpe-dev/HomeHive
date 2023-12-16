@@ -29,7 +29,7 @@ public class GetAllEstatesQueryHandler(IEstateRepository estateRepository)
                     TotalArea = estate.TotalArea,
                     Utilities = estate.Utilities.Select(u => u.UtilityName).ToList(),
                     Description = estate.Description,
-                    Image = estate.Image
+                    EstateAvatar = estate.EstateAvatar
                 })
             .ToList();
 
