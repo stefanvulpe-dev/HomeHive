@@ -42,5 +42,12 @@ public class GetAllContractsQueryHandlerTests
         
         // Assert
         Assert.True(result.IsSuccess);
+        foreach (var contract in result.Contracts!)
+        {
+            Assert.NotNull(contract.ContractType);
+            Assert.NotNull(contract.Description);
+            Assert.NotNull(contract.StartDate);
+            Assert.NotNull(contract.EndDate);
+        }
     }
 }
