@@ -5,7 +5,7 @@ using HomeHive.Domain.Common.EntitiesUtils.Contracts;
 using HomeHive.Domain.Entities;
 using NSubstitute;
 
-namespace HomeHive.Tests.ApplicationTests.Contracts.Queries;
+namespace HomeHive.Tests.ApplicationTests.Contracts.Queries.GetContractById;
 
 public class GetContractByIdQueryHandlerTests
 {

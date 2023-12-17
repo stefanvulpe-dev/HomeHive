@@ -5,7 +5,7 @@ using HomeHive.Domain.Common.EntitiesUtils.Contracts;
 using HomeHive.Domain.Entities;
 using NSubstitute;
 
-namespace HomeHive.Tests.ApplicationTests.Contracts.Commands;
+namespace HomeHive.Tests.ApplicationTests.Contracts.Commands.DeleteContract;
 
 public class DeleteContractByIdCommandHandlerTests
 {
@@ -14,6 +14,23 @@ public class DeleteContractByIdCommandHandlerTests
     public DeleteContractByIdCommandHandlerTests()
     {
         _contractRepository = Substitute.For<IContractRepository>();
+    }
+    
+    [Fact]
+    public async Task Handle_InvalidCommand_ShouldReturnValidationErrors()
+    {
+        // Arrange
+        var invalidCommand = new DeleteContractByIdCommand(Guid.Empty);
+
+        var handler = new DeleteContractByIdCommandHandler(_contractRepository);
+
+        // Act
+        var result = await handler.Handle(invalidCommand, CancellationToken.None);
+
+        // Assert
+        Assert.False(result.IsSuccess);
+        Assert.Equal("Failed to delete contract.", result.Message);
+        Assert.NotNull(result.ValidationsErrors);
     }
     
     [Fact]

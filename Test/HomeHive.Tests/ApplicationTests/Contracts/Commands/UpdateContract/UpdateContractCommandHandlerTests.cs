@@ -5,7 +5,7 @@ using HomeHive.Domain.Common.EntitiesUtils.Contracts;
 using HomeHive.Domain.Entities;
 using NSubstitute;
 
-namespace HomeHive.Tests.ApplicationTests.Contracts.Commands;
+namespace HomeHive.Tests.ApplicationTests.Contracts.Commands.UpdateContract;
 
 public class UpdateContractCommandHandlerTests
 {

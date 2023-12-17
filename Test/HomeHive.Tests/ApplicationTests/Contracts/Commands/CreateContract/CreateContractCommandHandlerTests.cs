@@ -6,7 +6,7 @@ using HomeHive.Domain.Common.EntitiesUtils.Estates;
 using HomeHive.Domain.Entities;
 using NSubstitute;
 
-namespace HomeHive.Tests.ApplicationTests.Contracts.Commands;
+namespace HomeHive.Tests.ApplicationTests.Contracts.Commands.CreateContract;
 
 public class CreateContractCommandHandlerTests
 {

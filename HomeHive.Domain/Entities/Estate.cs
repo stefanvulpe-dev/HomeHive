@@ -55,7 +55,7 @@ public sealed class Estate : BaseEntity
         
         foreach (var utilityName in utilitiesNames)
         {
-                if (string.IsNullOrWhiteSpace(utilityName)) return Result<Estate>.Failure("Utilities is required.");
+                if (string.IsNullOrWhiteSpace(utilityName)) return Result<Estate>.Failure("Utility name is required.");
         }
     
         if (string.IsNullOrWhiteSpace(description)) return Result<Estate>.Failure("Description is required.");

@@ -4,7 +4,7 @@ using HomeHive.Domain.Common;
 using HomeHive.Domain.Entities;
 using NSubstitute;
 
-namespace HomeHive.Tests.ApplicationTests.Contracts.Queries;
+namespace HomeHive.Tests.ApplicationTests.Contracts.Queries.GetAllContracts;
 
 public class GetAllContractsQueryHandlerTests
 {

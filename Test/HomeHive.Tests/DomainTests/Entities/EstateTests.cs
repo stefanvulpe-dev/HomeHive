@@ -235,11 +235,10 @@ public class EstateTests
         // Assert
         Assert.False(result.IsSuccess);
         Assert.Equal("Total Area is required.", result.Error);
-        
     }
     
     [Fact]
-    public void CreateEstate_WithInvalidUtilities_ShouldFail()
+    public void CreateEstate_WithInvalidUtilitiesNames_ShouldFail()
     {
         // Arrange
         var ownerId = Guid.NewGuid();
@@ -262,7 +261,33 @@ public class EstateTests
 
         // Assert
         Assert.False(result.IsSuccess);
-        Assert.Equal("Utilities is required.", result.Error);
+        Assert.Equal("Utility name is required.", result.Error);
+    }
+    
+    [Fact]
+    public void CreateEstate_WithInvalidUtilitiesList_ShouldFail()
+    {
+        // Arrange
+        var ownerId = Guid.NewGuid();
+        var estateData = new EstateData(
+            EstateType: "Penthouse",
+            EstateCategory: "ForRent",
+            Name: "Test Estate",
+            Location: "Test Location",
+            Price: 1000,
+            TotalArea: "100m2",
+            Utilities: null,
+            Description: "Test Description",
+            EstateAvatar: "Test Image");
+
+        List<Utility> utilities =  null!;
+
+        // Act
+        var result = Estate.Create(ownerId, utilities, estateData);
+
+        // Assert
+        Assert.False(result.IsSuccess);
+        Assert.Equal("Utilities are required.", result.Error);
     }
     
     [Fact]
@@ -367,6 +392,5 @@ public class EstateTests
         Assert.Equal(utilities, estate.Utilities);
         Assert.Equal(estateData.Description, estate.Description);
         Assert.Equal(estateData.EstateAvatar, estate.EstateAvatar);
-        
     }
 }

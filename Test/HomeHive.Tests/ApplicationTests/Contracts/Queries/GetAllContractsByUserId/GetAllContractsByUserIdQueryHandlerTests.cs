@@ -4,7 +4,7 @@ using HomeHive.Domain.Common;
 using HomeHive.Domain.Entities;
 using NSubstitute;
 
-namespace HomeHive.Tests.ApplicationTests.Contracts.Queries;
+namespace HomeHive.Tests.ApplicationTests.Contracts.Queries.GetAllContractsByUserId;
 
 public class GetAllContractsByUserIdQueryHandlerTests
 {
@@ -55,4 +55,23 @@ public class GetAllContractsByUserIdQueryHandlerTests
         }
     }
     
+    [Fact]
+    public void GetAllContractsByUserIdQuery_SetPropertiesWithInitializer_ShouldUpdatePropertiesCorrectly()
+    {
+        // Arrange
+        var initialUserId = Guid.NewGuid();
+
+        var getAllContractsQuery = new GetAllContractsByUserIdQuery(initialUserId);
+
+        // Act
+        var updatedUserId = Guid.NewGuid();
+
+        getAllContractsQuery = getAllContractsQuery with
+        {
+            UserId = updatedUserId
+        };
+
+        // Assert
+        Assert.Equal(updatedUserId, getAllContractsQuery.UserId);
+    }
 }
