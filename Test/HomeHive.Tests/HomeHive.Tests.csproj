@@ -24,10 +24,6 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="DomainTests\" />
-    </ItemGroup>
-
-    <ItemGroup>
       <ProjectReference Include="..\..\HomeHive.Application\HomeHive.Application.csproj" />
     </ItemGroup>
 
