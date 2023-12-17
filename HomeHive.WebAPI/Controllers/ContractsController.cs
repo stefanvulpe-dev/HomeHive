@@ -116,9 +116,8 @@ public class ContractsController(
         foreach (var (field, error) in result.ValidationsErrors)
             logger.LogError($"Field: {field}, Message: {error}");
         return NotFound(result);
-
     }
-    
+
     [Authorize(Roles = "User, Admin")]
     [HttpGet("all")]
     [ProducesResponseType(StatusCodes.Status200OK)]

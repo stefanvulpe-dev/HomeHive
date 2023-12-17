@@ -38,7 +38,7 @@ public class HomeHiveContext(
 
         return base.SaveChangesAsync(acceptAllChangesOnSuccess, cancellationToken);
     }
-    
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<Estate>().Property(e => e.EstateType)
@@ -52,9 +52,9 @@ public class HomeHiveContext(
                 v => v.ToString(),
                 v => (EstateCategory)Enum.Parse(typeof(EstateCategory), v!));
         
-       modelBuilder.Entity<Contract>().Property(c => c.ContractType)
-           .HasConversion(
-               v => v.ToString(),
-               v => (ContractType) Enum.Parse(typeof(ContractType), v!));
+        modelBuilder.Entity<Contract>().Property(c => c.ContractType)
+            .HasConversion(
+                v => v.ToString(),
+                v => (ContractType)Enum.Parse(typeof(ContractType), v!));
     }
 }

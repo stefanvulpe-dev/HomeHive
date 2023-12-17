@@ -19,7 +19,4 @@ public class RegistrationModel
 
     [Required(ErrorMessage = "Password is required")]
     public string? Password { get; set; }
-
-    [Required(ErrorMessage = "Phone Number is required")]
-    public string? PhoneNumber { get; set; }
 }
