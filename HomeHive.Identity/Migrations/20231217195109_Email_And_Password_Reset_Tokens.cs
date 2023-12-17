@@ -7,7 +7,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace HomeHive.Identity.Migrations
 {
     /// <inheritdoc />
-    public partial class Identity_Initial : Migration
+    public partial class Email_And_Password_Reset_Tokens : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -34,6 +34,10 @@ namespace HomeHive.Identity.Migrations
                     FirstName = table.Column<string>(type: "text", nullable: true),
                     LastName = table.Column<string>(type: "text", nullable: true),
                     ProfilePicture = table.Column<string>(type: "text", nullable: true),
+                    ResetPasswordToken = table.Column<string>(type: "text", nullable: true),
+                    ResetPasswordTokenExpires = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    ResetEmailToken = table.Column<string>(type: "text", nullable: true),
+                    ResetEmailTokenExpires = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
                     CreatedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     LastModifiedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     UserName = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),

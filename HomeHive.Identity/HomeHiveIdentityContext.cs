@@ -5,12 +5,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace HomeHive.Identity;
 
-public class HomeHiveIdentityContext : IdentityDbContext<User, IdentityRole<Guid>, Guid>
+public class HomeHiveIdentityContext(DbContextOptions<HomeHiveIdentityContext> options)
+    : IdentityDbContext<User, IdentityRole<Guid>, Guid>(options)
 {
-    public HomeHiveIdentityContext(DbContextOptions<HomeHiveIdentityContext> options) : base(options)
-    {
-    }
-
     protected override void OnModelCreating(ModelBuilder builder)
     {
         base.OnModelCreating(builder);

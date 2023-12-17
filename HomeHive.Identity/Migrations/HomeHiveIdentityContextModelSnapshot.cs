@@ -22,7 +22,7 @@ namespace HomeHive.Identity.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("HomeHive.Domain.Entities.User", b =>
+            modelBuilder.Entity("HomeHive.Domain.Models.User", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -79,6 +79,18 @@ namespace HomeHive.Identity.Migrations
 
                     b.Property<string>("ProfilePicture")
                         .HasColumnType("text");
+
+                    b.Property<string>("ResetEmailToken")
+                        .HasColumnType("text");
+
+                    b.Property<DateTime?>("ResetEmailTokenExpires")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("ResetPasswordToken")
+                        .HasColumnType("text");
+
+                    b.Property<DateTime?>("ResetPasswordTokenExpires")
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("text");
@@ -243,7 +255,7 @@ namespace HomeHive.Identity.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<System.Guid>", b =>
                 {
-                    b.HasOne("HomeHive.Domain.Entities.User", null)
+                    b.HasOne("HomeHive.Domain.Models.User", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -252,7 +264,7 @@ namespace HomeHive.Identity.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<System.Guid>", b =>
                 {
-                    b.HasOne("HomeHive.Domain.Entities.User", null)
+                    b.HasOne("HomeHive.Domain.Models.User", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -267,7 +279,7 @@ namespace HomeHive.Identity.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("HomeHive.Domain.Entities.User", null)
+                    b.HasOne("HomeHive.Domain.Models.User", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -276,7 +288,7 @@ namespace HomeHive.Identity.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<System.Guid>", b =>
                 {
-                    b.HasOne("HomeHive.Domain.Entities.User", null)
+                    b.HasOne("HomeHive.Domain.Models.User", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)

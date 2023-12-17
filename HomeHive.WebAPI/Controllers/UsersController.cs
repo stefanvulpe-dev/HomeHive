@@ -2,10 +2,13 @@
 using HomeHive.Application.Contracts.Interfaces;
 using HomeHive.Application.Features.Users.Commands.DeleteProfilePicture;
 using HomeHive.Application.Features.Users.Commands.DeleteUserById;
+using HomeHive.Application.Features.Users.Commands.ResetPassword;
 using HomeHive.Application.Features.Users.Commands.UploadProfilePicture;
 using HomeHive.Application.Features.Users.Queries.GetAllUsers;
 using HomeHive.Application.Features.Users.Queries.GetProfilePicture;
+using HomeHive.Application.Features.Users.Queries.GetResetToken;
 using HomeHive.Application.Features.Users.Queries.GetUserById;
+using HomeHive.Application.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -116,7 +119,7 @@ public class UsersController(
 
         if (!result.IsSuccess) return BadRequest(result);
 
-        return File(result.Content, "image/jpeg");
+        return File(result.Content!, "image/jpeg");
     }
 
     [Authorize(Roles = "Admin, User")]
@@ -135,5 +138,38 @@ public class UsersController(
         if (!result.IsSuccess) return BadRequest(result);
 
         return NoContent();
+    }
+
+    [Authorize(Roles = "Admin, User")]
+    [HttpGet("reset-token")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> GetResetToken()
+    {
+        var isTokenRevoked = await tokenCacheService.IsTokenRevokedAsync();
+        if (isTokenRevoked) return Unauthorized(new { message = "Token is revoked" });
+
+        var userId = currentUserService.GetCurrentUserId();
+
+        var result = await Mediator.Send(new GetResetTokenQuery(userId));
+
+        if (!result.IsSuccess) return BadRequest(result);
+
+        return Ok(result);
+    }
+
+    [Authorize(Roles = "Admin, User")]
+    [HttpPut("reset-password")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordModel model)
+    {
+        var isTokenRevoked = await tokenCacheService.IsTokenRevokedAsync();
+        if (isTokenRevoked) return Unauthorized(new { message = "Token is revoked" });
+
+        var result = await Mediator.Send(new ResetPasswordCommand(currentUserService.GetCurrentUserId(), model));
+
+        if (!result.IsSuccess) return BadRequest(result);
+
+        return Ok(result);
     }
 }

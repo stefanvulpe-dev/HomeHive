@@ -30,7 +30,7 @@ public sealed class UserRepository(HomeHiveIdentityContext context, UserManager<
         var result = await context.Set<User>().ToListAsync();
         return Result<IReadOnlyList<User>>.Success(result);
     }
-
+    
     public async Task<Result<User>> UpdateAsync(User entity)
     {
         context.Entry(entity).State = EntityState.Modified;

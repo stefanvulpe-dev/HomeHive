@@ -9,7 +9,7 @@ public class ContractRepository(HomeHiveContext context) : BaseRepository<Contra
 {
     public async Task<Result<IReadOnlyList<Contract>>> GetContractsByUserId(Guid userId)
     {
-        var result = await context.Set<Contract>().Where(c => c.UserId == userId).ToListAsync();
+        var result = await Context.Set<Contract>().Where(c => c.UserId == userId).ToListAsync();
         return Result<IReadOnlyList<Contract>>.Success(result);
     }
 }

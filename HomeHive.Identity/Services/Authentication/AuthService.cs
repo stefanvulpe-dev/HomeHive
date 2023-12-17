@@ -57,10 +57,7 @@ public class AuthService(
             var roleResult = await roleManager.CreateAsync(new IdentityRole<Guid>(role));
             if (!roleResult.Succeeded)
             {
-                var errorDictionary = new Dictionary<string, string>();
-                foreach (var error in result.Errors)
-                    if (error.Description.Contains("Name"))
-                        errorDictionary.Add("Name", error.Description);
+                var errorDictionary = result.Errors.Where(error => error.Description.Contains("Name")).ToDictionary(error => "Name", error => error.Description);
                 return Result.Failure("Failed to create identity role", errorDictionary);
             }
         }
@@ -70,10 +67,7 @@ public class AuthService(
             var addToRoleResult = await userManager.AddToRoleAsync(identityUser, role);
             if (!addToRoleResult.Succeeded)
             {
-                var errorDictionary = new Dictionary<string, string>();
-                foreach (var error in result.Errors)
-                    if (error.Description.Contains("Role"))
-                        errorDictionary.Add("Role", error.Description);
+                var errorDictionary = result.Errors.Where(error => error.Description.Contains("Role")).ToDictionary(error => "Role", error => error.Description);
                 return Result.Failure("Failed to add the user to the role", errorDictionary);
             }
         }
