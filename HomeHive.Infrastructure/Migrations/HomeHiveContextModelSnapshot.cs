@@ -22,6 +22,21 @@ namespace HomeHive.Infrastructure.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
+            modelBuilder.Entity("EstateUtility", b =>
+                {
+                    b.Property<Guid>("EstatesId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("UtilitiesId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("EstatesId", "UtilitiesId");
+
+                    b.HasIndex("UtilitiesId");
+
+                    b.ToTable("EstateUtility");
+                });
+
             modelBuilder.Entity("HomeHive.Domain.Entities.Contract", b =>
                 {
                     b.Property<Guid>("Id")
@@ -80,13 +95,13 @@ namespace HomeHive.Infrastructure.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("text");
 
-                    b.Property<int?>("EstateCategory")
-                        .HasColumnType("integer");
+                    b.Property<string>("EstateAvatar")
+                        .HasColumnType("text");
 
-                    b.Property<int?>("EstateType")
-                        .HasColumnType("integer");
+                    b.Property<string>("EstateCategory")
+                        .HasColumnType("text");
 
-                    b.Property<string>("Image")
+                    b.Property<string>("EstateType")
                         .HasColumnType("text");
 
                     b.Property<string>("LastModifiedBy")
@@ -110,15 +125,12 @@ namespace HomeHive.Infrastructure.Migrations
                     b.Property<string>("TotalArea")
                         .HasColumnType("text");
 
-                    b.Property<string>("Utilities")
-                        .HasColumnType("text");
-
                     b.HasKey("Id");
 
                     b.ToTable("Estates");
                 });
 
-            modelBuilder.Entity("HomeHive.Domain.Entities.Photo", b =>
+            modelBuilder.Entity("HomeHive.Domain.Entities.EstatePhoto", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -146,7 +158,7 @@ namespace HomeHive.Infrastructure.Migrations
 
                     b.HasIndex("EstateId");
 
-                    b.ToTable("Photos");
+                    b.ToTable("EstatePhotos");
                 });
 
             modelBuilder.Entity("HomeHive.Domain.Entities.Room", b =>
@@ -189,6 +201,47 @@ namespace HomeHive.Infrastructure.Migrations
                     b.ToTable("Rooms");
                 });
 
+            modelBuilder.Entity("HomeHive.Domain.Entities.Utility", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("CreatedBy")
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("LastModifiedBy")
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("LastModifiedDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("UtilityName")
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Utilities");
+                });
+
+            modelBuilder.Entity("EstateUtility", b =>
+                {
+                    b.HasOne("HomeHive.Domain.Entities.Estate", null)
+                        .WithMany()
+                        .HasForeignKey("EstatesId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("HomeHive.Domain.Entities.Utility", null)
+                        .WithMany()
+                        .HasForeignKey("UtilitiesId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("HomeHive.Domain.Entities.Contract", b =>
                 {
                     b.HasOne("HomeHive.Domain.Entities.Estate", "Estate")
@@ -200,10 +253,10 @@ namespace HomeHive.Infrastructure.Migrations
                     b.Navigation("Estate");
                 });
 
-            modelBuilder.Entity("HomeHive.Domain.Entities.Photo", b =>
+            modelBuilder.Entity("HomeHive.Domain.Entities.EstatePhoto", b =>
                 {
                     b.HasOne("HomeHive.Domain.Entities.Estate", "Estate")
-                        .WithMany("Photos")
+                        .WithMany("EstatePhotos")
                         .HasForeignKey("EstateId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -226,7 +279,7 @@ namespace HomeHive.Infrastructure.Migrations
                 {
                     b.Navigation("Contracts");
 
-                    b.Navigation("Photos");
+                    b.Navigation("EstatePhotos");
 
                     b.Navigation("Rooms");
                 });

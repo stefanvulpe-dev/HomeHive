@@ -6,7 +6,8 @@ namespace HomeHive.Application.Features.Contracts.Queries.GetAllContractsByUserI
 public class GetAllContractsByUserIdQueryHandler(IContractRepository repository)
     : IQueryHandler<GetAllContractsByUserIdQuery, GetAllContractsByUserIdResponse>
 {
-    public async Task<GetAllContractsByUserIdResponse> Handle(GetAllContractsByUserIdQuery request, CancellationToken cancellationToken)
+    public async Task<GetAllContractsByUserIdResponse> Handle(GetAllContractsByUserIdQuery request,
+        CancellationToken cancellationToken)
     {
         var result = await repository.GetContractsByUserId(request.UserId);
         if (!result.IsSuccess)

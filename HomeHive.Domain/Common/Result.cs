@@ -26,7 +26,7 @@ public sealed class Result<T> where T : class
 
 public class Result
 {
-    protected Result(bool isSuccess, string message, Dictionary<string, string?> errors)
+    protected Result(bool isSuccess, string message, Dictionary<string, string>? errors)
     {
         IsSuccess = isSuccess;
         Message = message;
@@ -35,7 +35,7 @@ public class Result
 
     public bool IsSuccess { get; private set; }
     public string Message { get; private set; }
-    public Dictionary<string, string?> Errors { get; private set; }
+    public Dictionary<string, string>? Errors { get; private set; }
 
     public static Result Success()
     {
@@ -52,7 +52,7 @@ public class Result
         return new Result(false, message, null!);
     }
 
-    public static Result Failure(string message, Dictionary<string, string> errors)
+    public static Result Failure(string message, Dictionary<string, string>? errors)
     {
         return new Result(false, message, errors);
     }
@@ -61,7 +61,7 @@ public class Result
 public sealed class LoginResult : Result
 {
     private LoginResult(bool isSuccess, string message, Dictionary<string, string?> errors) : base(isSuccess, message,
-        errors)
+        errors!)
     {
     }
 

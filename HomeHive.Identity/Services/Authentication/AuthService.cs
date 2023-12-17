@@ -22,36 +22,33 @@ public class AuthService(
     public async Task<Result> Register(RegistrationModel model, string role)
     {
         var userRegistrationValidator = new UserRegistrationValidator();
-        
+
         var validationResult = await userRegistrationValidator.ValidateAsync(model);
 
         if (!validationResult.IsValid)
             return Result.Failure("Failed to create identity user",
                 validationResult.Errors.ToDictionary(x => x.PropertyName, x => x.ErrorMessage));
-        
+
         var identityUser = new User
         {
             Email = model.Email,
             UserName = model.UserName,
             FirstName = model.FirstName,
-            LastName = model.LastName,
-            PhoneNumber = model.PhoneNumber
+            LastName = model.LastName
         };
-        
+
         var result = await userManager.CreateAsync(identityUser, model.Password!);
 
         if (!result.Succeeded)
         {
             var errorDictionary = new Dictionary<string, string>();
             foreach (var error in result.Errors)
-            {
                 if (error.Description.Contains("Email"))
                     errorDictionary.Add("Email", error.Description);
                 else if (error.Description.Contains("Username"))
                     errorDictionary.Add("UserName", error.Description);
                 else if (error.Description.Contains("Password"))
                     errorDictionary.Add("Password", error.Description);
-            }
             return Result.Failure("Failed to create identity user", errorDictionary);
         }
 
@@ -62,10 +59,8 @@ public class AuthService(
             {
                 var errorDictionary = new Dictionary<string, string>();
                 foreach (var error in result.Errors)
-                {
                     if (error.Description.Contains("Name"))
                         errorDictionary.Add("Name", error.Description);
-                }
                 return Result.Failure("Failed to create identity role", errorDictionary);
             }
         }
@@ -77,10 +72,8 @@ public class AuthService(
             {
                 var errorDictionary = new Dictionary<string, string>();
                 foreach (var error in result.Errors)
-                {
                     if (error.Description.Contains("Role"))
                         errorDictionary.Add("Role", error.Description);
-                }
                 return Result.Failure("Failed to add the user to the role", errorDictionary);
             }
         }
