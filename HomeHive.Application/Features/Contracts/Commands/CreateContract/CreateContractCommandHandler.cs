@@ -33,6 +33,7 @@ public class CreateContractCommandHandler(IContractRepository contractRepository
         return new CreateContractCommandResponse
         {
             IsSuccess = true,
+            Message = "Contract created successfully.",
             Contract = new CreateContractDto
             {
                 ContractId = contract.Value.Id,
