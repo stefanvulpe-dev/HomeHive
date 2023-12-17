@@ -7,6 +7,6 @@ public record EstateData(
     string? Location,
     decimal? Price,
     string? TotalArea,
-    string? Utilities,
+    List<string>? Utilities,
     string? Description,
-    string? Image);
+    string? EstateAvatar);

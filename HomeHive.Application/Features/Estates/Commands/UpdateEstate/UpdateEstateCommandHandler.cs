@@ -7,16 +7,18 @@ namespace HomeHive.Application.Features.Estates.Commands.UpdateEstate;
 public class UpdateEstateCommandHandler : ICommandHandler<UpdateEstateCommand, UpdateEstateCommandResponse>
 {
     private readonly IEstateRepository _estateRepository;
+    private readonly IUtilityRepository _utilityRepository;
 
-    public UpdateEstateCommandHandler(IEstateRepository estateRepository)
+    public UpdateEstateCommandHandler(IEstateRepository estateRepository, IUtilityRepository utilityRepository)
     {
         _estateRepository = estateRepository;
+        _utilityRepository = utilityRepository;
     }
 
     public async Task<UpdateEstateCommandResponse> Handle(UpdateEstateCommand command,
         CancellationToken cancellationToken)
     {
-        var validator = new UpdateEstateCommandValidator(_estateRepository);
+        var validator = new UpdateEstateCommandValidator(_estateRepository, _utilityRepository);
         var validationResult = await validator.ValidateAsync(command, cancellationToken);
 
         if (!validationResult.IsValid)
@@ -36,7 +38,7 @@ public class UpdateEstateCommandHandler : ICommandHandler<UpdateEstateCommand, U
             };
 
         var existingEstate = estateResult.Value;
-        existingEstate.UpdateEstate(command.EstateData);
+        existingEstate.Update(validator.Utilities!, command.EstateData);
 
         await _estateRepository.UpdateAsync(existingEstate);
 

@@ -1,5 +1,6 @@
 ﻿using HomeHive.Application.Contracts.Interfaces;
 using HomeHive.Domain.Common;
+using HomeHive.Domain.Common.EntitiesUtils.Estates;
 using HomeHive.Domain.Common.EntitiesUtils.Contracts;
 using HomeHive.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
@@ -11,10 +12,11 @@ public class HomeHiveContext(
     ICurrentUserService currentUserService)
     : DbContext(options)
 {
-    public DbSet<Photo>? Photos { get; set; }
+    public DbSet<EstatePhoto>? EstatePhotos { get; set; }
     public DbSet<Contract>? Contracts { get; set; }
     public DbSet<Estate>? Estates { get; set; }
     public DbSet<Room>? Rooms { get; set; }
+    public DbSet<Utility>? Utilities { get; set; }
 
     public override Task<int> SaveChangesAsync(bool acceptAllChangesOnSuccess,
         CancellationToken cancellationToken = default)
@@ -39,6 +41,17 @@ public class HomeHiveContext(
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        modelBuilder.Entity<Estate>().Property(e => e.EstateType)
+            .HasConversion(
+                v => v.ToString(),
+                v => (EstateType)Enum.Parse(typeof(EstateType), v!));
+        
+        modelBuilder
+            .Entity<Estate>().Property(e => e.EstateCategory)
+            .HasConversion(
+                v => v.ToString(),
+                v => (EstateCategory)Enum.Parse(typeof(EstateCategory), v!));
+        
         modelBuilder.Entity<Contract>().Property(c => c.ContractType)
             .HasConversion(
                 v => v.ToString(),

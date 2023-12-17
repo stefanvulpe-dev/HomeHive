@@ -29,9 +29,9 @@ public class GetEstateByIdQueryHandler(IEstateRepository repository)
                 Location = estateResult.Value.Location,
                 Price = estateResult.Value.Price,
                 TotalArea = estateResult.Value.TotalArea,
-                Utilities = estateResult.Value.Utilities,
+                Utilities = estateResult.Value.Utilities.Select(u => u.UtilityName).ToList(),
                 Description = estateResult.Value.Description,
-                Image = estateResult.Value.Image
+                EstateAvatar = estateResult.Value.EstateAvatar
             }
         };
     }

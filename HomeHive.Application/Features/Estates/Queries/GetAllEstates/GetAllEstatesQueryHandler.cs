@@ -16,7 +16,7 @@ public class GetAllEstatesQueryHandler(IEstateRepository estateRepository)
                 IsSuccess = false,
                 Message = "Estates not found."
             };
-
+        
         IReadOnlyList<EstateDto>? mappedEstates = estates.Value.Select(estate =>
                 new EstateDto
                 {
@@ -27,9 +27,9 @@ public class GetAllEstatesQueryHandler(IEstateRepository estateRepository)
                     Location = estate.Location,
                     Price = estate.Price,
                     TotalArea = estate.TotalArea,
-                    Utilities = estate.Utilities,
+                    Utilities = estate.Utilities.Select(u => u.UtilityName).ToList(),
                     Description = estate.Description,
-                    Image = estate.Image
+                    EstateAvatar = estate.EstateAvatar
                 })
             .ToList();
 

@@ -3,6 +3,7 @@ using System;
 using HomeHive.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace HomeHive.Infrastructure.Migrations
 {
     [DbContext(typeof(HomeHiveContext))]
-    partial class HomeHiveContextModelSnapshot : ModelSnapshot
+    [Migration("20231216120744_EstateCategory_and_EstateType_as_strings")]
+    partial class EstateCategory_and_EstateType_as_strings
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -43,8 +46,8 @@ namespace HomeHive.Infrastructure.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
-                    b.Property<string>("ContractType")
-                        .HasColumnType("text");
+                    b.Property<int?>("ContractType")
+                        .HasColumnType("integer");
 
                     b.Property<string>("CreatedBy")
                         .HasColumnType("text");
@@ -95,13 +98,13 @@ namespace HomeHive.Infrastructure.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("text");
 
-                    b.Property<string>("EstateAvatar")
-                        .HasColumnType("text");
-
                     b.Property<string>("EstateCategory")
                         .HasColumnType("text");
 
                     b.Property<string>("EstateType")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Image")
                         .HasColumnType("text");
 
                     b.Property<string>("LastModifiedBy")
@@ -130,7 +133,7 @@ namespace HomeHive.Infrastructure.Migrations
                     b.ToTable("Estates");
                 });
 
-            modelBuilder.Entity("HomeHive.Domain.Entities.EstatePhoto", b =>
+            modelBuilder.Entity("HomeHive.Domain.Entities.Photo", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -158,7 +161,7 @@ namespace HomeHive.Infrastructure.Migrations
 
                     b.HasIndex("EstateId");
 
-                    b.ToTable("EstatePhotos");
+                    b.ToTable("Photos");
                 });
 
             modelBuilder.Entity("HomeHive.Domain.Entities.Room", b =>
@@ -253,10 +256,10 @@ namespace HomeHive.Infrastructure.Migrations
                     b.Navigation("Estate");
                 });
 
-            modelBuilder.Entity("HomeHive.Domain.Entities.EstatePhoto", b =>
+            modelBuilder.Entity("HomeHive.Domain.Entities.Photo", b =>
                 {
                     b.HasOne("HomeHive.Domain.Entities.Estate", "Estate")
-                        .WithMany("EstatePhotos")
+                        .WithMany("Photos")
                         .HasForeignKey("EstateId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -279,7 +282,7 @@ namespace HomeHive.Infrastructure.Migrations
                 {
                     b.Navigation("Contracts");
 
-                    b.Navigation("EstatePhotos");
+                    b.Navigation("Photos");
 
                     b.Navigation("Rooms");
                 });
