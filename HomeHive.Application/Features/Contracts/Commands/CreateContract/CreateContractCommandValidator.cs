@@ -20,11 +20,9 @@ public class CreateContractCommandValidator : AbstractValidator<CreateContractCo
             .NotNull()
             .MaximumLength(200).WithMessage("{PropertyName} must not exceed 200 characters.");
         RuleFor(p => p.Data.StartDate)
-            .NotEmpty().WithMessage("{PropertyName} is required.")
-            .NotNull();
+            .NotNull().WithMessage("{PropertyName} is required.");
         RuleFor(p => p.Data.EndDate)
-            .NotEmpty().WithMessage("{ProprietyName} is required.")
-            .NotNull();
+            .NotNull().WithMessage("{PropertyName} is required.");
         RuleFor(p => p.Data.ContractType)
             .NotEmpty().WithMessage("{PropertyName} is required.")
             .NotNull();

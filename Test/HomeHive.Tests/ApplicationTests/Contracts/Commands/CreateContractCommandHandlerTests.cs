@@ -12,6 +12,17 @@ public class CreateContractCommandHandlerTests
 {
     private readonly IContractRepository _contractRepositoryMock;
     private readonly IEstateRepository _estateRepositoryMock;
+    private static readonly Guid OwnerId = Guid.NewGuid(); 
+    private static readonly EstateData EstateData = new EstateData(
+        EstateType.Apartment.ToString(),
+        EstateCategory.ForSale.ToString(),
+        "Test",
+        "Test",
+        100,
+        "Test",
+        "Test",
+        "Test",
+        "Test");
     
     public CreateContractCommandHandlerTests()
     {
@@ -65,23 +76,12 @@ public class CreateContractCommandHandlerTests
     [Fact]
     public async Task Handle_ShouldReturnFailure_WhenContractDescriptionIsEmpty()
     {
-        var ownerId = Guid.NewGuid();
-        var estateData = new EstateData(
-            EstateType.Apartment.ToString(),
-            EstateCategory.ForSale.ToString(),
-            "Test",
-            "Test",
-            100,
-            "Test",
-            "Test",
-            "Test",
-            "Test");
-
-        Result<Estate> estateCreationResult = Estate.Create(ownerId, estateData);
-
+        //Arrange
+        Result<Estate> estateCreationResult = Estate.Create(OwnerId, EstateData);
+        
         _estateRepositoryMock.FindByIdAsync(estateCreationResult.Value.Id)
             .Returns(Result<Estate>.Success(estateCreationResult.Value));
-
+        
         var command = new CreateContractCommand(
             Guid.NewGuid(),
             new ContractData(estateCreationResult.Value.Id, "Rent", DateTime.Now, DateTime.Now, string.Empty)
@@ -101,19 +101,8 @@ public class CreateContractCommandHandlerTests
     [Fact]
     public async Task Handle_ShouldReturnFailure_WhenContractDescriptionIsTooLong()
     {
-        var ownerId = Guid.NewGuid();
-        var estateData = new EstateData(
-            EstateType.Apartment.ToString(),
-            EstateCategory.ForSale.ToString(),
-            "Test",
-            "Test",
-            100,
-            "Test",
-            "Test",
-            "Test",
-            "Test");
-
-        Result<Estate> estateCreationResult = Estate.Create(ownerId, estateData);
+        //Arrange
+        Result<Estate> estateCreationResult = Estate.Create(OwnerId, EstateData);
 
         _estateRepositoryMock.FindByIdAsync(estateCreationResult.Value.Id)
             .Returns(Result<Estate>.Success(estateCreationResult.Value));
@@ -140,19 +129,7 @@ public class CreateContractCommandHandlerTests
     public async Task Handle_ShouldReturnFailure_WhenContractStartDateIsEmpty()
     {
         // Arrange
-        var ownerId = Guid.NewGuid();
-        var estateData = new EstateData(
-            EstateType.Apartment.ToString(),
-            EstateCategory.ForSale.ToString(),
-            "Test",
-            "Test",
-            100,
-            "Test",
-            "Test",
-            "Test",
-            "Test");
-
-        Result<Estate> estateCreationResult = Estate.Create(ownerId, estateData);
+        Result<Estate> estateCreationResult = Estate.Create(OwnerId, EstateData);
 
         _estateRepositoryMock.FindByIdAsync(estateCreationResult.Value.Id)
             .Returns(Result<Estate>.Success(estateCreationResult.Value));
@@ -176,19 +153,8 @@ public class CreateContractCommandHandlerTests
     [Fact]
     public async Task Handle_ShouldReturnFailure_WhenContractEndDateIsEmpty()
     {
-        var ownerId = Guid.NewGuid();
-        var estateData = new EstateData(
-            EstateType.Apartment.ToString(),
-            EstateCategory.ForSale.ToString(),
-            "Test",
-            "Test",
-            100,
-            "Test",
-            "Test",
-            "Test",
-            "Test");
-
-        Result<Estate> estateCreationResult = Estate.Create(ownerId, estateData);
+        //Arrange
+        Result<Estate> estateCreationResult = Estate.Create(OwnerId, EstateData);
 
         _estateRepositoryMock.FindByIdAsync(estateCreationResult.Value.Id)
             .Returns(Result<Estate>.Success(estateCreationResult.Value));
@@ -212,19 +178,8 @@ public class CreateContractCommandHandlerTests
     [Fact]
     public async Task Handle_ShouldReturnFailure_WhenContractTypeIsEmpty()
     {
-        var ownerId = Guid.NewGuid();
-        var estateData = new EstateData(
-            EstateType.Apartment.ToString(),
-            EstateCategory.ForSale.ToString(),
-            "Test",
-            "Test",
-            100,
-            "Test",
-            "Test",
-            "Test",
-            "Test");
-
-        Result<Estate> estateCreationResult = Estate.Create(ownerId, estateData);
+        //Arrange
+        Result<Estate> estateCreationResult = Estate.Create(OwnerId, EstateData);
 
         _estateRepositoryMock.FindByIdAsync(estateCreationResult.Value.Id)
             .Returns(Result<Estate>.Success(estateCreationResult.Value));
@@ -248,19 +203,8 @@ public class CreateContractCommandHandlerTests
     [Fact]
     public async Task Handle_ShouldReturnSuccess_WhenContractIsValid()
     {
-        var ownerId = Guid.NewGuid();
-        var estateData = new EstateData(
-            EstateType.Apartment.ToString(),
-            EstateCategory.ForSale.ToString(),
-            "Test",
-            "Test",
-            100,
-            "Test",
-            "Test",
-            "Test",
-            "Test");
-
-        Result<Estate> estateCreationResult = Estate.Create(ownerId, estateData);
+        //Arrange
+        Result<Estate> estateCreationResult = Estate.Create(OwnerId, EstateData);
 
         _estateRepositoryMock.FindByIdAsync(estateCreationResult.Value.Id)
             .Returns(Result<Estate>.Success(estateCreationResult.Value));
