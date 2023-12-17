@@ -144,3 +144,10 @@ h1:focus {
 .profile-card{
     background-color: rgb(255,255,255,0.5);
 }
+
+/* sidebar */
+@media (max-width: 576px) {
+    .shadow-bottom {
+        box-shadow: 0 0 15px rgb(0,0,0,0.4);
+    }
+}
