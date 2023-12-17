@@ -7,10 +7,17 @@
 @inject ILogger<LoginForm> Logger
 @inject IEstateDataService EstateService
 
+<p class="fs-3">Add new Estate</p>
+<hr/>
 <EditForm Model="@EstateModel" OnValidSubmit="@HandleValidSubmit" FormName="addEstateForm">
     <DataAnnotationsValidator/>
     <CustomValidation @ref="@_customValidation"/>
-
+    <div class="image-container mb-3">
+        <img src="background1.jpg" alt="avatar image"/>
+        <small>This is the first image the clients we'll see when searching for this estate.</small>
+        <InputFile class="form-control"/>
+    </div>
+    <hr/>
     <div class="row">
         <div class="col-md-6">
             <div class="mb-3">
@@ -67,10 +74,12 @@
                 <ValidationMessage For="@(() => EstateModel.Description)"></ValidationMessage>
             </div>
             <div class="mb-3">
-                <label for="image" class="form-label">Image</label>
+                <label for="image" class="form-label">Images</label>
                 <InputFile class="form-control" id="image" @bind-Value="EstateModel.Image"/>
             </div>
-            <button type="submit" class="btn btn-primary" disabled="@_isSubmitting">Add Estate</button>
+            <div class="d-flex justify-content-center">
+                <button type="submit" class="btn btn-primary" disabled="@_isSubmitting">Add Estate</button>
+            </div>
         </div>
     </div>
 </EditForm>
