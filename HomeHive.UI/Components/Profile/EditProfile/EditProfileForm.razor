@@ -1,4 +1,5 @@
 <p class="fs-3">General Information</p>
+<hr/>
 <EditForm Model="@userProfile" OnValidSubmit="@HandleValidSubmit" FormName="editProfileForm">
     <div class="mb-3">
         <label for="profileImage" class="form-label">Profile Image</label>
@@ -17,7 +18,6 @@
     
     <div class="mb-3 d-flex flex-column">
         <label for="username" class="form-label">Username</label>
-        <small>Current username: john.doe</small>
         <InputText class="form-control" id="username" @bind-Value="userProfile.Username"/>
     </div>
     
