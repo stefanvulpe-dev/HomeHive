@@ -15,11 +15,17 @@ public class DeleteProfilePictureCommandHandler(IUserRepository userRepository, 
         var validationResult = await validator.ValidateAsync(command, cancellationToken);
 
         if (!validationResult.IsValid)
+        {
+            var validationErrors = validationResult.Errors
+                .GroupBy(x => x.PropertyName, x => x.ErrorMessage)
+                .ToDictionary(group => group.Key, group => group.ToList());
+            
             return new DeleteProfilePictureCommandResponse
             {
                 IsSuccess = false,
-                ValidationsErrors = validationResult.Errors.ToDictionary(x => x.PropertyName, x => x.ErrorMessage)
+                ValidationsErrors = validationErrors
             };
+        }
 
         var user = validator.User!;
 

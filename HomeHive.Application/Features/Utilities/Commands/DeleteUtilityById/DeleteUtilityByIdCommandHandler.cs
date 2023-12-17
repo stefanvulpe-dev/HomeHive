@@ -10,13 +10,20 @@ public class DeleteUtilityByIdCommandHandler(IUtilityRepository utilityRepositor
     {
         var validator = new DeleteUtilityByIdCommandValidator(utilityRepository);
         var validationResult = await validator.ValidateAsync(request, cancellationToken);
-        
+
         if (!validationResult.IsValid)
+        {
+            var validationErrors = validationResult.Errors
+                .GroupBy(x => x.PropertyName, x => x.ErrorMessage)
+                .ToDictionary(group => group.Key, group => group.ToList());
+            
             return new DeleteUtilityByIdCommandResponse
             {
                 IsSuccess = false,
-                ValidationsErrors = validationResult.Errors.ToDictionary(x => x.PropertyName, x => x.ErrorMessage)
+                ValidationsErrors = validationErrors
             };
+        }
+            
         
         var result = await utilityRepository.DeleteByIdAsync(request.UtilityId);
         

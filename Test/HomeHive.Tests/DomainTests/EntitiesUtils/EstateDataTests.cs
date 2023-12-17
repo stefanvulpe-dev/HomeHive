@@ -14,7 +14,7 @@ public class EstateDataTests
         string location = "City Center";
         decimal price = 1000000.50m;
         string totalArea = "150 sqm";
-        string utilities = "Water, Electricity";
+        List<string> utilities = ["Water", "Electricity"];
         string description = "Modern apartment with great amenities";
         string image = "image-url.jpg";
 
@@ -31,7 +31,7 @@ public class EstateDataTests
         Assert.Equal(totalArea, estateData.TotalArea);
         Assert.Equal(utilities, estateData.Utilities);
         Assert.Equal(description, estateData.Description);
-        Assert.Equal(image, estateData.Image);
+        Assert.Equal(image, estateData.EstateAvatar);
     }
 
     [Fact]

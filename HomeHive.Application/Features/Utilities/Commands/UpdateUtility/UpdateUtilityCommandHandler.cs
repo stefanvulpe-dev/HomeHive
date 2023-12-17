@@ -13,12 +13,19 @@ public class UpdateUtilityCommandHandler(IUtilityRepository utilityRepository)
         var validationResult = await validator.ValidateAsync(request, cancellationToken);
 
         if (!validationResult.IsValid)
+        {
+            var validationErrors = validationResult.Errors
+                .GroupBy(x => x.PropertyName, x => x.ErrorMessage)
+                .ToDictionary(group => group.Key, group => group.ToList());
+            
             return new UpdateUtilityCommandResponse
-            {
-                IsSuccess = false,
-                Message = "Error updating utility",
-                ValidationsErrors = validationResult.Errors.ToDictionary(x => x.PropertyName, x => x.ErrorMessage)
-            };
+                        {
+                            IsSuccess = false,
+                            Message = "Error updating utility",
+                            ValidationsErrors = validationErrors
+                        };
+        }
+            
         
         var utilityResult = await validator.UtilityExists(request.UtilityId, cancellationToken);
         if (!utilityResult.IsSuccess)

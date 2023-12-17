@@ -1,19 +1,26 @@
+using HomeHive.Domain.Common;
 using HomeHive.Domain.Common.EntitiesUtils.Estates;
 using HomeHive.Domain.Entities;
 
 namespace HomeHive.Tests.DomainTests.Entities;
 
-public class PhotoTests
+public class EstatePhotoTests
 {
     [Fact]
     public void CreatePhoto_WithValidData_ShouldCreatePhoto()
     {
         // Arrange
-        var estate = Estate.Create(Guid.NewGuid(), new EstateData("House", "ForRent", "Test", "Test", 100, "Test", "Test", "Test", "Test")).Value;
+        Result<Utility> utilityResult = Utility.Create("Test Utilities");
+        List<Utility> utilities = new List<Utility> { utilityResult.Value };
+        
+        var estate = Estate.Create(Guid.NewGuid(), utilities,
+            new EstateData("House", "ForRent",
+                "Test", "Test", 100, "Test",
+                ["Test"], "Test", "Test")).Value;
         var objectName = "Test";
 
         // Act
-        var result = Photo.Create(objectName, estate);
+        var result = EstatePhoto.Create(objectName, estate);
 
         // Assert
         Assert.True(result.IsSuccess);
@@ -26,11 +33,17 @@ public class PhotoTests
     public void CreatePhoto_WithInvalidObjectName_ShouldNotCreatePhoto()
     {
         // Arrange
-        var estate = Estate.Create(Guid.NewGuid(), new EstateData("House", "ForRent", "Test", "Test", 100, "Test", "Test", "Test", "Test")).Value;
+        Result<Utility> utilityResult = Utility.Create("Test Utilities");
+        List<Utility> utilities = new List<Utility> { utilityResult.Value };
+        
+        var estate = Estate.Create(Guid.NewGuid(), utilities,
+            new EstateData("House", "ForRent",
+                "Test", "Test", 100, "Test",
+                ["Test"], "Test", "Test")).Value;
         var objectName = "";
 
         // Act
-        var result = Photo.Create(objectName, estate);
+        var result = EstatePhoto.Create(objectName, estate);
 
         // Assert
         Assert.False(result.IsSuccess);
@@ -41,11 +54,10 @@ public class PhotoTests
     public void CreatePhoto_WithInvalidEstate_ShouldNotCreatePhoto()
     {
         // Arrange
-        var estate = Estate.Create(Guid.NewGuid(), new EstateData("House", "ForRent", "Test", "Test", 100, "Test", "Test", "Test", "Test")).Value;
         var objectName = "Test";
 
         // Act
-        var result = Photo.Create(objectName, null);
+        var result = EstatePhoto.Create(objectName, null);
 
         // Assert
         Assert.False(result.IsSuccess);

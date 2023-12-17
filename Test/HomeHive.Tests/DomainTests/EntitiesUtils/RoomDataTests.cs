@@ -36,11 +36,14 @@ public class RoomDataTests
             "Test Location",
             100,
             "160m2",
-            "Test Utilities",
+            ["Test Utilities"],
             "Test Description",
             "Test Image");
         
-        Result<Estate> estateResult = Estate.Create(Guid.NewGuid(), estateData);
+        Result<Utility> utilityResult = Utility.Create("Test Utilities");
+        List<Utility> utilities = new List<Utility> { utilityResult.Value };
+        
+        Result<Estate> estateResult = Estate.Create(Guid.NewGuid(), utilities, estateData);
         
         _estateRepository.FindByIdAsync(Arg.Any<Guid>())
             .Returns(Result<Estate>.Success(estateResult.Value));

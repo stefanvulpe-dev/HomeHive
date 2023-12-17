@@ -1,3 +1,4 @@
+using HomeHive.Domain.Common;
 using HomeHive.Domain.Common.EntitiesUtils.Estates;
 using HomeHive.Domain.Common.EntitiesUtils.Rooms;
 using HomeHive.Domain.Entities;
@@ -10,7 +11,13 @@ public class RoomTests
     public void CreateRoom_WithValidData_ShouldCreateRoom()
     {
         // Arrange
-        var estate = Estate.Create(Guid.NewGuid(), new EstateData("House", "ForRent", "Test", "Test", 100, "Test", "Test", "Test", "Test")).Value;
+        Result<Utility> utilityResult = Utility.Create("Test Utilities");
+        List<Utility> utilities = new List<Utility> { utilityResult.Value };
+        
+        var estate = Estate.Create(Guid.NewGuid(), utilities,
+            new EstateData("House", "ForRent",
+                "Test", "Test", 100, "Test",
+                ["Test"], "Test", "Test")).Value;
         var roomData = new RoomData("Test", RoomType.LivingRoom.ToString(), 200, 200, estate);
 
         // Act
@@ -30,7 +37,13 @@ public class RoomTests
     public void CreateRoom_WithInvalidName_ShouldNotCreateRoom()
     {
         // Arrange
-        var estate = Estate.Create(Guid.NewGuid(), new EstateData("House", "ForRent", "Test", "Test", 100, "Test", "Test", "Test", "Test")).Value;
+        Result<Utility> utilityResult = Utility.Create("Test Utilities");
+        List<Utility> utilities = new List<Utility> { utilityResult.Value };
+        
+        var estate = Estate.Create(Guid.NewGuid(), utilities,
+            new EstateData("House", "ForRent",
+                "Test", "Test", 100, "Test",
+                ["Test"], "Test", "Test")).Value;
         var roomData = new RoomData("", RoomType.LivingRoom.ToString(), 200, 200, estate);
 
         // Act
@@ -45,7 +58,13 @@ public class RoomTests
     public void CreateRoom_WithInvalidRoomType_ShouldNotCreateRoom()
     {
         // Arrange
-        var estate = Estate.Create(Guid.NewGuid(), new EstateData("House", "ForRent", "Test", "Test", 100, "Test", "Test", "Test", "Test")).Value;
+        Result<Utility> utilityResult = Utility.Create("Test Utilities");
+        List<Utility> utilities = new List<Utility> { utilityResult.Value };
+        
+        var estate = Estate.Create(Guid.NewGuid(), utilities,
+            new EstateData("House", "ForRent",
+                "Test", "Test", 100, "Test",
+                ["Test"], "Test", "Test")).Value;
         var roomData = new RoomData("Test", "", 200, 200, estate);
 
         // Act
@@ -60,7 +79,13 @@ public class RoomTests
     public void CreateRoom_WithInvalidCapacity_ShouldNotCreateRoom()
     {
         // Arrange
-        var estate = Estate.Create(Guid.NewGuid(), new EstateData("House", "ForRent", "Test", "Test", 100, "Test", "Test", "Test", "Test")).Value;
+        Result<Utility> utilityResult = Utility.Create("Test Utilities");
+        List<Utility> utilities = new List<Utility> { utilityResult.Value };
+        
+        var estate = Estate.Create(Guid.NewGuid(), utilities,
+            new EstateData("House", "ForRent",
+                "Test", "Test", 100, "Test",
+                ["Test"], "Test", "Test")).Value;
         var roomData = new RoomData("Test", RoomType.LivingRoom.ToString(), -20, 200, estate);
 
         // Act
@@ -75,7 +100,13 @@ public class RoomTests
     public void CreateRoom_WithInvalidSize_ShouldNotCreateRoom()
     {
         // Arrange
-        var estate = Estate.Create(Guid.NewGuid(), new EstateData("House", "ForRent", "Test", "Test", 100, "Test", "Test", "Test", "Test")).Value;
+        Result<Utility> utilityResult = Utility.Create("Test Utilities");
+        List<Utility> utilities = new List<Utility> { utilityResult.Value };
+        
+        var estate = Estate.Create(Guid.NewGuid(), utilities,
+            new EstateData("House", "ForRent",
+                "Test", "Test", 100, "Test",
+                ["Test"], "Test", "Test")).Value;
         var roomData = new RoomData("Test", RoomType.LivingRoom.ToString(), 200, -20, estate);
 
         // Act
@@ -99,5 +130,4 @@ public void CreateRoom_WithInvalidEstate_ShouldNotCreateRoom()
         Assert.False(result.IsSuccess);
         Assert.Equal("Estate is required.", result.Error);
     }
-    
 }

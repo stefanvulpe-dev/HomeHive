@@ -1,3 +1,4 @@
+using HomeHive.Domain.Common;
 using HomeHive.Domain.Common.EntitiesUtils.Estates;
 using HomeHive.Domain.Entities;
 
@@ -17,12 +18,15 @@ public class EstateTests
             Location: "Test Location",
             Price: 1000,
             TotalArea: "100m2",
-            Utilities: "Test Utilities",
+            Utilities: ["Test Utilities"],
             Description: "Test Description",
-            Image: "Test Image");
+            EstateAvatar: "Test Image");
+        
+        Result<Utility> utilityResult = Utility.Create("Test Utilities");
+        List<Utility> utilities = new List<Utility> { utilityResult.Value };
 
         // Act
-        var result = Estate.Create(ownerId, estateData);
+        var result = Estate.Create(ownerId, utilities, estateData);
 
         // Assert
         Assert.True(result.IsSuccess);
@@ -33,11 +37,11 @@ public class EstateTests
         Assert.Equal(estateData.Location, result.Value.Location);
         Assert.Equal(estateData.Price, result.Value.Price);
         Assert.Equal(estateData.TotalArea, result.Value.TotalArea);
-        Assert.Equal(estateData.Utilities, result.Value.Utilities);
+        Assert.Equal(utilities, result.Value.Utilities);
         Assert.Equal(estateData.Description, result.Value.Description);
-        Assert.Equal(estateData.Image, result.Value.Image);
+        Assert.Equal(estateData.EstateAvatar, result.Value.EstateAvatar);
         
-        Assert.Null(result.Value.Photos);
+        Assert.Null(result.Value.EstatePhotos);
         Assert.Null(result.Value.Rooms);
         Assert.Null(result.Value.Contracts);
         
@@ -55,17 +59,19 @@ public class EstateTests
             Location: "Test Location",
             Price: 1000,
             TotalArea: "100m2",
-            Utilities: "Test Utilities",
+            Utilities: ["Test Utilities"],
             Description: "Test Description",
-            Image: "Test Image");
+            EstateAvatar: "Test Image");
+
+        Result<Utility> utilityResult = Utility.Create("Test Utilities");
+        List<Utility> utilities = new List<Utility> { utilityResult.Value };
 
         // Act
-        var result = Estate.Create(ownerId, estateData);
+        var result = Estate.Create(ownerId, utilities, estateData);
 
         // Assert
         Assert.False(result.IsSuccess);
         Assert.Equal("OwnerId is required.", result.Error);
-        
     }
     
     [Fact]
@@ -80,17 +86,19 @@ public class EstateTests
             Location: "Test Location",
             Price: 1000,
             TotalArea: "100m2",
-            Utilities: "Test Utilities",
+            Utilities: ["Test Utilities"],
             Description: "Test Description",
-            Image: "Test Image");
+            EstateAvatar: "Test Image");
+
+        Result<Utility> utilityResult = Utility.Create("Test Utilities");
+        List<Utility> utilities = new List<Utility> { utilityResult.Value };
 
         // Act
-        var result = Estate.Create(ownerId, estateData);
+        var result = Estate.Create(ownerId, utilities, estateData);
 
         // Assert
         Assert.False(result.IsSuccess);
         Assert.Equal("EstateType is not valid.", result.Error);
-        
     }
     
     [Fact]
@@ -105,17 +113,19 @@ public class EstateTests
             Location: "Test Location",
             Price: 1000,
             TotalArea: "100m2",
-            Utilities: "Test Utilities",
+            Utilities: ["Test Utilities"],
             Description: "Test Description",
-            Image: "Test Image");
+            EstateAvatar: "Test Image");
+
+        Result<Utility> utilityResult = Utility.Create("Test Utilities");
+        List<Utility> utilities = new List<Utility> { utilityResult.Value };
 
         // Act
-        var result = Estate.Create(ownerId, estateData);
+        var result = Estate.Create(ownerId, utilities, estateData);
 
         // Assert
         Assert.False(result.IsSuccess);
         Assert.Equal("EstateCategory is not valid.", result.Error);
-        
     }
     
     [Fact]
@@ -130,12 +140,15 @@ public class EstateTests
             Location: "Test Location",
             Price: 1000,
             TotalArea: "100m2",
-            Utilities: "Test Utilities",
+            Utilities: ["Test Utilities"],
             Description: "Test Description",
-            Image: "Test Image");
+            EstateAvatar: "Test Image");
+
+        Result<Utility> utilityResult = Utility.Create("Test Utilities");
+        List<Utility> utilities = new List<Utility> { utilityResult.Value };
 
         // Act
-        var result = Estate.Create(ownerId, estateData);
+        var result = Estate.Create(ownerId, utilities, estateData);
 
         // Assert
         Assert.False(result.IsSuccess);
@@ -154,12 +167,15 @@ public class EstateTests
             Location: "",
             Price: 1000,
             TotalArea: "100m2",
-            Utilities: "Test Utilities",
+            Utilities: ["Test Utilities"],
             Description: "Test Description",
-            Image: "Test Image");
+            EstateAvatar: "Test Image");
+
+        Result<Utility> utilityResult = Utility.Create("Test Utilities");
+        List<Utility> utilities = new List<Utility> { utilityResult.Value };
 
         // Act
-        var result = Estate.Create(ownerId, estateData);
+        var result = Estate.Create(ownerId, utilities, estateData);
 
         // Assert
         Assert.False(result.IsSuccess);
@@ -179,12 +195,15 @@ public class EstateTests
             Location: "Test Location",
             Price: -2,
             TotalArea: "100m2",
-            Utilities: "Test Utilities",
+            Utilities: ["Test Utilities"],
             Description: "Test Description",
-            Image: "Test Image");
+            EstateAvatar: "Test Image");
+
+        Result<Utility> utilityResult = Utility.Create("Test Utilities");
+        List<Utility> utilities = new List<Utility> { utilityResult.Value };
 
         // Act
-        var result = Estate.Create(ownerId, estateData);
+        var result = Estate.Create(ownerId, utilities, estateData);
 
         // Assert
         Assert.False(result.IsSuccess);
@@ -203,12 +222,15 @@ public class EstateTests
             Location: "Test Location",
             Price: 1000,
             TotalArea: "",
-            Utilities: "Test Utilities",
+            Utilities: ["Test Utilities"],
             Description: "Test Description",
-            Image: "Test Image");
+            EstateAvatar: "Test Image");
+
+        Result<Utility> utilityResult = Utility.Create("Test Utilities");
+        List<Utility> utilities = new List<Utility> { utilityResult.Value };
 
         // Act
-        var result = Estate.Create(ownerId, estateData);
+        var result = Estate.Create(ownerId, utilities, estateData);
 
         // Assert
         Assert.False(result.IsSuccess);
@@ -228,18 +250,19 @@ public class EstateTests
             Location: "Test Location",
             Price: 1000,
             TotalArea: "100m2",
-            Utilities: "",
+            Utilities: [""],
             Description: "Test Description",
-            Image: "Test Image");
+            EstateAvatar: "Test Image");
+
+        Result<Utility> utilityResult = Utility.Create("");
+        List<Utility> utilities = new List<Utility> { utilityResult.Value };
 
         // Act
-        var result = Estate.Create(ownerId, estateData);
+        var result = Estate.Create(ownerId, utilities, estateData);
 
         // Assert
         Assert.False(result.IsSuccess);
         Assert.Equal("Utilities is required.", result.Error);
-        
-        
     }
     
     [Fact]
@@ -254,12 +277,15 @@ public class EstateTests
             Location: "Test Location",
             Price: 1000,
             TotalArea: "100m2",
-            Utilities: "Test Utilities",
+            Utilities: ["Test Utilities"],
             Description: "",
-            Image: "Test Image");
+            EstateAvatar: "Test Image");
+
+        Result<Utility> utilityResult = Utility.Create("Test Utilities");
+        List<Utility> utilities = new List<Utility> { utilityResult.Value };
 
         // Act
-        var result = Estate.Create(ownerId, estateData);
+        var result = Estate.Create(ownerId, utilities, estateData);
 
         // Assert
         Assert.False(result.IsSuccess);
@@ -280,35 +306,42 @@ public class EstateTests
             Location: "Test Location",
             Price: 1000,
             TotalArea: "100m2",
-            Utilities: "Test Utilities",
+            Utilities: ["Test Utilities"],
             Description: "Test Description",
-            Image: "");
+            EstateAvatar: "");
+
+        Result<Utility> utilityResult = Utility.Create("Test Utilities");
+        List<Utility> utilities = new List<Utility> { utilityResult.Value };
 
         // Act
-        var result = Estate.Create(ownerId, estateData);
+        var result = Estate.Create(ownerId, utilities, estateData);
 
         // Assert
         Assert.False(result.IsSuccess);
-        Assert.Equal("Image is required.", result.Error);
-        
-        
+        Assert.Equal("Estate Avatar is required.", result.Error);
     }
     
     [Fact]
     public void UpdateEstate_WithValidData_ShouldSucceed()
     {
         // Arrange
-        var estate = Estate.Create(Guid.NewGuid(), new EstateData(
+        Result<Utility> utilityResult = Utility.Create("Test Utilities");
+        List<Utility> utilities = new List<Utility> { utilityResult.Value };
+
+        var estate = Estate.Create(Guid.NewGuid(), utilities, new EstateData(
             EstateType: EstateType.Bungalow.ToString(),
             EstateCategory: EstateCategory.ForSale.ToString(),
             Name: "Test Estate",
             Location: "Test Location",
             Price: 1000,
             TotalArea: "100m2",
-            Utilities: "Test Utilities",
+            Utilities: ["Test Utilities"],
             Description: "Test Description",
-            Image: "Test Image"
+            EstateAvatar: "Test Image"
             )).Value;
+        
+        Result<Utility> utilityResult1 = Utility.Create("Updated Test Utilities");
+        utilities = new List<Utility> { utilityResult1.Value };
         
         var estateData = new EstateData(
             EstateType: "Apartment",
@@ -317,12 +350,12 @@ public class EstateTests
             Location: "Updated Test Location",
             Price: 2000,
             TotalArea: "200m2",
-            Utilities: "Updated Test Utilities",
+            Utilities: ["Updated Test Utilities"],
             Description: "Updated Test Description",
-            Image: "Updated Test Image");
+            EstateAvatar: "Updated Test Image");
 
         // Act
-        estate.UpdateEstate(estateData);
+        estate.Update(utilities, estateData);
 
         // Assert
         Assert.Equal(EstateType.Apartment, estate.EstateType);
@@ -331,9 +364,9 @@ public class EstateTests
         Assert.Equal(estateData.Location, estate.Location);
         Assert.Equal(estateData.Price, estate.Price);
         Assert.Equal(estateData.TotalArea, estate.TotalArea);
-        Assert.Equal(estateData.Utilities, estate.Utilities);
+        Assert.Equal(utilities, estate.Utilities);
         Assert.Equal(estateData.Description, estate.Description);
-        Assert.Equal(estateData.Image, estate.Image);
+        Assert.Equal(estateData.EstateAvatar, estate.EstateAvatar);
         
     }
 }
