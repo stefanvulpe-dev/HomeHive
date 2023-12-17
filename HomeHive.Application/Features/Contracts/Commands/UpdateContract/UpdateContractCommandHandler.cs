@@ -22,7 +22,7 @@ public class UpdateContractCommandHandler(IContractRepository contractRepository
             return new UpdateContractCommandResponse()
             {
                 IsSuccess = false,
-                Message = "Failed to create contract.",
+                Message = "Failed to update contract.",
                 ValidationsErrors = validationErrors
             };
         }
