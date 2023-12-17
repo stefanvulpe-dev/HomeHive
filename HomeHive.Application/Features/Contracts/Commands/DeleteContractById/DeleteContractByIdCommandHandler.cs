@@ -20,7 +20,7 @@ public class DeleteContractByIdCommandHandler(IContractRepository contractReposi
             return new DeleteContractByIdCommandResponse()
             {
                 IsSuccess = false,
-                Message = "Failed to create contract.",
+                Message = "Failed to delete contract.",
                 ValidationsErrors = validationErrors
             };
         }
