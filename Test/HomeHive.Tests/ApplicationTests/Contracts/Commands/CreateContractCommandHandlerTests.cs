@@ -49,7 +49,7 @@ public class CreateContractCommandHandlerTests
         // Assert
         Assert.False(result.IsSuccess);
         Assert.Equal("Failed to create contract.", result.Message);
-        Assert.Equal("Estate does not exist.", result.ValidationsErrors!["Data.EstateId"]);
+        Assert.Contains("Estate does not exist.", result.ValidationsErrors!["Data.EstateId"]);
     }
     
     [Fact]
@@ -70,7 +70,7 @@ public class CreateContractCommandHandlerTests
         // Assert
         Assert.False(result.IsSuccess);
         Assert.Equal("Failed to create contract.", result.Message);
-        Assert.Equal("Data Estate Id is required.", result.ValidationsErrors!["Data.EstateId"]);
+        Assert.Contains("Data Estate Id is required.", result.ValidationsErrors!["Data.EstateId"]);
     }
     
     [Fact]
@@ -95,7 +95,32 @@ public class CreateContractCommandHandlerTests
         // Assert
         Assert.False(result.IsSuccess);
         Assert.Equal("Failed to create contract.", result.Message);
-        Assert.Equal("Data Description is required.", result.ValidationsErrors!["Data.Description"]);
+        Assert.Contains("Data Description is required.", result.ValidationsErrors!["Data.Description"]);
+    }
+    
+    [Fact]
+    public async Task Handle_ShouldReturnFailure_WhenContractDescriptionIsNull()
+    {
+        //Arrange
+        Result<Estate> estateCreationResult = Estate.Create(OwnerId, EstateData);
+        
+        _estateRepositoryMock.FindByIdAsync(estateCreationResult.Value.Id)
+            .Returns(Result<Estate>.Success(estateCreationResult.Value));
+        
+        var command = new CreateContractCommand(
+            Guid.NewGuid(),
+            new ContractData(estateCreationResult.Value.Id, "Rent", DateTime.Now, DateTime.Now, null)
+        );
+
+        var handler = new CreateContractCommandHandler(_contractRepositoryMock, _estateRepositoryMock);
+        
+        // Act
+        var result = await handler.Handle(command, default);
+        
+        // Assert
+        Assert.False(result.IsSuccess);
+        Assert.Equal("Failed to create contract.", result.Message);
+        Assert.Contains("Data Description can't be null.", result.ValidationsErrors!["Data.Description"]);
     }
     
     [Fact]
@@ -122,11 +147,11 @@ public class CreateContractCommandHandlerTests
         // Assert
         Assert.False(result.IsSuccess);
         Assert.Equal("Failed to create contract.", result.Message);
-        Assert.Equal("Data Description must not exceed 200 characters.", result.ValidationsErrors!["Data.Description"]);
+        Assert.Contains("Data Description must not exceed 200 characters.", result.ValidationsErrors!["Data.Description"]);
     }
     
     [Fact]
-    public async Task Handle_ShouldReturnFailure_WhenContractStartDateIsEmpty()
+    public async Task Handle_ShouldReturnFailure_WhenContractStartDateIsNull()
     {
         // Arrange
         Result<Estate> estateCreationResult = Estate.Create(OwnerId, EstateData);
@@ -147,11 +172,11 @@ public class CreateContractCommandHandlerTests
         // Assert
         Assert.False(result.IsSuccess);
         Assert.Equal("Failed to create contract.", result.Message);
-        Assert.Equal("Data Start Date is required.", result.ValidationsErrors!["Data.StartDate"]);
+        Assert.Contains("Data Start Date can't be null.", result.ValidationsErrors!["Data.StartDate"]);
     }
     
     [Fact]
-    public async Task Handle_ShouldReturnFailure_WhenContractEndDateIsEmpty()
+    public async Task Handle_ShouldReturnFailure_WhenContractEndDateIsNull()
     {
         //Arrange
         Result<Estate> estateCreationResult = Estate.Create(OwnerId, EstateData);
@@ -172,7 +197,7 @@ public class CreateContractCommandHandlerTests
         // Assert
         Assert.False(result.IsSuccess);
         Assert.Equal("Failed to create contract.", result.Message);
-        Assert.Equal("Data End Date is required.", result.ValidationsErrors!["Data.EndDate"]);
+        Assert.Contains("Data End Date can't be null.", result.ValidationsErrors!["Data.EndDate"]);
     }
     
     [Fact]
@@ -197,7 +222,32 @@ public class CreateContractCommandHandlerTests
         // Assert
         Assert.False(result.IsSuccess);
         Assert.Equal("Failed to create contract.", result.Message);
-        Assert.Equal("Data Contract Type is required.", result.ValidationsErrors!["Data.ContractType"]);
+        Assert.Contains("Data Contract Type is required.", result.ValidationsErrors!["Data.ContractType"]);
+    }
+    
+    [Fact]
+    public async Task Handle_ShouldReturnFailure_WhenContractTypeIsNull()
+    {
+        //Arrange
+        Result<Estate> estateCreationResult = Estate.Create(OwnerId, EstateData);
+
+        _estateRepositoryMock.FindByIdAsync(estateCreationResult.Value.Id)
+            .Returns(Result<Estate>.Success(estateCreationResult.Value));
+
+        var command = new CreateContractCommand(
+            Guid.NewGuid(),
+            new ContractData(estateCreationResult.Value.Id, null, DateTime.Now, DateTime.Now, "Test")
+        );
+
+        var handler = new CreateContractCommandHandler(_contractRepositoryMock, _estateRepositoryMock);
+        
+        // Act
+        var result = await handler.Handle(command, default);
+        
+        // Assert
+        Assert.False(result.IsSuccess);
+        Assert.Equal("Failed to create contract.", result.Message);
+        Assert.Contains("Data Contract Type can't be null.", result.ValidationsErrors!["Data.ContractType"]);
     }
     
     [Fact]

@@ -15,5 +15,5 @@ public class BaseResponse
 
     public bool IsSuccess { get; init; }
     public string? Message { get; set; }
-    public Dictionary<string, string>? ValidationsErrors { get; init; }
+    public Dictionary<string, List<string>>? ValidationsErrors { get; init; }
 }

@@ -20,12 +20,18 @@ public class UpdateEstateCommandHandler : ICommandHandler<UpdateEstateCommand, U
         var validationResult = await validator.ValidateAsync(command, cancellationToken);
 
         if (!validationResult.IsValid)
-            return new UpdateEstateCommandResponse
+        {
+            var validationErrors = validationResult.Errors
+                .GroupBy(x => x.PropertyName, x => x.ErrorMessage)
+                .ToDictionary(group => group.Key, group => group.ToList());
+            
+            return new UpdateEstateCommandResponse()
             {
                 IsSuccess = false,
-                Message = "Error updating estate",
-                ValidationsErrors = validationResult.Errors.ToDictionary(x => x.PropertyName, x => x.ErrorMessage)
+                Message = "Failed to create contract.",
+                ValidationsErrors = validationErrors
             };
+        }
 
         var estateResult = await validator.EstateExist(command, cancellationToken);
         if (!estateResult.IsSuccess)

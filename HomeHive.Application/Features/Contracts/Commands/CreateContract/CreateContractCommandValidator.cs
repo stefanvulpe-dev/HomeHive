@@ -17,15 +17,15 @@ public class CreateContractCommandValidator : AbstractValidator<CreateContractCo
             .MustAsync(ValidateEstateExistence).WithMessage("Estate does not exist.");
         RuleFor(p => p.Data.Description)
             .NotEmpty().WithMessage("{PropertyName} is required.")
-            .NotNull()
+            .NotNull().WithMessage("{PropertyName} can't be null.")
             .MaximumLength(200).WithMessage("{PropertyName} must not exceed 200 characters.");
         RuleFor(p => p.Data.StartDate)
-            .NotNull().WithMessage("{PropertyName} is required.");
+            .NotNull().WithMessage("{PropertyName} can't be null.");
         RuleFor(p => p.Data.EndDate)
-            .NotNull().WithMessage("{PropertyName} is required.");
+            .NotNull().WithMessage("{PropertyName} can't be null.");
         RuleFor(p => p.Data.ContractType)
             .NotEmpty().WithMessage("{PropertyName} is required.")
-            .NotNull();
+            .NotNull().WithMessage("{PropertyName} can't be null.");
     }
 
     private async Task<bool> ValidateEstateExistence(Guid estateId, CancellationToken cancellationToken)

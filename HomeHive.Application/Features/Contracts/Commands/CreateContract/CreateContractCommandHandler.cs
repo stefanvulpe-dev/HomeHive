@@ -14,19 +14,25 @@ public class CreateContractCommandHandler(IContractRepository contractRepository
         var validatorResult = await validator.ValidateAsync(request, cancellationToken);
 
         if (!validatorResult.IsValid)
+        {
+            var validationErrors = validatorResult.Errors
+                .GroupBy(x => x.PropertyName, x => x.ErrorMessage)
+                .ToDictionary(group => group.Key, group => group.ToList());
+            
             return new CreateContractCommandResponse
             {
                 IsSuccess = false,
                 Message = "Failed to create contract.",
-                ValidationsErrors = validatorResult.Errors.ToDictionary(x => x.PropertyName, x => x.ErrorMessage)
+                ValidationsErrors = validationErrors
             };
+        }
 
         var contract = Contract.Create(request.UserId, request.Data);
         if (!contract.IsSuccess)
             return new CreateContractCommandResponse
             {
                 IsSuccess = false,
-                ValidationsErrors = new Dictionary<string, string> { { "Contract", contract.Error } }
+                ValidationsErrors = new Dictionary<string, List<string>> { { "Contract", new List<string> { contract.Error } } }
             };
 
         await contractRepository.AddAsync(contract.Value);
