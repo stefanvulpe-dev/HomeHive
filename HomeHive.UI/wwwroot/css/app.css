@@ -69,7 +69,7 @@ h1:focus {
     --light-3: #f4f4f4;
     --white: #ffffff;
     --shadow-2: 0 2px 4px rgba(0, 0, 0, 0.1);
-    --shadow-4: 0 4px 8px rgba(0, 0, 0, 0.1);
+    --shadow-4: 0 8px 12px rgba(0, 0, 0, 0.2);
     --primary: #007bff;
     --black: #000000;
     --dark-3: #333333;
@@ -99,8 +99,17 @@ h1:focus {
     transition: all 0.3s ease-out 0s;
 }
 
-.about-one .single-about-items:hover {
+.about-one .single-about-items:hover, .card:hover {
     box-shadow: var(--shadow-4);
+}
+
+.card{
+    box-shadow: var(--shadow-2);
+    -webkit-transition: all 0.3s ease-out 0s;
+    -moz-transition: all 0.3s ease-out 0s;
+    -ms-transition: all 0.3s ease-out 0s;
+    -o-transition: all 0.3s ease-out 0s;
+    transition: all 0.3s ease-out 0s;
 }
 
 .about-one .single-about-items::before {
@@ -156,4 +165,8 @@ h1:focus {
     width: 100%;
     height: 150px;
     object-fit: cover;
+}
+
+.site-header{
+    box-shadow: 0 0 15px rgb(0,0,0,0.4);
 }

@@ -15,10 +15,6 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Components\" />
-    </ItemGroup>
-
-    <ItemGroup>
       <ProjectReference Include="..\HomeHive.Application\HomeHive.Application.csproj" />
       <ProjectReference Include="..\HomeHive.Domain\HomeHive.Domain.csproj" />
     </ItemGroup>
