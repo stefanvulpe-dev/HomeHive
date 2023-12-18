@@ -30,4 +30,14 @@ public class EstateRoom: BaseEntity
         
         return Result<EstateRoom>.Success(new EstateRoom { EstateId = estateId, RoomId = roomId, Quantity = quantity });
     }
+    
+    public void Update(Guid estateId, Guid roomId, int quantity)
+    {
+        if (estateId != Guid.Empty) 
+            EstateId = estateId;
+        if (roomId != Guid.Empty)
+            RoomId = roomId;
+        if (quantity > 0)
+            Quantity = quantity;
+    }
 }

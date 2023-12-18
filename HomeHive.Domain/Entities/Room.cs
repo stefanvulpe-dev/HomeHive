@@ -24,4 +24,12 @@ public sealed class Room : BaseEntity
             RoomType = Enum.Parse<RoomType>(roomType),
         });
     }
+
+    public void Update(string? roomType)
+    {
+        if (string.IsNullOrWhiteSpace(roomType) || !Enum.TryParse(roomType, out RoomType typeEnum))
+            return;
+        
+        RoomType = typeEnum;
+    }
 }

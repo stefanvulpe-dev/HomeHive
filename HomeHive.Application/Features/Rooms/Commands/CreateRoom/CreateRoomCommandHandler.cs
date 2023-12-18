@@ -10,7 +10,6 @@ public class CreateRoomCommandHandler(IRoomRepository roomRepository, IEstateRep
     {
         var validator = new CreateRoomCommandValidator(estateRepository);
         var validatorResult = await validator.ValidateAsync(request, cancellationToken);
-        Console.WriteLine(1);
         if (!validatorResult.IsValid)
         {
             
@@ -20,8 +19,7 @@ public class CreateRoomCommandHandler(IRoomRepository roomRepository, IEstateRep
                 ValidationsErrors = new Dictionary<string, string>{{validatorResult.Errors[0].PropertyName, validatorResult.Errors[0].ErrorMessage}}
             };
         }
-
-        Console.WriteLine(2);
+        
         var result = Room.Create(request.Room.RoomType);
         if (!result.IsSuccess)
             return new CreateRoomCommandResponse
@@ -29,8 +27,7 @@ public class CreateRoomCommandHandler(IRoomRepository roomRepository, IEstateRep
                 IsSuccess = false,
                 ValidationsErrors = new Dictionary<string, string> {{"Room", result.Error}}
             };
-
-        Console.WriteLine(3);
+        
         var room = await roomRepository.AddAsync(result.Value);
         if (!room.IsSuccess)
             return new CreateRoomCommandResponse
