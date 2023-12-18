@@ -1,4 +1,5 @@
-﻿using HomeHive.Application.Contracts.Commands;
+﻿using FluentValidation.Results;
+using HomeHive.Application.Contracts.Commands;
 using HomeHive.Application.Features.Users.Commands.ResetPasswordCommand;
 using HomeHive.Domain.Models;
 using Microsoft.AspNetCore.Identity;
@@ -15,12 +16,17 @@ public class ResetPasswordCommandHandler(UserManager<User> userManager)
         var validationResult = await validator.ValidateAsync(request, cancellationToken);
 
         if (!validationResult.IsValid)
+        {
+            var errors = validationResult.Errors
+                .GroupBy(x => x.PropertyName, x => x.ErrorMessage)
+                .ToDictionary(group => group.Key, group => group.ToList());
             return new ResetPasswordCommandResponse
             {
                 IsSuccess = false,
                 Message = "Reset password failed.",
-                ValidationsErrors = validationResult.Errors.ToDictionary(x => x.PropertyName, x => x.ErrorMessage)
+                ValidationsErrors = errors
             };
+        }
 
         var user = validator.User!;
         
@@ -29,9 +35,9 @@ public class ResetPasswordCommandHandler(UserManager<User> userManager)
             {
                 IsSuccess = false,
                 Message = "Reset password failed.",
-                ValidationsErrors = new Dictionary<string, string>
+                ValidationsErrors = new Dictionary<string, List<string>>
                 {
-                    {"Token", "Invalid token."}
+                    {"Token", ["Invalid token."] }
                 }
             };
         
@@ -42,7 +48,6 @@ public class ResetPasswordCommandHandler(UserManager<User> userManager)
             {
                 IsSuccess = false,
                 Message = "Reset password failed.",
-                ValidationsErrors = result.Errors.ToDictionary(x => x.Code, x => x.Description)
             };
         
         result = await userManager.AddPasswordAsync(user, request.ResetPasswordModel.NewPassword!);
@@ -52,7 +57,6 @@ public class ResetPasswordCommandHandler(UserManager<User> userManager)
             {
                 IsSuccess = false,
                 Message = "Reset password failed.",
-                ValidationsErrors = result.Errors.ToDictionary(x => x.Code, x => x.Description)
             };
 
         return new ResetPasswordCommandResponse
