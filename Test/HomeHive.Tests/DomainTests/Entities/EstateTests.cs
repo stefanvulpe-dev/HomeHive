@@ -19,6 +19,7 @@ public class EstateTests
             Price: 1000,
             TotalArea: "100m2",
             Utilities: ["Test Utilities"],
+            Rooms: new Dictionary<string, int>(){ {"Test", 1 }, {"Test1", 2} },
             Description: "Test Description",
             EstateAvatar: "Test Image");
         
@@ -60,6 +61,7 @@ public class EstateTests
             Price: 1000,
             TotalArea: "100m2",
             Utilities: ["Test Utilities"],
+            Rooms: new Dictionary<string, int>(){ {"Test", 1 }, {"Test1", 2} },
             Description: "Test Description",
             EstateAvatar: "Test Image");
 
@@ -87,6 +89,7 @@ public class EstateTests
             Price: 1000,
             TotalArea: "100m2",
             Utilities: ["Test Utilities"],
+            Rooms: new Dictionary<string, int>(){ {"Test", 1 }, {"Test1", 2} },
             Description: "Test Description",
             EstateAvatar: "Test Image");
 
@@ -114,6 +117,7 @@ public class EstateTests
             Price: 1000,
             TotalArea: "100m2",
             Utilities: ["Test Utilities"],
+            Rooms: new Dictionary<string, int>(){ {"Test", 1 }, {"Test1", 2} },
             Description: "Test Description",
             EstateAvatar: "Test Image");
 
@@ -141,6 +145,7 @@ public class EstateTests
             Price: 1000,
             TotalArea: "100m2",
             Utilities: ["Test Utilities"],
+            Rooms: new Dictionary<string, int>(){ {"Test", 1 }, {"Test1", 2} },
             Description: "Test Description",
             EstateAvatar: "Test Image");
 
@@ -168,6 +173,7 @@ public class EstateTests
             Price: 1000,
             TotalArea: "100m2",
             Utilities: ["Test Utilities"],
+            Rooms: new Dictionary<string, int>(){ {"Test", 1 }, {"Test1", 2} },
             Description: "Test Description",
             EstateAvatar: "Test Image");
 
@@ -196,6 +202,7 @@ public class EstateTests
             Price: -2,
             TotalArea: "100m2",
             Utilities: ["Test Utilities"],
+            Rooms: new Dictionary<string, int>(){ {"Test", 1 }, {"Test1", 2} },
             Description: "Test Description",
             EstateAvatar: "Test Image");
 
@@ -223,6 +230,7 @@ public class EstateTests
             Price: 1000,
             TotalArea: "",
             Utilities: ["Test Utilities"],
+            Rooms: new Dictionary<string, int>(){ {"Test", 1 }, {"Test1", 2} },
             Description: "Test Description",
             EstateAvatar: "Test Image");
 
@@ -250,6 +258,7 @@ public class EstateTests
             Price: 1000,
             TotalArea: "100m2",
             Utilities: [""],
+            Rooms: new Dictionary<string, int>(){ {"Test", 1 }, {"Test1", 2} },
             Description: "Test Description",
             EstateAvatar: "Test Image");
 
@@ -277,6 +286,7 @@ public class EstateTests
             Price: 1000,
             TotalArea: "100m2",
             Utilities: null,
+            Rooms: new Dictionary<string, int>(){ {"Test", 1 }, {"Test1", 2} },
             Description: "Test Description",
             EstateAvatar: "Test Image");
 
@@ -303,6 +313,7 @@ public class EstateTests
             Price: 1000,
             TotalArea: "100m2",
             Utilities: ["Test Utilities"],
+            Rooms: new Dictionary<string, int>(){ {"Test", 1 }, {"Test1", 2} },
             Description: "",
             EstateAvatar: "Test Image");
 
@@ -332,6 +343,7 @@ public class EstateTests
             Price: 1000,
             TotalArea: "100m2",
             Utilities: ["Test Utilities"],
+            Rooms: new Dictionary<string, int>(){ {"Test", 1 }, {"Test1", 2} },
             Description: "Test Description",
             EstateAvatar: "");
 
@@ -361,6 +373,7 @@ public class EstateTests
             Price: 1000,
             TotalArea: "100m2",
             Utilities: ["Test Utilities"],
+            Rooms: new Dictionary<string, int>(){ {"Test", 1 }, {"Test1", 2} },
             Description: "Test Description",
             EstateAvatar: "Test Image"
             )).Value;
@@ -376,11 +389,12 @@ public class EstateTests
             Price: 2000,
             TotalArea: "200m2",
             Utilities: ["Updated Test Utilities"],
+            Rooms: new Dictionary<string, int>(){ {"Test", 1 }, {"Test1", 2} },
             Description: "Updated Test Description",
             EstateAvatar: "Updated Test Image");
 
         // Act
-        estate.Update(utilities, estateData);
+        estate.Update(utilities, null!,  estateData);
 
         // Assert
         Assert.Equal(EstateType.Apartment, estate.EstateType);

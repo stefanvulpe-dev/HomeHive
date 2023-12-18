@@ -21,6 +21,7 @@ public class CreateContractCommandHandlerTests
         100,
         "Test",
         ["Test"],
+        new Dictionary<string, int>(){ {"Test", 1 }, {"Test1", 2} },
         "Test",
         "Test");
     

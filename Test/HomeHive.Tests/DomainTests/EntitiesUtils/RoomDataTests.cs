@@ -41,6 +41,7 @@ public class RoomDataTests
             100,
             "160m2",
             ["Test Utilities"],
+            new Dictionary<string, int>(){ {"Test", 1 }, {"Test1", 2} },
             "Test Description",
             "Test Image");
         

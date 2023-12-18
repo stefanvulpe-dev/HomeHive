@@ -15,8 +15,8 @@ public class EstatePhotoTests
         
         var estate = Estate.Create(Guid.NewGuid(), utilities,
             new EstateData("House", "ForRent",
-                "Test", "Test", 100, "Test",
-                ["Test"], "Test", "Test")).Value;
+                "Test", "Test", 100, "Test1",
+                ["Test"], new Dictionary<string, int>(){ {"Test", 1 }, {"Test1", 2} }, "Test", "Test")).Value;
         var objectName = "Test";
 
         // Act
@@ -39,7 +39,7 @@ public class EstatePhotoTests
         var estate = Estate.Create(Guid.NewGuid(), utilities,
             new EstateData("House", "ForRent",
                 "Test", "Test", 100, "Test",
-                ["Test"], "Test", "Test")).Value;
+                ["Test"], new Dictionary<string, int>(){ {"Test", 1 }, {"Test1", 2} }, "Test", "Test")).Value;
         var objectName = "";
 
         // Act
