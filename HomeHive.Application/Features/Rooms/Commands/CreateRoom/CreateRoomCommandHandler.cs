@@ -4,28 +4,31 @@ using HomeHive.Domain.Entities;
 
 namespace HomeHive.Application.Features.Rooms.Commands.CreateRoom;
 
-public class CreateRoomCommandHandler(IRoomRepository roomRepository, IEstateRepository estateRepository, IEstateRoomRepository estateRoomRepository): ICommandHandler<CreateRoomCommand, CreateRoomCommandResponse>
+public class CreateRoomCommandHandler(IRoomRepository roomRepository): ICommandHandler<CreateRoomCommand, CreateRoomCommandResponse>
 {
     public async Task<CreateRoomCommandResponse> Handle(CreateRoomCommand request, CancellationToken cancellationToken)
     {
-        var validator = new CreateRoomCommandValidator(estateRepository);
+        var validator = new CreateRoomCommandValidator(roomRepository);
         var validatorResult = await validator.ValidateAsync(request, cancellationToken);
         if (!validatorResult.IsValid)
         {
+            var validationErrors = validatorResult.Errors
+                .GroupBy(x => x.PropertyName, x => x.ErrorMessage)
+                .ToDictionary(group => group.Key, group => group.ToList());
             
             return new CreateRoomCommandResponse
             {
                 IsSuccess = false,
-                ValidationsErrors = new Dictionary<string, string>{{validatorResult.Errors[0].PropertyName, validatorResult.Errors[0].ErrorMessage}}
+                ValidationsErrors = validationErrors
             };
         }
         
-        var result = Room.Create(request.Room.RoomType);
+        var result = Room.Create(request.RoomType);
         if (!result.IsSuccess)
             return new CreateRoomCommandResponse
             {
                 IsSuccess = false,
-                ValidationsErrors = new Dictionary<string, string> {{"Room", result.Error}}
+                ValidationsErrors = new Dictionary<string, List<string>> { { "Room", new List<string> { result.Error } } }
             };
         
         var room = await roomRepository.AddAsync(result.Value);
@@ -33,18 +36,8 @@ public class CreateRoomCommandHandler(IRoomRepository roomRepository, IEstateRep
             return new CreateRoomCommandResponse
             {
                 IsSuccess = false,
-                ValidationsErrors = new Dictionary<string, string> {{"Room", room.Error}}
+                ValidationsErrors = new Dictionary<string, List<string>> { { "Room", new List<string> { result.Error } } }
             };
-        
-        var estateRoom = EstateRoom.Create(request.Room.EstateId, room.Value.Id, request.Room.Quantity);
-        if (!estateRoom.IsSuccess)
-            return new CreateRoomCommandResponse
-            {
-                IsSuccess = false,
-                ValidationsErrors = new Dictionary<string, string> {{"EstateRoom", estateRoom.Error}}
-            };
-        
-        await estateRoomRepository.AddAsync(estateRoom.Value);
         
         return new CreateRoomCommandResponse
         {
@@ -52,9 +45,7 @@ public class CreateRoomCommandHandler(IRoomRepository roomRepository, IEstateRep
             Room= new CreateRoomDto
             {
                 Id = room.Value.Id,
-                EstateId = request.Room.EstateId,
                 RoomType = room.Value.RoomType.ToString(),
-                Quantity = request.Room.Quantity
             }
         };
     }

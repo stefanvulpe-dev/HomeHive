@@ -1,6 +1,5 @@
 using HomeHive.Application.Contracts.Commands;
 using HomeHive.Application.Persistence;
-using HomeHive.Domain.Common;
 
 namespace HomeHive.Application.Features.Rooms.Commands.UpdateRoom;
 
@@ -23,10 +22,14 @@ public class UpdateRoomCommandHandler: ICommandHandler<UpdateRoomCommand, Update
         var validationResult = await validator.ValidateAsync(request, cancellationToken);
         if (!validationResult.IsValid)
         {
+            var validationErrors = validationResult.Errors
+                .GroupBy(x => x.PropertyName, x => x.ErrorMessage)
+                .ToDictionary(group => group.Key, group => group.ToList());
+            
             return new UpdateRoomCommandResponse
             {
                 IsSuccess = false,
-                ValidationsErrors = validationResult.Errors.ToDictionary(x => x.PropertyName, x => x.ErrorMessage)
+                ValidationsErrors = validationErrors
             };
         }
         
@@ -44,9 +47,7 @@ public class UpdateRoomCommandHandler: ICommandHandler<UpdateRoomCommand, Update
             Room = new CreateRoomDto
             {
                 Id = request.Id,
-                EstateId = request.Data.EstateId,
                 RoomType = request.Data.RoomType,
-                Quantity = request.Data.Quantity   
             }
         };
 

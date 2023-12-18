@@ -20,17 +20,17 @@ public sealed class Estate : BaseEntity
     public decimal? Price { get; private set; }
     public string? TotalArea { get; private set; }
     public List<Utility>? Utilities { get; private set; }
+    public List<EstateRoom>? EstateRooms { get; private set; }
     public string? Description { get; private set; }
     public string? EstateAvatar { get; private set; }
     public IReadOnlyList<Contract>? Contracts => _contracts;
     public IReadOnlyList<EstatePhoto>? EstatePhotos => _estatePhotos;
-    public ICollection<EstateRoom>? EstateRooms { get; private set; }
 
     public static Result<Estate> Create(Guid ownerId, List<Utility> utilities, EstateData estateData)
     {
         var (estateType, estateCategory, name,
-            location, price, totalArea, utilitiesNames
-            ,description, image) = estateData;
+            location, price, totalArea, utilitiesNames, 
+            rooms , description, image) = estateData;
 
         if (ownerId == Guid.Empty) return Result<Estate>.Failure("OwnerId is required.");
 
@@ -56,6 +56,15 @@ public sealed class Estate : BaseEntity
         {
                 if (string.IsNullOrWhiteSpace(utilityName)) return Result<Estate>.Failure("Utility name is required.");
         }
+        
+        if (rooms == null || rooms.Count == 0) return Result<Estate>.Failure("Rooms are required.");
+        
+        foreach (var pair in rooms)
+        {
+            if (string.IsNullOrWhiteSpace(pair.Key)) return Result<Estate>.Failure("Room type is required.");
+            
+            if (pair.Value <= 0) return Result<Estate>.Failure("Room quantity is required.");
+        }
     
         if (string.IsNullOrWhiteSpace(description)) return Result<Estate>.Failure("Description is required.");
 
@@ -76,7 +85,7 @@ public sealed class Estate : BaseEntity
         });
     }
 
-    public void Update(List<Utility> utilities, EstateData estateData)
+    public void Update(List<Utility> utilities, List<EstateRoom> rooms, EstateData estateData)
     {
         if (estateData.EstateType != null) EstateType = Enum.Parse<EstateType>(estateData.EstateType);
 
@@ -91,9 +100,16 @@ public sealed class Estate : BaseEntity
         if (estateData.TotalArea != null) TotalArea = estateData.TotalArea;
         
         if (estateData.Utilities != null) Utilities = utilities;
+        
+        if (estateData.Rooms != null) EstateRooms = rooms;
 
         if (estateData.Description != null) Description = estateData.Description;
 
         if (estateData.EstateAvatar != null) EstateAvatar = estateData.EstateAvatar;
+    }
+    
+    public void AddEstateRooms(List<EstateRoom> estateRooms)
+    {
+        EstateRooms = estateRooms;
     }
 }

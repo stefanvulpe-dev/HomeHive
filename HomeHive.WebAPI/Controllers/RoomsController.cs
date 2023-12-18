@@ -1,6 +1,4 @@
 using HomeHive.Application.Contracts.Caching;
-using HomeHive.Application.Contracts.Interfaces;
-using HomeHive.Application.Features.Rooms.Commands;
 using HomeHive.Application.Features.Rooms.Commands.CreateRoom;
 using HomeHive.Application.Features.Rooms.Commands.DeleteRoomById;
 using HomeHive.Application.Features.Rooms.Commands.UpdateRoom;
@@ -19,12 +17,12 @@ public class RoomsController(ITokenCacheService tokenCacheService,
     [Authorize(Roles = "User, Admin")]
     [HttpPost]
     [ProducesResponseType(StatusCodes.Status201Created)]
-    public async Task<IActionResult> Create([FromBody] RoomData data)
+    public async Task<IActionResult> Create([FromBody] string roomType)
     {
         var isTokenRevoked = await tokenCacheService.IsTokenRevokedAsync();
         if (isTokenRevoked) return Unauthorized(new { message = "Token is revoked" });
         
-        var result = await Mediator.Send(new CreateRoomCommand(data));
+        var result = await Mediator.Send(new CreateRoomCommand(roomType));
         
         if (!result.IsSuccess)
         {

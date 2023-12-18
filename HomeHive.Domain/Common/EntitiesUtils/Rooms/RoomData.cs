@@ -3,7 +3,7 @@ using HomeHive.Domain.Entities;
 
 namespace HomeHive.Domain.Common.EntitiesUtils.Rooms;
 
-public class RoomData
+public record RoomData
 {
     public Guid EstateId { get; set; }
     

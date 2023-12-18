@@ -11,11 +11,17 @@ public class DeleteRoomByIdCommandHandler(IRoomRepository roomRepository):
         var validator = new DeleteRoomByIdCommandValidator(roomRepository);
         var validationResult = await validator.ValidateAsync(request, cancellationToken);
         if (!validationResult.IsValid)
+        {
+            var validationErrors = validationResult.Errors
+                .GroupBy(x => x.PropertyName, x => x.ErrorMessage)
+                .ToDictionary(group => group.Key, group => group.ToList());
+            
             return new DeleteRoomByIdCommandResponse
             {
                 IsSuccess = false,
-                ValidationsErrors = validationResult.Errors.ToDictionary(k => k.PropertyName, v => v.ErrorMessage)
+                ValidationsErrors = validationErrors
             };
+        }
         
         var result = await roomRepository.DeleteByIdAsync(request.RoomId);
         if (!result.IsSuccess)

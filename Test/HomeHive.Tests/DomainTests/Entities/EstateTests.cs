@@ -42,7 +42,7 @@ public class EstateTests
         Assert.Equal(estateData.EstateAvatar, result.Value.EstateAvatar);
         
         Assert.Null(result.Value.EstatePhotos);
-        Assert.Null(result.Value.Rooms);
+        Assert.Null(result.Value.EstateRooms);
         Assert.Null(result.Value.Contracts);
         
     }
