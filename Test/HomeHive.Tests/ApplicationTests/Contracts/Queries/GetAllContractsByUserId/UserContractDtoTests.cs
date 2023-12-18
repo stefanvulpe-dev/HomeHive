@@ -31,7 +31,7 @@ public class UserContractDtoTests
         Assert.Equal(endDate, userContractDto.EndDate);
         Assert.Equal(description, userContractDto.Description);
     }
-    
+
     [Fact]
     public void UserContractDto_SetPropertiesWithInitializer_ShouldUpdatePropertiesCorrectly()
     {
@@ -49,7 +49,8 @@ public class UserContractDtoTests
         var updatedEstateId = Guid.NewGuid();
         var updatedDescription = "Updated Description";
 
-        var updateUser = userContractDto with {
+        var updateUser = userContractDto with
+        {
             EstateId = updatedEstateId,
             Description = updatedDescription
         };

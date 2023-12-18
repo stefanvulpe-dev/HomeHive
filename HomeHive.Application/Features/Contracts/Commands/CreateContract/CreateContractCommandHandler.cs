@@ -18,7 +18,7 @@ public class CreateContractCommandHandler(IContractRepository contractRepository
             var validationErrors = validatorResult.Errors
                 .GroupBy(x => x.PropertyName, x => x.ErrorMessage)
                 .ToDictionary(group => group.Key, group => group.ToList());
-            
+
             return new CreateContractCommandResponse
             {
                 IsSuccess = false,
@@ -32,7 +32,7 @@ public class CreateContractCommandHandler(IContractRepository contractRepository
             return new CreateContractCommandResponse
             {
                 IsSuccess = false,
-                ValidationsErrors = new Dictionary<string, List<string>> { { "Contract", new List<string> { contract.Error } } }
+                ValidationsErrors = new Dictionary<string, List<string>> { { "Contract", [contract.Message] } }
             };
 
         await contractRepository.AddAsync(contract.Value);

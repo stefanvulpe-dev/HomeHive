@@ -1,0 +1,16 @@
+@page "/add-property"
+@using HomeHive.UI.Components.Profile.AddEstate
+@using Microsoft.AspNetCore.Authorization
+@layout ProfileLayout
+@attribute [Authorize(Roles = "Admin, User")]
+
+<div class="card min-vh-100">
+    <div class="card-header">
+        Add Property
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <AddEstateForm></AddEstateForm>
+        </div>
+    </div>
+</div>

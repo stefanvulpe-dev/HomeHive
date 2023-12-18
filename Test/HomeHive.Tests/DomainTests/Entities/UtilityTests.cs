@@ -9,7 +9,7 @@ public class UtilityTests
     public void CreateUtility_WithValidName_ShouldCreateUtilityInstance()
     {
         // Arrange
-        string utilityName = "Water";
+        var utilityName = "Water";
 
         // Act
         var result = Utility.Create(utilityName);
@@ -25,7 +25,7 @@ public class UtilityTests
     public void CreateUtility_WithEmptyName_ShouldReturnFailureResult()
     {
         // Arrange
-        string utilityName = "";
+        var utilityName = "";
 
         // Act
         var result = Utility.Create(utilityName);
@@ -33,7 +33,7 @@ public class UtilityTests
         // Assert
         Assert.False(result.IsSuccess);
         Assert.Null(result.Value);
-        Assert.Equal("Name is required.", result.Error);
+        Assert.Equal("Name is required.", result.Message);
     }
 
     [Fact]
@@ -41,7 +41,7 @@ public class UtilityTests
     {
         // Arrange
         var utility = Utility.Create("Water").Value;
-        string newUtilityName = "Electricity";
+        var newUtilityName = "Electricity";
 
         // Act
         utility.Update(newUtilityName);

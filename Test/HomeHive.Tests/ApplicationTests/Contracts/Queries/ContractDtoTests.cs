@@ -34,7 +34,7 @@ public class ContractDtoTests
         Assert.Equal(endDate, contractDto.EndDate);
         Assert.Equal(description, contractDto.Description);
     }
-    
+
     [Fact]
     public void ContractDto_SetProperties_ShouldModifyPropertyValues()
     {

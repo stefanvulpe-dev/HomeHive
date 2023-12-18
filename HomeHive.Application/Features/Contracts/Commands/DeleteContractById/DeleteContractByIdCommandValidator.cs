@@ -19,11 +19,8 @@ public class DeleteContractByIdCommandValidator : AbstractValidator<DeleteContra
 
     private async Task<bool> Exists(Guid arg1, CancellationToken arg2)
     {
-        if (arg1 == Guid.Empty)
-        {
-            return true;
-        }
-        
+        if (arg1 == Guid.Empty) return true;
+
         var result = await _contractRepository.FindByIdAsync(arg1);
         return result.IsSuccess;
     }

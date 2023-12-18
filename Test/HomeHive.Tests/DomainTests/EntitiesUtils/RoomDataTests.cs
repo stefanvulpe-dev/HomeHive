@@ -10,7 +10,7 @@ namespace HomeHive.Tests.DomainTests.EntitiesUtils;
 public class RoomDataTests
 {
     private readonly IEstateRepository _estateRepository = Substitute.For<IEstateRepository>();
-    
+
     [Fact]
     public void RoomData_SetProperties_ShouldModifyProperties()
     {
@@ -24,12 +24,12 @@ public class RoomDataTests
         Assert.Equal("Updated Room Name", roomData.Name);
         Assert.Equal(10, roomData.Capacity);
     }
-    
+
     [Fact]
     public void RoomData_WithValidValues_ShouldCreateInstance()
     {
         // Arrange
-        EstateData estateData = new EstateData(
+        var estateData = new EstateData(
             EstateType.Apartment.ToString(),
             EstateCategory.ForSale.ToString(),
             "Test Estate",
@@ -39,24 +39,24 @@ public class RoomDataTests
             ["Test Utilities"],
             "Test Description",
             "Test Image");
-        
-        Result<Utility> utilityResult = Utility.Create("Test Utilities");
-        List<Utility> utilities = new List<Utility> { utilityResult.Value };
-        
-        Result<Estate> estateResult = Estate.Create(Guid.NewGuid(), utilities, estateData);
-        
+
+        var utilityResult = Utility.Create("Test Utilities");
+        var utilities = new List<Utility> { utilityResult.Value };
+
+        var estateResult = Estate.Create(Guid.NewGuid(), utilities, estateData);
+
         _estateRepository.FindByIdAsync(Arg.Any<Guid>())
             .Returns(Result<Estate>.Success(estateResult.Value));
-        
-        string name = "Living Room";
-        string roomType = "Living";
-        int capacity = 4;
-        int size = 25;
-        Estate estate = estateResult.Value; 
+
+        var name = "Living Room";
+        var roomType = "Living";
+        var capacity = 4;
+        var size = 25;
+        var estate = estateResult.Value;
 
         // Act
         var roomData = new RoomData(name, roomType, capacity, size, estate);
-       
+
         // Assert
         Assert.Equal(name, roomData.Name);
         Assert.Equal(roomType, roomData.RoomType);

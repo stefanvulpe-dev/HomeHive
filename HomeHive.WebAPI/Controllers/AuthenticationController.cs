@@ -44,17 +44,14 @@ public class AuthenticationController(
         if (!ModelState.IsValid)
         {
             logger.LogError("Invalid payload");
-            return BadRequest(new
-            {
-                error = "Invalid payload"
-            });
+            return BadRequest(ModelState);
         }
 
         var registrationResult = await authService.Register(model, UserRole.User);
 
         if (!registrationResult.IsSuccess) return BadRequest(registrationResult);
 
-        return CreatedAtAction(nameof(Register), model);
+        return CreatedAtAction(nameof(Register), registrationResult);
     }
 
     [Authorize(Roles = "User, Admin")]

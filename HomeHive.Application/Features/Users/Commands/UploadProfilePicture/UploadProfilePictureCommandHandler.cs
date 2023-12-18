@@ -22,11 +22,11 @@ public class
                 .GroupBy(x => x.PropertyName, x => x.ErrorMessage)
                 .ToDictionary(group => group.Key, group => group.ToList());
             return new UploadProfilePictureCommandResponse
-                        {
-                            IsSuccess = false,
-                            Message = "Validation errors occurred",
-                            ValidationsErrors = validationErrors
-                        };
+            {
+                IsSuccess = false,
+                Message = "Validation errors occurred",
+                ValidationsErrors = validationErrors
+            };
         }
 
         var blobName = $"{Guid.NewGuid().ToString()}.{command.ContentType.Split('/')[1]}";

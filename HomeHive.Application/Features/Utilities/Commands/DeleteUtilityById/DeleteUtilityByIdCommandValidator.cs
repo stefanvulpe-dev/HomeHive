@@ -6,6 +6,7 @@ namespace HomeHive.Application.Features.Utilities.Commands.DeleteUtilityById;
 public class DeleteUtilityByIdCommandValidator : AbstractValidator<DeleteUtilityByIdCommand>
 {
     private readonly IUtilityRepository _utilityRepository;
+
     public DeleteUtilityByIdCommandValidator(IUtilityRepository utilityRepository)
     {
         _utilityRepository = utilityRepository;
@@ -15,6 +16,7 @@ public class DeleteUtilityByIdCommandValidator : AbstractValidator<DeleteUtility
             .MustAsync(UtilityExists)
             .WithMessage("A Utility with the specified Id was not found.");
     }
+
     private async Task<bool> UtilityExists(Guid utilityId, CancellationToken cancellationToken)
     {
         var result = await _utilityRepository.FindByIdAsync(utilityId);

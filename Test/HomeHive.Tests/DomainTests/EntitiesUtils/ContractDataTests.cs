@@ -8,11 +8,11 @@ public class ContractDataTests
     public void ContractData_ParameterizedConstructor_ShouldSetProperties()
     {
         // Arrange
-        Guid estateId = Guid.NewGuid();
-        string contractType = "Rent";
-        DateTime startDate = DateTime.UtcNow;
-        DateTime endDate = DateTime.UtcNow.AddMonths(6);
-        string description = "Lease agreement";
+        var estateId = Guid.NewGuid();
+        var contractType = "Rent";
+        var startDate = DateTime.UtcNow;
+        var endDate = DateTime.UtcNow.AddMonths(6);
+        var description = "Lease agreement";
 
         // Act
         var contractData = new ContractData(estateId, contractType, startDate, endDate, description);

@@ -10,7 +10,7 @@ namespace HomeHive.WebAPI.Controllers;
 
 public class UtilitiesController(
     ITokenCacheService tokenCacheService,
-    ILogger<EstatesController> logger): ApiBaseController
+    ILogger<EstatesController> logger) : ApiBaseController
 {
     [Authorize(Roles = "User, Admin")]
     [HttpPost]
@@ -30,9 +30,9 @@ public class UtilitiesController(
 
         return CreatedAtAction(nameof(Create), result);
     }
-    
+
     [Authorize(Roles = "User, Admin")]
-    [HttpPut ("{utilityId}")]
+    [HttpPut("{utilityId}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<IActionResult> Update([FromRoute] Guid utilityId, [FromBody] string utilityName)
     {
@@ -49,7 +49,7 @@ public class UtilitiesController(
 
         return Ok(result);
     }
-    
+
     [Authorize(Roles = "User, Admin")]
     [HttpDelete("{utilityId}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
@@ -68,7 +68,7 @@ public class UtilitiesController(
 
         return Ok(result);
     }
-    
+
     [Authorize(Roles = "User, Admin")]
     [HttpGet]
     [ProducesResponseType(StatusCodes.Status200OK)]

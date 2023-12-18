@@ -7,7 +7,7 @@ namespace HomeHive.Application.Features.Estates.Commands.CreateEstate;
 public class CreateEstateCommandValidator : AbstractValidator<CreateEstateCommand>
 {
     private readonly IUtilityRepository _utilityRepository;
-    public List<Utility>? Utilities { get; private set; }
+
     public CreateEstateCommandValidator(IUtilityRepository utilityRepository)
     {
         _utilityRepository = utilityRepository;
@@ -42,15 +42,18 @@ public class CreateEstateCommandValidator : AbstractValidator<CreateEstateComman
             .NotEmpty().WithMessage("{PropertyName} is required.")
             .NotNull();
     }
+
+    public List<Utility>? Utilities { get; private set; }
+
     private async Task<bool> ValidateUtilitiesExistence(List<string> utilities, CancellationToken cancellationToken)
     {
         var utilitiesResult = await _utilityRepository.GetAllAsync();
-        
+
         Utilities = utilitiesResult.Value.Where(u => utilities.Contains(u.UtilityName!)).ToList();
-        
+
         if (Utilities == null || Utilities.Count != utilities.Count)
             return false;
-        
+
         return true;
     }
 }

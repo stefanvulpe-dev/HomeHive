@@ -1,0 +1,133 @@
+@using HomeHive.UI.ViewModels.Estates
+@using HomeHive.UI.Utils
+@using HomeHive.UI.Components.Authentication
+@using HomeHive.UI.Interfaces
+@using HomeHive.Domain.Common.EntitiesUtils.Estates
+@inject NavigationManager NavigationManager
+@inject ILogger<LoginForm> Logger
+@inject IEstateDataService EstateService
+
+<p class="fs-3">Add new Estate</p>
+<hr/>
+<EditForm Model="@EstateModel" OnValidSubmit="@HandleValidSubmit" FormName="addEstateForm">
+    <DataAnnotationsValidator/>
+    <CustomValidation @ref="@_customValidation"/>
+    <div class="image-container mb-3">
+        <img src="background1.jpg" alt="avatar image"/>
+        <small>This is the first image the clients we'll see when searching for this estate.</small>
+        <InputFile class="form-control"/>
+    </div>
+    <hr/>
+    <div class="row">
+        <div class="col-md-6">
+            <div class="mb-3">
+                <label for="estateType" class="form-label">Estate Type</label>
+                <InputSelect class="form-control" id="estateType" @bind-Value="EstateModel!.EstateType">
+                    @foreach (var type in Enum.GetValues<EstateType>())
+                    {
+                        <option value="@type">@type</option>
+                    }
+                </InputSelect>
+                <ValidationMessage For="@(() => EstateModel.EstateType)"></ValidationMessage>
+            </div>
+            <div class="mb-3">
+                <label for="estateCategory" class="form-label">Estate Category</label>
+                <InputSelect class="form-control" id="estateCategory" @bind-Value="EstateModel.EstateCategory">
+                    @foreach (var category in Enum.GetValues<EstateCategory>())
+                    {
+                        <option value="@category">@category</option>
+                    }
+                </InputSelect>
+                <ValidationMessage For="@(() => EstateModel.EstateCategory)"></ValidationMessage>
+            </div>
+            <div class="mb-3">
+                <label for="name" class="form-label">Name</label>
+                <InputText class="form-control" id="name" @bind-Value="EstateModel.Name"/>
+                <ValidationMessage For="@(() => EstateModel.Name)"></ValidationMessage>
+            </div>
+            <div class="mb-3">
+                <label for="location" class="form-label">Location</label>
+                <InputText class="form-control" id="location" @bind-Value="EstateModel.Location"/>
+                <ValidationMessage For="@(() => EstateModel.Location)"></ValidationMessage>
+            </div>
+            <div class="mb-3">
+                <label for="price" class="form-label">Price</label>
+                <InputText class="form-control" id="price" @bind-Value="EstateModel.Price"/>
+                <ValidationMessage For="@(() => EstateModel.Price)"></ValidationMessage>
+            </div>
+
+        </div>
+        <div class="col-md-6">
+            <div class="mb-3">
+                <label for="totalArea" class="form-label">Total Area</label>
+                <InputText class="form-control" id="totalArea" @bind-Value="EstateModel.TotalArea"/>
+                <ValidationMessage For="@(() => EstateModel.TotalArea)"></ValidationMessage>
+            </div>
+            <div class="mb-3">
+                <label for="utilities" class="form-label">Utilities</label>
+                @* <InputText class="form-control" id="utilities" @bind-Value="EstateModel.Utilities"/> *@
+                <ValidationMessage For="@(() => EstateModel.Utilities)"></ValidationMessage>
+            </div>
+            <div class="mb-3">
+                <label for="description" class="form-label">Description</label>
+                <InputText class="form-control" id="description" @bind-Value="EstateModel.Description"/>
+                <ValidationMessage For="@(() => EstateModel.Description)"></ValidationMessage>
+            </div>
+            <div class="mb-3">
+                <label for="image" class="form-label">Images</label>
+                <InputFile class="form-control" id="image" @bind-Value="EstateModel.Image"/>
+            </div>
+            <div class="d-flex justify-content-center">
+                <button type="submit" class="btn btn-primary" disabled="@_isSubmitting">Add Estate</button>
+            </div>
+        </div>
+    </div>
+</EditForm>
+
+@code {
+    [SupplyParameterFromForm] private EstateModel? EstateModel { get; set; }
+
+    private CustomValidation? _customValidation;
+
+    private bool _isSubmitting;
+
+    protected override void OnInitialized()
+    {
+        EstateModel ??= new EstateModel();
+    }
+
+    private async void HandleValidSubmit()
+    {
+        _customValidation?.ClearErrors();
+        try
+        {
+            _isSubmitting = true;
+
+            var result = await EstateService.Add(EstateModel!);
+
+            if (result != null)
+            {
+                if (result.IsSuccess)
+                {
+                    Logger.LogInformation(result.Message);
+                    NavigationManager.NavigateTo("/listed-estates");
+                }
+                else
+                {
+                    Logger.LogError(result.Message);
+                    // if (result.ValidationsErrors != null)
+                    //     _customValidation?.DisplayErrors(result.ValidationsErrors);
+                }
+            }
+        }
+        catch (Exception)
+        {
+            Logger.LogError("An error occurred while registering a new estate");
+        }
+        finally
+        {
+            _isSubmitting = false;
+        }
+    }
+
+}

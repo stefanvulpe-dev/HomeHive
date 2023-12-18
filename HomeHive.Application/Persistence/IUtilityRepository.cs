@@ -2,6 +2,6 @@
 
 namespace HomeHive.Application.Persistence;
 
-public interface IUtilityRepository: IAsyncRepository<Utility>
+public interface IUtilityRepository : IAsyncRepository<Utility>
 {
 }

@@ -2,4 +2,4 @@
 
 namespace HomeHive.Application.Features.Utilities.Queries.GetAllUtilities;
 
-public class GetAllUtilitiesQuery :IQuery<GetAllUtilitiesResponse>;
+public class GetAllUtilitiesQuery : IQuery<GetAllUtilitiesResponse>;

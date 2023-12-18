@@ -1,4 +1,3 @@
-using HomeHive.Domain.Common;
 using HomeHive.Domain.Common.EntitiesUtils.Estates;
 using HomeHive.Domain.Common.EntitiesUtils.Rooms;
 using HomeHive.Domain.Entities;
@@ -11,9 +10,9 @@ public class RoomTests
     public void CreateRoom_WithValidData_ShouldCreateRoom()
     {
         // Arrange
-        Result<Utility> utilityResult = Utility.Create("Test Utilities");
-        List<Utility> utilities = new List<Utility> { utilityResult.Value };
-        
+        var utilityResult = Utility.Create("Test Utilities");
+        var utilities = new List<Utility> { utilityResult.Value };
+
         var estate = Estate.Create(Guid.NewGuid(), utilities,
             new EstateData("House", "ForRent",
                 "Test", "Test", 100, "Test",
@@ -32,14 +31,14 @@ public class RoomTests
         Assert.Equal(result.Value.Capacity, roomData.Capacity);
         Assert.Equal(result.Value.Size, roomData.Size);
     }
-    
+
     [Fact]
     public void CreateRoom_WithInvalidName_ShouldNotCreateRoom()
     {
         // Arrange
-        Result<Utility> utilityResult = Utility.Create("Test Utilities");
-        List<Utility> utilities = new List<Utility> { utilityResult.Value };
-        
+        var utilityResult = Utility.Create("Test Utilities");
+        var utilities = new List<Utility> { utilityResult.Value };
+
         var estate = Estate.Create(Guid.NewGuid(), utilities,
             new EstateData("House", "ForRent",
                 "Test", "Test", 100, "Test",
@@ -51,16 +50,16 @@ public class RoomTests
 
         // Assert
         Assert.False(result.IsSuccess);
-        Assert.Equal("Name is not valid.", result.Error);
+        Assert.Equal("Name is not valid.", result.Message);
     }
-    
+
     [Fact]
     public void CreateRoom_WithInvalidRoomType_ShouldNotCreateRoom()
     {
         // Arrange
-        Result<Utility> utilityResult = Utility.Create("Test Utilities");
-        List<Utility> utilities = new List<Utility> { utilityResult.Value };
-        
+        var utilityResult = Utility.Create("Test Utilities");
+        var utilities = new List<Utility> { utilityResult.Value };
+
         var estate = Estate.Create(Guid.NewGuid(), utilities,
             new EstateData("House", "ForRent",
                 "Test", "Test", 100, "Test",
@@ -72,16 +71,16 @@ public class RoomTests
 
         // Assert
         Assert.False(result.IsSuccess);
-        Assert.Equal("RoomType is not valid.", result.Error);
+        Assert.Equal("RoomType is not valid.", result.Message);
     }
-    
+
     [Fact]
     public void CreateRoom_WithInvalidCapacity_ShouldNotCreateRoom()
     {
         // Arrange
-        Result<Utility> utilityResult = Utility.Create("Test Utilities");
-        List<Utility> utilities = new List<Utility> { utilityResult.Value };
-        
+        var utilityResult = Utility.Create("Test Utilities");
+        var utilities = new List<Utility> { utilityResult.Value };
+
         var estate = Estate.Create(Guid.NewGuid(), utilities,
             new EstateData("House", "ForRent",
                 "Test", "Test", 100, "Test",
@@ -93,16 +92,16 @@ public class RoomTests
 
         // Assert
         Assert.False(result.IsSuccess);
-        Assert.Equal("Capacity should be greater than 0.", result.Error);
+        Assert.Equal("Capacity should be greater than 0.", result.Message);
     }
-    
+
     [Fact]
     public void CreateRoom_WithInvalidSize_ShouldNotCreateRoom()
     {
         // Arrange
-        Result<Utility> utilityResult = Utility.Create("Test Utilities");
-        List<Utility> utilities = new List<Utility> { utilityResult.Value };
-        
+        var utilityResult = Utility.Create("Test Utilities");
+        var utilities = new List<Utility> { utilityResult.Value };
+
         var estate = Estate.Create(Guid.NewGuid(), utilities,
             new EstateData("House", "ForRent",
                 "Test", "Test", 100, "Test",
@@ -114,11 +113,11 @@ public class RoomTests
 
         // Assert
         Assert.False(result.IsSuccess);
-        Assert.Equal("Size should be greater than 0.", result.Error);
+        Assert.Equal("Size should be greater than 0.", result.Message);
     }
-    
+
     [Fact]
-public void CreateRoom_WithInvalidEstate_ShouldNotCreateRoom()
+    public void CreateRoom_WithInvalidEstate_ShouldNotCreateRoom()
     {
         // Arrange
         var roomData = new RoomData("Test", RoomType.LivingRoom.ToString(), 200, 200, null);
@@ -128,6 +127,6 @@ public void CreateRoom_WithInvalidEstate_ShouldNotCreateRoom()
 
         // Assert
         Assert.False(result.IsSuccess);
-        Assert.Equal("Estate is required.", result.Error);
+        Assert.Equal("Estate is required.", result.Message);
     }
 }

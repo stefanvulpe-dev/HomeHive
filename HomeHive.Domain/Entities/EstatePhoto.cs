@@ -18,6 +18,7 @@ public sealed class EstatePhoto : BaseEntity
 
         if (estate == null) return Result<EstatePhoto>.Failure("Estate is required.");
 
-        return Result<EstatePhoto>.Success(new EstatePhoto { EstateId = estate.Id, Estate = estate, ObjectName = objectName });
+        return Result<EstatePhoto>.Success(new EstatePhoto
+            { EstateId = estate.Id, Estate = estate, ObjectName = objectName });
     }
 }
