@@ -12,11 +12,18 @@ public class DeleteContractByIdCommandHandler(IContractRepository contractReposi
         var validator = new DeleteContractByIdCommandValidator(contractRepository);
         var validationResult = await validator.ValidateAsync(request, cancellationToken);
         if (!validationResult.IsValid)
-            return new DeleteContractByIdCommandResponse
+        {
+            var validationErrors = validationResult.Errors
+                .GroupBy(x => x.PropertyName, x => x.ErrorMessage)
+                .ToDictionary(group => group.Key, group => group.ToList());
+            
+            return new DeleteContractByIdCommandResponse()
             {
                 IsSuccess = false,
-                ValidationsErrors = validationResult.Errors.ToDictionary(x => x.PropertyName, x => x.ErrorMessage)
+                Message = "Failed to delete contract.",
+                ValidationsErrors = validationErrors
             };
+        }
 
         var result = await contractRepository.DeleteByIdAsync(request.ContractId);
         if (!result.IsSuccess)

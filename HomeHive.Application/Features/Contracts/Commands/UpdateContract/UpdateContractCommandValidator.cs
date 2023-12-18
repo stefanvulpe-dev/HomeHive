@@ -1,6 +1,7 @@
 using FluentValidation;
 using HomeHive.Application.Persistence;
 using HomeHive.Domain.Common;
+using HomeHive.Domain.Common.EntitiesUtils.Contracts;
 using HomeHive.Domain.Entities;
 
 namespace HomeHive.Application.Features.Contracts.Commands.UpdateContract;
@@ -15,11 +16,20 @@ public class UpdateContractCommandValidator : AbstractValidator<UpdateContractCo
         RuleFor(p => p.Id)
             .NotEmpty().WithMessage("ContractId is required.");
         RuleFor(p => p.Data)
+            .Custom((contractData, context) =>
+            {
+                if (contractData != null
+                    && contractData.ContractType != null
+                    && !Enum.IsDefined(typeof(ContractType), contractData.ContractType))
+                    context.AddFailure("ContractType is not valid.");
+            });
+        RuleFor(p => p.Data)
             .NotNull().WithMessage("ContractData is required.")
             .Custom((contractData, context) =>
             {
-                if (string.IsNullOrWhiteSpace(contractData.ContractType!.GetType().Name)
+                if (contractData != null
                     && contractData.EstateId == Guid.Empty
+                    && contractData.ContractType == null
                     && contractData.StartDate == null
                     && contractData.EndDate == null
                     && string.IsNullOrWhiteSpace(contractData.Description))

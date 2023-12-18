@@ -29,6 +29,10 @@ public class GetAllContractsQueryHandler(IContractRepository repository)
                 Description = contract.Description
             }).ToList();
 
-        return new GetAllContractsQueryResponse { Contracts = contracts };
+        return new GetAllContractsQueryResponse
+        {
+            IsSuccess = true,
+            Contracts = contracts
+        };
     }
 }

@@ -13,11 +13,18 @@ public class DeleteUserByIdCommandHandler(IUserRepository userRepository)
 
         var validationResult = await validator.ValidateAsync(command, cancellationToken);
         if (!validationResult.IsValid)
-            return new DeleteUserByIdCommandResponse
+        {
+            var validationErrors = validationResult.Errors
+                .GroupBy(x => x.PropertyName, x => x.ErrorMessage)
+                .ToDictionary(group => group.Key, group => group.ToList());
+            
+            return new DeleteUserByIdCommandResponse()
             {
                 IsSuccess = false,
-                ValidationsErrors = validationResult.Errors.ToDictionary(x => x.PropertyName, x => x.ErrorMessage)
+                Message = "Failed to create contract.",
+                ValidationsErrors = validationErrors
             };
+        }
 
         var result = await userRepository.DeleteByIdAsync(command.UserId);
         if (!result.IsSuccess)
