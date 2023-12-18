@@ -4,13 +4,13 @@ using HomeHive.Domain.Entities;
 
 namespace HomeHive.Application.Features.Estates.Commands.CreateEstate;
 
-public class CreateEstateCommandHandler(IEstateRepository repository, IUtilityRepository utilityRepository, IRoomRepository roomRepository)
+public class CreateEstateCommandHandler(IEstateRepository repository, IUtilityRepository utilityRepository)
     : ICommandHandler<CreateEstateCommand, CreateEstateCommandResponse>
 {
     public async Task<CreateEstateCommandResponse> Handle(CreateEstateCommand command,
         CancellationToken cancellationToken)
     {
-        var validator = new CreateEstateCommandValidator(utilityRepository, roomRepository);
+        var validator = new CreateEstateCommandValidator(utilityRepository);
         var validatorResult = await validator.ValidateAsync(command, cancellationToken);
 
         if (!validatorResult.IsValid)

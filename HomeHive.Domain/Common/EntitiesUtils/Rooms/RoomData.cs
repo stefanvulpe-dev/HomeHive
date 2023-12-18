@@ -1,5 +1,13 @@
-﻿using HomeHive.Domain.Entities;
+﻿using System.ComponentModel.DataAnnotations;
+using HomeHive.Domain.Entities;
 
 namespace HomeHive.Domain.Common.EntitiesUtils.Rooms;
 
-public record RoomData(string? RoomType, int Capacity, int Size);
+public class RoomData
+{
+    public Guid EstateId { get; set; }
+    
+    public string? RoomType { get; set; }
+
+    public int Quantity { get; set; }
+}

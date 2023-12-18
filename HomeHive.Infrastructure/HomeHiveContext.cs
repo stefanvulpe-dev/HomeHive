@@ -13,6 +13,7 @@ public class HomeHiveContext(
     : DbContext(options)
 {
     public DbSet<EstatePhoto>? EstatePhotos { get; set; }
+    public DbSet<EstateRoom>? EstateRoom { get; set; }
     public DbSet<Contract>? Contracts { get; set; }
     public DbSet<Estate>? Estates { get; set; }
     public DbSet<Room>? Rooms { get; set; }

@@ -21,4 +21,13 @@ public class EstateRoom: BaseEntity
     
     public Estate? Estate { get; private set; }
     public Room? Room { get; private set; }
+    
+    public static Result<EstateRoom> Create(Guid estateId, Guid roomId, int quantity)
+    {
+        if (estateId == Guid.Empty) return Result<EstateRoom>.Failure("Estate is required.");
+        if (roomId == Guid.Empty) return Result<EstateRoom>.Failure("Room is required.");
+        if (quantity <= 0) return Result<EstateRoom>.Failure("Quantity must be greater than 0.");
+        
+        return Result<EstateRoom>.Success(new EstateRoom { EstateId = estateId, RoomId = roomId, Quantity = quantity });
+    }
 }

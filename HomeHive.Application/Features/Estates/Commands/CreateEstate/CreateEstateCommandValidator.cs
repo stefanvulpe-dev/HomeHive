@@ -7,12 +7,10 @@ namespace HomeHive.Application.Features.Estates.Commands.CreateEstate;
 public class CreateEstateCommandValidator : AbstractValidator<CreateEstateCommand>
 {
     private readonly IUtilityRepository _utilityRepository;
-    private readonly IRoomRepository _roomRepository;
     public List<Utility>? Utilities { get; private set; }
-    public CreateEstateCommandValidator(IUtilityRepository utilityRepository, IRoomRepository roomRepository)
+    public CreateEstateCommandValidator(IUtilityRepository utilityRepository)
     {
         _utilityRepository = utilityRepository;
-        _roomRepository = roomRepository;
         RuleFor(p => p.EstateData.EstateType)
             .NotEmpty().WithMessage("{PropertyName} is required.")
             .NotNull();
