@@ -9,7 +9,6 @@ public class CreateEstateCommandValidator : AbstractValidator<CreateEstateComman
     private readonly IUtilityRepository _utilityRepository;
     private readonly IRoomRepository _roomRepository;
     public List<Utility>? Utilities { get; private set; }
-    public List<Room>? Rooms { get; private set; }
     public CreateEstateCommandValidator(IUtilityRepository utilityRepository, IRoomRepository roomRepository)
     {
         _utilityRepository = utilityRepository;
