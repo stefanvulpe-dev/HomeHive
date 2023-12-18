@@ -14,11 +14,18 @@ public class CreateEstateCommandHandler(IEstateRepository repository, IUtilityRe
         var validatorResult = await validator.ValidateAsync(command, cancellationToken);
 
         if (!validatorResult.IsValid)
-            return new CreateEstateCommandResponse
+        {
+            var validationErrors = validatorResult.Errors
+                .GroupBy(x => x.PropertyName, x => x.ErrorMessage)
+                .ToDictionary(group => group.Key, group => group.ToList());
+            
+            return new CreateEstateCommandResponse()
             {
                 IsSuccess = false,
-                ValidationsErrors = validatorResult.Errors.ToDictionary(x => x.PropertyName, x => x.ErrorMessage)
+                Message = "Failed to create contract.",
+                ValidationsErrors = validationErrors
             };
+        }
 
         var result = Estate.Create(command.OwnerId, validator.Utilities!, command.EstateData);
 
@@ -26,7 +33,7 @@ public class CreateEstateCommandHandler(IEstateRepository repository, IUtilityRe
             return new CreateEstateCommandResponse
             {
                 IsSuccess = false,
-                ValidationsErrors = new Dictionary<string, string> { { "Estate", result.Error } }
+                ValidationsErrors = new Dictionary<string, List<string>> { { "Estate", new List<string> { result.Error } } }
             };
         var estate = result.Value;
 

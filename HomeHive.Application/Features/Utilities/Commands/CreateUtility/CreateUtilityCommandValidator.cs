@@ -18,6 +18,9 @@ public class CreateUtilityCommandValidator: AbstractValidator<CreateUtilityComma
     }
     private async Task<bool> ValidateUtilityNameDoesNotExist(string utilityName, CancellationToken cancellationToken)
     {
+        if (string.IsNullOrEmpty(utilityName))
+            return true;
+        
         var utilitiesResult = await _utilityRepository.GetAllAsync();
         foreach (var utility in utilitiesResult.Value)
         {

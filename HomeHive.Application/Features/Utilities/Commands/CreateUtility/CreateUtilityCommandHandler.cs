@@ -11,18 +11,25 @@ public class CreateUtilityCommandHandler(IUtilityRepository utilityRepository) :
         var validator = new CreateUtilityCommandValidator(utilityRepository);
         var validationResult = await validator.ValidateAsync(request, cancellationToken);
         if (!validationResult.IsValid)
+        {
+            var validationErrors = validationResult.Errors
+                .GroupBy(x => x.PropertyName, x => x.ErrorMessage)
+                .ToDictionary(group => group.Key, group => group.ToList());
+            
             return new CreateUtilityCommandResponse
             {
                 IsSuccess = false,
-                ValidationsErrors = validationResult.Errors.ToDictionary(x => x.PropertyName, x => x.ErrorMessage)
+                ValidationsErrors = validationErrors
             };
+        }
+        
         var utilityResult = Utility.Create(request.UtilityName);
         
         if(!utilityResult.IsSuccess)
             return new CreateUtilityCommandResponse
             {
                 IsSuccess = false,
-                ValidationsErrors = new Dictionary<string, string> { { "Utility", utilityResult.Error } }
+                ValidationsErrors = new Dictionary<string, List<string>> { { "Utility", new List<string> { utilityResult.Error } } }
             };
         
         var utility = utilityResult.Value;
