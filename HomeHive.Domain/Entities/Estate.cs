@@ -7,7 +7,6 @@ public sealed class Estate : BaseEntity
 {
     private readonly List<Contract>? _contracts = null;
     private readonly List<EstatePhoto>? _estatePhotos = null;
-    private readonly List<Room>? _rooms = null;
 
     private Estate()
     {
@@ -25,13 +24,13 @@ public sealed class Estate : BaseEntity
     public string? EstateAvatar { get; private set; }
     public IReadOnlyList<Contract>? Contracts => _contracts;
     public IReadOnlyList<EstatePhoto>? EstatePhotos => _estatePhotos;
-    public IReadOnlyList<Room>? Rooms => _rooms;
+    public ICollection<EstateRoom>? EstateRooms { get; private set; }
 
     public static Result<Estate> Create(Guid ownerId, List<Utility> utilities, EstateData estateData)
     {
         var (estateType, estateCategory, name,
-            location, price, totalArea, utilitiesNames,
-            description, image) = estateData;
+            location, price, totalArea, utilitiesNames
+            ,description, image) = estateData;
 
         if (ownerId == Guid.Empty) return Result<Estate>.Failure("OwnerId is required.");
 

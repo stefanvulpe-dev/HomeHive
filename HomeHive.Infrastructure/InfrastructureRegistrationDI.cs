@@ -28,6 +28,7 @@ public static class InfrastructureRegistrationDI
         services.AddScoped<IContractRepository, ContractRepository>();
         services.AddScoped<IEstateRepository, EstateRepository>();
         services.AddScoped<IUtilityRepository, UtilityRepository>();
+        services.AddScoped<IRoomRepository, RoomRepository>();
         services.AddSingleton(x => new BlobServiceClient(configuration["AzureBlobStorage:ConnectionString"]));
         services.Configure<BlobStorageOptions>(configuration.GetSection("AzureBlobStorage"));
         services.AddSingleton<IBlobStorageService, BlobStorageService>();
