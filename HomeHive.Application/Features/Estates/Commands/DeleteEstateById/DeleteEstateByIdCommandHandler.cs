@@ -13,11 +13,18 @@ public class DeleteEstateByIdCommandHandler(IEstateRepository estateRepository)
 
         var validationResult = await validator.ValidateAsync(command, cancellationToken);
         if (!validationResult.IsValid)
-            return new DeleteEstateByIdCommandResponse
+        {
+            var validationErrors = validationResult.Errors
+                .GroupBy(x => x.PropertyName, x => x.ErrorMessage)
+                .ToDictionary(group => group.Key, group => group.ToList());
+            
+            return new DeleteEstateByIdCommandResponse()
             {
                 IsSuccess = false,
-                ValidationsErrors = validationResult.Errors.ToDictionary(k => k.PropertyName, v => v.ErrorMessage)
+                Message = "Failed to create contract.",
+                ValidationsErrors = validationErrors
             };
+        }
 
         var result = await estateRepository.DeleteByIdAsync(command.EstateId);
         if (!result.IsSuccess)

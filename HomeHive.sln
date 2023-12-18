@@ -26,6 +26,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HomeHive.WebAPI", "HomeHive
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HomeHive.Identity", "HomeHive.Identity\HomeHive.Identity.csproj", "{E4630F7C-01E2-4196-8513-A3B73AAE808F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HomeHive.Tests", "Test\HomeHive.Tests\HomeHive.Tests.csproj", "{325387FC-CADA-41B5-BD8A-0A755220A277}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -43,6 +45,7 @@ Global
 		{55E91589-6A98-4FB2-A76B-417744665D93} = {E4AA450B-DA3D-457B-B334-68F1F00EAD56}
 		{71AACE87-F70F-4EDB-9D33-673D1EA32E94} = {14193E4E-0848-4EA7-A59E-118A6052F7C2}
 		{E4630F7C-01E2-4196-8513-A3B73AAE808F} = {E4AA450B-DA3D-457B-B334-68F1F00EAD56}
+		{325387FC-CADA-41B5-BD8A-0A755220A277} = {92B2958A-00B0-4C83-AED8-1BE1FA351014}
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{2E3C4300-5E1F-4E51-B142-9D8FB797B0DD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
@@ -65,5 +68,9 @@ Global
 		{E4630F7C-01E2-4196-8513-A3B73AAE808F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E4630F7C-01E2-4196-8513-A3B73AAE808F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E4630F7C-01E2-4196-8513-A3B73AAE808F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{325387FC-CADA-41B5-BD8A-0A755220A277}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{325387FC-CADA-41B5-BD8A-0A755220A277}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{325387FC-CADA-41B5-BD8A-0A755220A277}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{325387FC-CADA-41B5-BD8A-0A755220A277}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

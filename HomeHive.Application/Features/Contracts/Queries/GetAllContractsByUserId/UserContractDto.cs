@@ -1,6 +1,6 @@
 namespace HomeHive.Application.Features.Contracts.Queries.GetAllContractsByUserId;
 
-public class UserContractDto
+public record UserContractDto
 {
     public Guid EstateId { get; init; }
     public string? ContractType { get; init; }

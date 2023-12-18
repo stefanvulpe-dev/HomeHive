@@ -14,7 +14,7 @@ public class GetAllContractsByUserIdQueryHandler(IContractRepository repository)
             return new GetAllContractsByUserIdResponse
             {
                 IsSuccess = false,
-                Message = $"Contracts not found for user with id: {request.UserId}"
+                Message = $"Contracts not found for user with id: {request.UserId}."
             };
 
         return new GetAllContractsByUserIdResponse
