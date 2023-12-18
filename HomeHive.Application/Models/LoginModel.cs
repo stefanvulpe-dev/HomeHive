@@ -6,7 +6,7 @@ public class LoginModel
 {
     [Required(ErrorMessage = "Username is required.")]
     [MinLength(5, ErrorMessage = "Username must be at least 5 characters.")]
-    [MaxLength(15, ErrorMessage = "Username cannot be more than 25 characters.")]
+    [MaxLength(25, ErrorMessage = "Username cannot be more than 25 characters.")]
     public string UserName { get; set; } = string.Empty;
 
     [Required(ErrorMessage = "Password is required")]

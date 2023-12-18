@@ -3,6 +3,7 @@ using HomeHive.Application.Contracts.Interfaces;
 using HomeHive.Application.Features.Users.Commands.DeleteProfilePicture;
 using HomeHive.Application.Features.Users.Commands.DeleteUserById;
 using HomeHive.Application.Features.Users.Commands.ResetPassword;
+using HomeHive.Application.Features.Users.Commands.UpdateEmail;
 using HomeHive.Application.Features.Users.Commands.UploadProfilePicture;
 using HomeHive.Application.Features.Users.Queries.GetAllUsers;
 using HomeHive.Application.Features.Users.Queries.GetProfilePicture;
@@ -140,25 +141,25 @@ public class UsersController(
         return NoContent();
     }
 
-    [Authorize(Roles = "Admin, User")]
-    [HttpGet("reset-token")]
+    [Authorize(Roles = "User, Admin")]
+    [HttpGet("reset-token/{purpose}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> GetResetToken()
+    public async Task<IActionResult> GetResetToken(string purpose)
     {
         var isTokenRevoked = await tokenCacheService.IsTokenRevokedAsync();
         if (isTokenRevoked) return Unauthorized(new { message = "Token is revoked" });
 
         var userId = currentUserService.GetCurrentUserId();
 
-        var result = await Mediator.Send(new GetResetTokenQuery(userId));
+        var result = await Mediator.Send(new GetResetTokenQuery(userId, purpose));
 
         if (!result.IsSuccess) return BadRequest(result);
 
         return Ok(result);
     }
 
-    [Authorize(Roles = "Admin, User")]
+    [Authorize(Roles = "User, Admin")]
     [HttpPut("reset-password")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordModel model)
@@ -167,6 +168,21 @@ public class UsersController(
         if (isTokenRevoked) return Unauthorized(new { message = "Token is revoked" });
 
         var result = await Mediator.Send(new ResetPasswordCommand(currentUserService.GetCurrentUserId(), model));
+
+        if (!result.IsSuccess) return BadRequest(result);
+
+        return Ok(result);
+    }
+    
+    [Authorize(Roles = "Admin, User")]
+    [HttpPut("update-email")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    public async Task<IActionResult> UpdateEmail([FromBody] UpdateEmailModel model)
+    {
+        var isTokenRevoked = await tokenCacheService.IsTokenRevokedAsync();
+        if (isTokenRevoked) return Unauthorized(new { message = "Token is revoked" });
+
+        var result = await Mediator.Send(new UpdateEmailCommand(currentUserService.GetCurrentUserId(), model));
 
         if (!result.IsSuccess) return BadRequest(result);
 

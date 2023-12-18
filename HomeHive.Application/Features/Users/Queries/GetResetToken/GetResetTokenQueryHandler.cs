@@ -10,6 +10,15 @@ public class GetResetTokenQueryHandler(UserManager<User> userManager, IEmailServ
 {
     public async Task<GetResetTokenQueryResponse> Handle(GetResetTokenQuery request, CancellationToken cancellationToken)
     {
+        if (request.Purpose is not ("ResetPassword" or "UpdateEmail"))
+        {
+            return new GetResetTokenQueryResponse
+            {
+                IsSuccess = false,
+                Message = "Invalid purpose"
+            };
+        }
+        
         var user = await userManager.FindByIdAsync(request.UserId.ToString());
         
         if (user is null)
@@ -23,8 +32,16 @@ public class GetResetTokenQueryHandler(UserManager<User> userManager, IEmailServ
         
         var token = GenerateToken(64);
         
-        user.ResetPasswordToken = token;
-        user.ResetPasswordTokenExpires = DateTime.UtcNow.AddMinutes(15);
+        if (request.Purpose == "ResetPassword")
+        {
+            user.ResetPasswordToken = token;
+            user.ResetPasswordTokenExpires = DateTime.UtcNow.AddMinutes(15);
+        }
+        else
+        {
+            user.ResetEmailToken = token;
+            user.ResetEmailTokenExpires = DateTime.UtcNow.AddMinutes(15);
+        }
         
         var result = await userManager.UpdateAsync(user);
         
@@ -37,7 +54,9 @@ public class GetResetTokenQueryHandler(UserManager<User> userManager, IEmailServ
             };
         }
         
-        var emailResult = await emailService.SendEmailAsync(user.Email!, "Reset Password", $"Your reset token is {token}");
+        var subject = request.Purpose == "ResetPassword" ? "Reset Password" : "Update Email";
+        
+        var emailResult = await emailService.SendEmailAsync(user.Email!, subject, $"Your security token is {token}");
         
         if (!emailResult.IsSuccess)
         {

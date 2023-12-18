@@ -2,4 +2,4 @@
 
 namespace HomeHive.Application.Features.Users.Queries.GetResetToken;
 
-public record GetResetTokenQuery(Guid UserId): IQuery<GetResetTokenQueryResponse>;
+public record GetResetTokenQuery(Guid UserId, string Purpose): IQuery<GetResetTokenQueryResponse>;
