@@ -48,7 +48,7 @@ public class CreateEstateCommandHandler(IEstateRepository repository, IUtilityRe
                 return new CreateEstateCommandResponse
                 {
                     IsSuccess = false,
-                    ValidationsErrors = new Dictionary<string, List<string>> { { "EstateRoom", new List<string> { result.Error } } }
+                    ValidationsErrors = new Dictionary<string, List<string>> { { "EstateRoom",  estateRoom.ValidationErrors!.Select(er => er.Value).ToList() } }
                 };
         
             await estateRoomRepository.AddAsync(estateRoom.Value);

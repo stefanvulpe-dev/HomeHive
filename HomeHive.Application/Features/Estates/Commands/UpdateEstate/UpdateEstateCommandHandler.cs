@@ -71,7 +71,7 @@ public class UpdateEstateCommandHandler : ICommandHandler<UpdateEstateCommand, U
                         return new UpdateEstateCommandResponse
                         {
                             IsSuccess = false,
-                            ValidationsErrors = new Dictionary<string, List<string>> { { "EstateRoom", new List<string> { estateRoom.Error } } }
+                            ValidationsErrors = new Dictionary<string, List<string>> { { "EstateRoom",  estateRoom.ValidationErrors!.Select(er => er.Value).ToList() } }
                         };
             
                     await _estateRoomRepository.AddAsync(estateRoomResult.Value);

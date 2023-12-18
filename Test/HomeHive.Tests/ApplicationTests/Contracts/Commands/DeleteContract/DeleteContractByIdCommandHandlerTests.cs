@@ -94,6 +94,6 @@ public class DeleteContractByIdCommandHandlerTests
 
         // Assert
         Assert.False(result.IsSuccess);
-        Assert.Equal($"Error deleting contract with Id {command.ContractId}", result.Message);
+        Assert.Equal($"Message deleting contract with Id {command.ContractId}", result.Message);
     }
 }

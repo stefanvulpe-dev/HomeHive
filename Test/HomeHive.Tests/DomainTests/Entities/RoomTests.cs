@@ -24,6 +24,6 @@ public class RoomTests
 
         // Assert
         Assert.False(result.IsSuccess);
-        Assert.Equal("RoomType is not valid.", result.Error);
+        Assert.Equal("RoomType is not valid.", result.Message);
     }
 }

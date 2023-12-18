@@ -85,7 +85,7 @@ public sealed class Estate : BaseEntity
         });
     }
 
-    public void Update(List<Utility> utilities, EstateData estateData)
+    public void Update(List<Utility> utilities, List<EstateRoom> rooms, EstateData estateData)
     {
         if (estateData.EstateType != null) EstateType = Enum.Parse<EstateType>(estateData.EstateType);
 
