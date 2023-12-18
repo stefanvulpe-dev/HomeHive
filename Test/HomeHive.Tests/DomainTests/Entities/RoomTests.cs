@@ -51,7 +51,7 @@ public class RoomTests
 
         // Assert
         Assert.False(result.IsSuccess);
-        Assert.Equal("Name is not valid.", result.Error);
+        Assert.Equal("Name is not valid.", result.Message);
     }
     
     [Fact]
@@ -72,7 +72,7 @@ public class RoomTests
 
         // Assert
         Assert.False(result.IsSuccess);
-        Assert.Equal("RoomType is not valid.", result.Error);
+        Assert.Equal("RoomType is not valid.", result.Message);
     }
     
     [Fact]
@@ -93,7 +93,7 @@ public class RoomTests
 
         // Assert
         Assert.False(result.IsSuccess);
-        Assert.Equal("Capacity should be greater than 0.", result.Error);
+        Assert.Equal("Capacity should be greater than 0.", result.Message);
     }
     
     [Fact]
@@ -114,7 +114,7 @@ public class RoomTests
 
         // Assert
         Assert.False(result.IsSuccess);
-        Assert.Equal("Size should be greater than 0.", result.Error);
+        Assert.Equal("Size should be greater than 0.", result.Message);
     }
     
     [Fact]
@@ -128,6 +128,6 @@ public void CreateRoom_WithInvalidEstate_ShouldNotCreateRoom()
 
         // Assert
         Assert.False(result.IsSuccess);
-        Assert.Equal("Estate is required.", result.Error);
+        Assert.Equal("Estate is required.", result.Message);
     }
 }

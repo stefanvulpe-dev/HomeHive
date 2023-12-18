@@ -50,12 +50,11 @@ public class UpdateEstateCommandValidator : AbstractValidator<UpdateEstateComman
     {
         var utilitiesResult = await _utilityRepository.GetAllAsync();
         var utilitiesNames = utilitiesResult.Value.Select(u => u.UtilityName).ToList();
-        foreach (var utility in utilities)
+        if (utilities!.Any(utility => !utilitiesNames.Contains(utility)))
         {
-            if (!utilitiesNames.Contains(utility))
-                return false;
+            return false;
         }
-        Utilities = utilitiesResult.Value.Where(u => utilities.Contains(u.UtilityName!)).ToList();
+        Utilities = utilitiesResult.Value.Where(u => utilities!.Contains(u.UtilityName!)).ToList();
         return true;
     }
 }

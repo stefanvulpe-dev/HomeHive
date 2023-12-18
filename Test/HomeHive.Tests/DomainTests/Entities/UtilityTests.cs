@@ -33,7 +33,7 @@ public class UtilityTests
         // Assert
         Assert.False(result.IsSuccess);
         Assert.Null(result.Value);
-        Assert.Equal("Name is required.", result.Error);
+        Assert.Equal("Name is required.", result.Message);
     }
 
     [Fact]

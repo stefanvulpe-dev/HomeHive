@@ -47,7 +47,7 @@ public class EstatePhotoTests
 
         // Assert
         Assert.False(result.IsSuccess);
-        Assert.Equal("Object name is not valid!", result.Error);
+        Assert.Equal("Object name is not valid!", result.Message);
     }
     
     [Fact]
@@ -61,7 +61,7 @@ public class EstatePhotoTests
 
         // Assert
         Assert.False(result.IsSuccess);
-        Assert.Equal("Estate is required.", result.Error);
+        Assert.Equal("Estate is required.", result.Message);
     }
     
 }

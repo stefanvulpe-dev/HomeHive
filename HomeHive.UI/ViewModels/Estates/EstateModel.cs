@@ -28,7 +28,7 @@ public class EstateModel
     public string? TotalArea { get; set; }
 
     [Required(ErrorMessage = "Estate utilities is required")]
-    public string? Utilities { get; set; }
+    public List<string>? Utilities { get; set; }
 
     [Required(ErrorMessage = "Estate description is required")]
     public string? Description { get; set; }

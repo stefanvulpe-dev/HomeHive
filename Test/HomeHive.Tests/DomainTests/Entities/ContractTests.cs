@@ -15,7 +15,7 @@ public class ContractTests
        var result = Contract.Create(userId, contractData);
        // Assert
        Assert.False(result.IsSuccess);
-       Assert.Equal("EstateId is required.", result.Error);
+       Assert.Equal("EstateId is required.", result.Message);
    }
    
    [Fact]
@@ -28,7 +28,7 @@ public class ContractTests
        var result = Contract.Create(Guid.Empty, contractData);
        // Assert
        Assert.False(result.IsSuccess);
-       Assert.Equal("UserId is required.", result.Error);
+       Assert.Equal("UserId is required.", result.Message);
    }
    
    [Fact]
@@ -41,7 +41,7 @@ public class ContractTests
        var result = Contract.Create(userId, contractData);
        // Assert
        Assert.False(result.IsSuccess);
-       Assert.Equal("Type is not valid.", result.Error);
+       Assert.Equal("Type is not valid.", result.Message);
        
    }
    
@@ -55,7 +55,7 @@ public class ContractTests
        var result = Contract.Create(userId, contractData);
        // Assert
        Assert.False(result.IsSuccess);
-       Assert.Equal("Start date should not be default!", result.Error);
+       Assert.Equal("Start date should not be default!", result.Message);
        
    }
    
@@ -69,7 +69,7 @@ public class ContractTests
        var result = Contract.Create(userId, contractData);
        // Assert
        Assert.False(result.IsSuccess);
-       Assert.Equal("End date should not be default!", result.Error);
+       Assert.Equal("End date should not be default!", result.Message);
        
    }
    
@@ -83,7 +83,7 @@ public class ContractTests
        var result = Contract.Create(userId, contractData);
        // Assert
        Assert.False(result.IsSuccess);
-       Assert.Equal("Description is not valid!", result.Error);
+       Assert.Equal("Description is not valid!", result.Message);
        
    }
 

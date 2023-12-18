@@ -17,7 +17,7 @@ public class AuthService(IHttpClientFactory httpClientFactory, ILocalStorageServ
 
     public async Task<ApiResponse?> Register(RegistrationModel registrationModel)
     {
-        var result = await _httpClient.PostAsJsonAsync("api/v1/Authentication/register", registrationModel);
+        var result = await _httpClient.PostAsJsonAsync("/api/v1/Authentication/register", registrationModel);
         return await result.Content.ReadFromJsonAsync<ApiResponse>();
     }
 
