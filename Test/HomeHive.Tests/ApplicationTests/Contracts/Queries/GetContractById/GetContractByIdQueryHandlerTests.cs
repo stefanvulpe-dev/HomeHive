@@ -10,52 +10,53 @@ namespace HomeHive.Tests.ApplicationTests.Contracts.Queries.GetContractById;
 public class GetContractByIdQueryHandlerTests
 {
     private readonly IContractRepository _contractRepositoryMock;
-    
+
     public GetContractByIdQueryHandlerTests()
     {
         _contractRepositoryMock = Substitute.For<IContractRepository>();
     }
-    
+
     [Fact]
     public async Task Handle_ShouldReturnFailureResponse_WhenContractRepositoryGetByIdAsyncFails()
     {
         // Arrange
-        Guid contractId = Guid.NewGuid();
+        var contractId = Guid.NewGuid();
         var request = new GetContractByIdQuery(contractId);
         _contractRepositoryMock.FindByIdAsync(contractId).Returns(Result<Contract>.Failure("Failed to get contract."));
         var handler = new GetContractByIdQueryHandler(_contractRepositoryMock);
-        
+
         // Act
         var result = await handler.Handle(request, CancellationToken.None);
-        
+
         // Assert
         Assert.False(result.IsSuccess);
         Assert.Equal("Contract not found.", result.Message);
     }
-    
+
     [Fact]
     public async Task Handle_ShouldReturnSuccessResponse_WhenContractRepositoryGetByIdAsyncSucceeds()
     {
         // Arrange
-        ContractData contractData = new ContractData(
+        var contractData = new ContractData(
             Guid.NewGuid(),
             ContractType.Rent.ToString(),
             DateTime.Now,
             DateTime.Now,
             "Test description."
         );
-        
-        Result<Contract> contractResult = Contract.Create(Guid.NewGuid(), contractData);
-        
+
+        var contractResult = Contract.Create(Guid.NewGuid(), contractData);
+
         var request = new GetContractByIdQuery(contractResult.Value.Id);
-        
-        _contractRepositoryMock.FindByIdAsync(contractResult.Value.Id).Returns(Result<Contract>.Success(contractResult.Value));
-        
+
+        _contractRepositoryMock.FindByIdAsync(contractResult.Value.Id)
+            .Returns(Result<Contract>.Success(contractResult.Value));
+
         var handler = new GetContractByIdQueryHandler(_contractRepositoryMock);
-        
+
         // Act
         var result = await handler.Handle(request, CancellationToken.None);
-        
+
         // Assert
         Assert.True(result.IsSuccess);
         Assert.NotNull(result.Contract);

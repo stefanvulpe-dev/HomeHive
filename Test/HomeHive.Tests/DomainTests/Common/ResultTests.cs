@@ -20,7 +20,7 @@ public class ResultTests
     public void Success_WithMessage_ShouldCreateSuccessfulResultWithMessageAndWithoutErrors()
     {
         // Arrange
-        string message = "Operation succeeded";
+        var message = "Operation succeeded";
 
         // Act
         var result = Result.Success(message);
@@ -35,7 +35,7 @@ public class ResultTests
     public void Failure_WithMessage_ShouldCreateFailureResultWithMessageAndWithoutErrors()
     {
         // Arrange
-        string errorMessage = "Operation failed";
+        var errorMessage = "Operation failed";
 
         // Act
         var result = Result.Failure(errorMessage);
@@ -50,7 +50,7 @@ public class ResultTests
     public void Failure_WithMessageAndErrors_ShouldCreateFailureResultWithMessageAndErrors()
     {
         // Arrange
-        string errorMessage = "Operation failed";
+        var errorMessage = "Operation failed";
         var errors = new Dictionary<string, string>
         {
             { "Field1", "Error 1" },

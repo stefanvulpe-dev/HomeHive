@@ -7,38 +7,38 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="Blazored.LocalStorage" Version="4.4.0" />
-        <PackageReference Include="Microsoft.AspNetCore.Components.Authorization" Version="8.0.0" />
+        <PackageReference Include="Blazored.LocalStorage" Version="4.4.0"/>
+        <PackageReference Include="Microsoft.AspNetCore.Components.Authorization" Version="8.0.0"/>
         <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="8.0.0"/>
         <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="8.0.0" PrivateAssets="all"/>
-        <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="7.0.3" />
+        <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="7.0.3"/>
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\HomeHive.Application\HomeHive.Application.csproj" />
-      <ProjectReference Include="..\HomeHive.Domain\HomeHive.Domain.csproj" />
+        <ProjectReference Include="..\HomeHive.Application\HomeHive.Application.csproj"/>
+        <ProjectReference Include="..\HomeHive.Domain\HomeHive.Domain.csproj"/>
     </ItemGroup>
 
     <ItemGroup>
-      <Reference Include="Microsoft.AspNetCore.Http.Abstractions">
-        <HintPath>..\..\..\..\..\..\..\Program Files\dotnet\shared\Microsoft.AspNetCore.App\8.0.0\Microsoft.AspNetCore.Http.Abstractions.dll</HintPath>
-      </Reference>
-      <Reference Include="Microsoft.Extensions.Hosting.Abstractions">
-        <HintPath>..\..\..\..\..\..\..\Program Files\dotnet\shared\Microsoft.AspNetCore.App\8.0.0\Microsoft.Extensions.Hosting.Abstractions.dll</HintPath>
-      </Reference>
-      <Reference Include="Microsoft.Extensions.Http">
-        <HintPath>..\..\..\..\..\..\..\Program Files\dotnet\shared\Microsoft.AspNetCore.App\8.0.0\Microsoft.Extensions.Http.dll</HintPath>
-      </Reference>
+        <Reference Include="Microsoft.AspNetCore.Http.Abstractions">
+            <HintPath>..\..\..\..\..\..\..\Program Files\dotnet\shared\Microsoft.AspNetCore.App\8.0.0\Microsoft.AspNetCore.Http.Abstractions.dll</HintPath>
+        </Reference>
+        <Reference Include="Microsoft.Extensions.Hosting.Abstractions">
+            <HintPath>..\..\..\..\..\..\..\Program Files\dotnet\shared\Microsoft.AspNetCore.App\8.0.0\Microsoft.Extensions.Hosting.Abstractions.dll</HintPath>
+        </Reference>
+        <Reference Include="Microsoft.Extensions.Http">
+            <HintPath>..\..\..\..\..\..\..\Program Files\dotnet\shared\Microsoft.AspNetCore.App\8.0.0\Microsoft.Extensions.Http.dll</HintPath>
+        </Reference>
     </ItemGroup>
 
     <ItemGroup>
-      <Content Update="wwwroot\appsettings.json">
-        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      </Content>
+        <Content Update="wwwroot\appsettings.json">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>
     </ItemGroup>
 
     <ItemGroup>
-      <_ContentIncludedByDefault Remove="wwwroot\js\sidebars.js" />
+        <_ContentIncludedByDefault Remove="wwwroot\js\sidebars.js"/>
     </ItemGroup>
 
 </Project>

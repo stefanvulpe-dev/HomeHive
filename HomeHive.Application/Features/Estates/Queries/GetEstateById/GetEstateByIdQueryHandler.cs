@@ -17,7 +17,7 @@ public class GetEstateByIdQueryHandler(IEstateRepository repository)
                 Message = "Estate not found."
             };
 
-        
+
         return new GetEstateByIdResponse
         {
             IsSuccess = true,

@@ -3,9 +3,10 @@ using HomeHive.Application.Persistence;
 
 namespace HomeHive.Application.Features.Utilities.Commands.CreateUtility;
 
-public class CreateUtilityCommandValidator: AbstractValidator<CreateUtilityCommand>
+public class CreateUtilityCommandValidator : AbstractValidator<CreateUtilityCommand>
 {
     private readonly IUtilityRepository _utilityRepository;
+
     public CreateUtilityCommandValidator(IUtilityRepository utilityRepository)
     {
         _utilityRepository = utilityRepository;
@@ -16,17 +17,16 @@ public class CreateUtilityCommandValidator: AbstractValidator<CreateUtilityComma
             .MustAsync(ValidateUtilityNameDoesNotExist)
             .WithMessage("A utility with the same name already exists.");
     }
+
     private async Task<bool> ValidateUtilityNameDoesNotExist(string utilityName, CancellationToken cancellationToken)
     {
         if (string.IsNullOrEmpty(utilityName))
             return true;
-        
+
         var utilitiesResult = await _utilityRepository.GetAllAsync();
         foreach (var utility in utilitiesResult.Value)
-        {
             if (utility.UtilityName == utilityName)
                 return false;
-        }
         return true;
     }
 }

@@ -32,8 +32,4 @@ public class RegistrationModel
     [Required(ErrorMessage = "ConfirmPassword is required.")]
     [Compare("Password", ErrorMessage = "Passwords do not match.")]
     public string? ConfirmPassword { get; set; }
-
-    [Required(ErrorMessage = "Phone number is required.")]
-    [Phone(ErrorMessage = "Phone number is not valid.")]
-    public string? PhoneNumber { get; set; }
 }

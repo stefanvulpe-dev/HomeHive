@@ -103,7 +103,7 @@ h1:focus {
     box-shadow: var(--shadow-4);
 }
 
-.card{
+.card {
     box-shadow: var(--shadow-2);
     -webkit-transition: all 0.3s ease-out 0s;
     -moz-transition: all 0.3s ease-out 0s;
@@ -150,16 +150,17 @@ h1:focus {
     color: var(--dark-3);
 }
 
-.profile-card{
-    background-color: rgb(255,255,255,0.5);
+.profile-card {
+    background-color: rgb(255, 255, 255, 0.5);
 }
 
 /* sidebar */
 @media (max-width: 576px) {
     .shadow-bottom {
-        box-shadow: 0 0 15px rgb(0,0,0,0.4);
+        box-shadow: 0 0 15px rgb(0, 0, 0, 0.4);
     }
 }
+
 .image-container img {
     display: block;
     width: 100%;
@@ -167,6 +168,6 @@ h1:focus {
     object-fit: cover;
 }
 
-.site-header{
-    box-shadow: 0 0 15px rgb(0,0,0,0.4);
+.site-header {
+    box-shadow: 0 0 15px rgb(0, 0, 0, 0.4);
 }

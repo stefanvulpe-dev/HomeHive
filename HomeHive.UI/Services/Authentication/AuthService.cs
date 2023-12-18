@@ -17,7 +17,7 @@ public class AuthService(IHttpClientFactory httpClientFactory, ILocalStorageServ
 
     public async Task<ApiResponse?> Register(RegistrationModel registrationModel)
     {
-        var result = await _httpClient.PostAsJsonAsync("/api/v1/Authentication/register", registrationModel);
+        var result = await _httpClient.PostAsJsonAsync("api/v1/Authentication/register", registrationModel);
         return await result.Content.ReadFromJsonAsync<ApiResponse>();
     }
 
@@ -47,12 +47,6 @@ public class AuthService(IHttpClientFactory httpClientFactory, ILocalStorageServ
         return responseMessage.StatusCode == HttpStatusCode.NoContent;
     }
 
-    private async Task PersistTokensToBrowserStorage(string accessToken, string refreshToken)
-    {
-        await localStorageService.SetItemAsync("accessToken", accessToken);
-        await localStorageService.SetItemAsync("refreshToken", refreshToken);
-    }
-
     public async Task<string> GetAccessTokenFromBrowserStorage()
     {
         return await localStorageService.GetItemAsync<string>("accessToken");
@@ -72,6 +66,12 @@ public class AuthService(IHttpClientFactory httpClientFactory, ILocalStorageServ
         return loginResult;
     }
 
+    private async Task PersistTokensToBrowserStorage(string accessToken, string refreshToken)
+    {
+        await localStorageService.SetItemAsync("accessToken", accessToken);
+        await localStorageService.SetItemAsync("refreshToken", refreshToken);
+    }
+
     public static IEnumerable<Claim>? ParseClaimsFromJwt(string accessToken)
     {
         var tokenHandler = new JwtSecurityTokenHandler();
@@ -86,31 +86,31 @@ public class AuthService(IHttpClientFactory httpClientFactory, ILocalStorageServ
     public static ClaimsPrincipal CreateClaimsPrincipalFromToken(string token)
     {
         var claims = ParseClaimsFromJwt(token);
-        
+
         if (claims is null) return new ClaimsPrincipal(new ClaimsIdentity());
 
         var enumerable = claims.ToList();
         var userId = enumerable.FirstOrDefault(x => x.Type.Equals("nameid"))?.Value;
         var userName = enumerable.FirstOrDefault(x => x.Type.Equals("unique_name"))?.Value;
         var tokenId = enumerable.FirstOrDefault(x => x.Type.Equals("jti"))?.Value;
-        
+
         if (string.IsNullOrEmpty(userId) || string.IsNullOrEmpty(userName) || string.IsNullOrEmpty(tokenId))
             return new ClaimsPrincipal(new ClaimsIdentity());
-        
+
         var userRoles = enumerable.Where(x => x.Type.Equals("role")).Select(x => x.Value).ToList();
 
         if (userRoles.Count == 0) return new ClaimsPrincipal(new ClaimsIdentity());
-        
-        
+
+
         var claimsIdentity = new ClaimsIdentity(new List<Claim>
         {
             new(ClaimTypes.NameIdentifier, userId!),
             new(ClaimTypes.Name, userName!),
             new(JwtRegisteredClaimNames.Jti, tokenId!)
         }, "Bearer");
-        
+
         claimsIdentity.AddClaims(userRoles.Select(role => new Claim(ClaimTypes.Role, role)));
-        
+
         return new ClaimsPrincipal(claimsIdentity);
     }
 }

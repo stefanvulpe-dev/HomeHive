@@ -18,8 +18,8 @@ public class CreateEstateCommandHandler(IEstateRepository repository, IUtilityRe
             var validationErrors = validatorResult.Errors
                 .GroupBy(x => x.PropertyName, x => x.ErrorMessage)
                 .ToDictionary(group => group.Key, group => group.ToList());
-            
-            return new CreateEstateCommandResponse()
+
+            return new CreateEstateCommandResponse
             {
                 IsSuccess = false,
                 Message = "Failed to create contract.",

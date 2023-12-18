@@ -37,7 +37,7 @@ public class HomeHiveAuthStateProvider(IAuthService authService) : Authenticatio
     public async Task LoginAsync()
     {
         var accessToken = await authService.GetAccessTokenFromBrowserStorage();
-        
+
         var principal = AuthService.CreateClaimsPrincipalFromToken(accessToken);
 
         NotifyAuthenticationStateChanged(Task.FromResult(new AuthenticationState(principal)));

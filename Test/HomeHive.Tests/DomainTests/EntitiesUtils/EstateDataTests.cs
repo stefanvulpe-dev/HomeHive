@@ -8,15 +8,15 @@ public class EstateDataTests
     public void EstateData_ParameterizedConstructor_ShouldSetProperties()
     {
         // Arrange
-        string estateType = "Residential";
-        string estateCategory = "Apartment";
-        string name = "Luxury Apartment";
-        string location = "City Center";
-        decimal price = 1000000.50m;
-        string totalArea = "150 sqm";
+        var estateType = "Residential";
+        var estateCategory = "Apartment";
+        var name = "Luxury Apartment";
+        var location = "City Center";
+        var price = 1000000.50m;
+        var totalArea = "150 sqm";
         List<string> utilities = ["Water", "Electricity"];
-        string description = "Modern apartment with great amenities";
-        string image = "image-url.jpg";
+        var description = "Modern apartment with great amenities";
+        var image = "image-url.jpg";
 
         // Act
         var estateData = new EstateData(

@@ -7,7 +7,8 @@ namespace HomeHive.Application.Features.Utilities.Commands.UpdateUtility;
 public class UpdateUtilityCommandHandler(IUtilityRepository utilityRepository)
     : ICommandHandler<UpdateUtilityCommand, UpdateUtilityCommandResponse>
 {
-    public async Task<UpdateUtilityCommandResponse> Handle(UpdateUtilityCommand request, CancellationToken cancellationToken)
+    public async Task<UpdateUtilityCommandResponse> Handle(UpdateUtilityCommand request,
+        CancellationToken cancellationToken)
     {
         var validator = new UpdateUtilityCommandValidator(utilityRepository);
         var validationResult = await validator.ValidateAsync(request, cancellationToken);
@@ -17,16 +18,16 @@ public class UpdateUtilityCommandHandler(IUtilityRepository utilityRepository)
             var validationErrors = validationResult.Errors
                 .GroupBy(x => x.PropertyName, x => x.ErrorMessage)
                 .ToDictionary(group => group.Key, group => group.ToList());
-            
+
             return new UpdateUtilityCommandResponse
-                        {
-                            IsSuccess = false,
-                            Message = "Error updating utility",
-                            ValidationsErrors = validationErrors
-                        };
+            {
+                IsSuccess = false,
+                Message = "Error updating utility",
+                ValidationsErrors = validationErrors
+            };
         }
-            
-        
+
+
         var utilityResult = await validator.UtilityExists(request.UtilityId, cancellationToken);
         if (!utilityResult.IsSuccess)
             return new UpdateUtilityCommandResponse
@@ -34,12 +35,12 @@ public class UpdateUtilityCommandHandler(IUtilityRepository utilityRepository)
                 IsSuccess = false,
                 Message = $"Utility {request.UtilityId} not found"
             };
-        
+
         var existingUtility = utilityResult.Value;
         existingUtility.Update(request.UtilityName);
-        
+
         await utilityRepository.UpdateAsync(existingUtility);
-        
+
         return new UpdateUtilityCommandResponse
         {
             IsSuccess = true,

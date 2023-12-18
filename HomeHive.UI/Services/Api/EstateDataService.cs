@@ -12,14 +12,11 @@ namespace HomeHive.UI.Services.Api;
 public class EstatesDataService(IHttpClientFactory httpClientFactory) : IEstateDataService
 {
     private readonly HttpClient _httpClient = httpClientFactory.CreateClient("HomeHive.API");
-    
+
     public async Task<GetAllEstatesResponse?> GetAll()
     {
         var responseMessage = await _httpClient.GetAsync("api/v1/Estates");
-        if (!responseMessage.IsSuccessStatusCode)
-        {
-            return null;
-        }
+        if (!responseMessage.IsSuccessStatusCode) return null;
         return await responseMessage.Content.ReadFromJsonAsync<GetAllEstatesResponse>();
     }
 

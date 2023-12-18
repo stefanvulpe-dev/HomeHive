@@ -9,7 +9,6 @@ public class UpdateEstateCommandValidator : AbstractValidator<UpdateEstateComman
 {
     private readonly IEstateRepository _estateRepository;
     private readonly IUtilityRepository _utilityRepository;
-    public List<Utility>? Utilities { get; private set; } = new ();
 
     public UpdateEstateCommandValidator(IEstateRepository estateRepository, IUtilityRepository utilityRepository)
     {
@@ -38,6 +37,8 @@ public class UpdateEstateCommandValidator : AbstractValidator<UpdateEstateComman
             .When(v => v.EstateData.Utilities != null && v.EstateData.Utilities.Count > 0);
     }
 
+    public List<Utility>? Utilities { get; private set; } = new();
+
     public async Task<Result<Estate>> EstateExist(UpdateEstateCommand command, CancellationToken arg2)
     {
         var result = await _estateRepository.FindByIdAsync(command.EstateId);
@@ -45,15 +46,12 @@ public class UpdateEstateCommandValidator : AbstractValidator<UpdateEstateComman
             ? Result<Estate>.Success(result.Value)
             : Result<Estate>.Failure("Estate does not exist.");
     }
-    
+
     private async Task<bool> ValidateUtilitiesExistence(List<string>? utilities, CancellationToken cancellationToken)
     {
         var utilitiesResult = await _utilityRepository.GetAllAsync();
         var utilitiesNames = utilitiesResult.Value.Select(u => u.UtilityName).ToList();
-        if (utilities!.Any(utility => !utilitiesNames.Contains(utility)))
-        {
-            return false;
-        }
+        if (utilities!.Any(utility => !utilitiesNames.Contains(utility))) return false;
         Utilities = utilitiesResult.Value.Where(u => utilities!.Contains(u.UtilityName!)).ToList();
         return true;
     }

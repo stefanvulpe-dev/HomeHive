@@ -13,14 +13,14 @@
         <div class="col-md-6">
             <label for="lastName" class="form-label">Last Name</label>
             <InputText class="form-control" id="lastName" @bind-Value="userProfile.LastName"/>
-        </div> 
+        </div>
     </div>
-    
+
     <div class="mb-3 d-flex flex-column">
         <label for="username" class="form-label">Username</label>
         <InputText class="form-control" id="username" @bind-Value="userProfile.Username"/>
     </div>
-    
+
     <div class="mb-3 d-flex flex-column">
         <label for="email" class="form-label">Email address</label>
         <small class="mb-1">Current email: john.doe@example.com</small>
@@ -34,7 +34,7 @@
     <div class="d-flex justify-content-center">
         <button type="submit" class="btn btn-primary">Save Changes</button>
     </div>
-    
+
 </EditForm>
 
 @code {

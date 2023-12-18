@@ -1,7 +1,6 @@
 ﻿@using HomeHive.UI.ViewModels.Users
-@using Blazored.LocalStorage
-@using HomeHive.UI.Interfaces
 @using HomeHive.UI.Utils
+@using HomeHive.UI.Interfaces
 @inject NavigationManager NavigationManager
 @inject ILogger<LoginForm> Logger
 @inject IAuthService AuthService
@@ -57,7 +56,7 @@
         {
             _isSubmitting = true;
             var result = await AuthService.Login(LoginModel!);
-    
+
             if (result != null)
             {
                 if (result.IsSuccess)
@@ -83,4 +82,5 @@
             _isSubmitting = false;
         }
     }
+
 }

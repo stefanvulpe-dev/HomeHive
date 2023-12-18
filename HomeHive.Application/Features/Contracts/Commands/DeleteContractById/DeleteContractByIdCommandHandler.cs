@@ -16,8 +16,8 @@ public class DeleteContractByIdCommandHandler(IContractRepository contractReposi
             var validationErrors = validationResult.Errors
                 .GroupBy(x => x.PropertyName, x => x.ErrorMessage)
                 .ToDictionary(group => group.Key, group => group.ToList());
-            
-            return new DeleteContractByIdCommandResponse()
+
+            return new DeleteContractByIdCommandResponse
             {
                 IsSuccess = false,
                 Message = "Failed to delete contract.",

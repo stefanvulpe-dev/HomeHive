@@ -32,10 +32,7 @@ builder.Services.AddSwaggerGen(options =>
 });
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("CorsPolicy", policy =>
-    {
-        policy.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod();
-    });
+    options.AddPolicy("CorsPolicy", policy => { policy.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod(); });
 });
 
 var app = builder.Build();

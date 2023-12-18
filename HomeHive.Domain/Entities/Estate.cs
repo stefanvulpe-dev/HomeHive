@@ -49,15 +49,14 @@ public sealed class Estate : BaseEntity
         if (price <= 0) return Result<Estate>.Failure("Price is required.");
 
         if (string.IsNullOrWhiteSpace(totalArea)) return Result<Estate>.Failure("Total Area is required.");
-        
-        if (utilitiesNames == null || utilitiesNames.Count == 0) 
+
+        if (utilitiesNames == null || utilitiesNames.Count == 0)
             return Result<Estate>.Failure("Utilities are required.");
-        
+
         foreach (var utilityName in utilitiesNames)
-        {
-                if (string.IsNullOrWhiteSpace(utilityName)) return Result<Estate>.Failure("Utility name is required.");
-        }
-    
+            if (string.IsNullOrWhiteSpace(utilityName))
+                return Result<Estate>.Failure("Utility name is required.");
+
         if (string.IsNullOrWhiteSpace(description)) return Result<Estate>.Failure("Description is required.");
 
         if (string.IsNullOrWhiteSpace(image)) return Result<Estate>.Failure("Estate Avatar is required.");
@@ -90,7 +89,7 @@ public sealed class Estate : BaseEntity
         if (estateData.Price != null) Price = estateData.Price;
 
         if (estateData.TotalArea != null) TotalArea = estateData.TotalArea;
-        
+
         if (estateData.Utilities != null) Utilities = utilities;
 
         if (estateData.Description != null) Description = estateData.Description;

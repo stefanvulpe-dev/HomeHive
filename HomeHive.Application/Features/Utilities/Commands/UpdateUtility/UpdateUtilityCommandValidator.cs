@@ -8,6 +8,7 @@ namespace HomeHive.Application.Features.Utilities.Commands.UpdateUtility;
 public class UpdateUtilityCommandValidator : AbstractValidator<UpdateUtilityCommand>
 {
     private readonly IUtilityRepository _utilityRepository;
+
     public UpdateUtilityCommandValidator(IUtilityRepository utilityRepository)
     {
         _utilityRepository = utilityRepository;
@@ -20,7 +21,7 @@ public class UpdateUtilityCommandValidator : AbstractValidator<UpdateUtilityComm
             .NotEmpty().WithMessage("{PropertyName} is required.")
             .NotNull();
     }
-    
+
     public async Task<Result<Utility>> UtilityExists(Guid arg1, CancellationToken arg2)
     {
         var result = await _utilityRepository.FindByIdAsync(arg1);

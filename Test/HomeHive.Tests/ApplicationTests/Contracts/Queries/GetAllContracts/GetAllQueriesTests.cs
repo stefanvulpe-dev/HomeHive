@@ -12,7 +12,8 @@ public class GetAllQueriesTests
 
         // Act
         var updateGetAllContractsQuery = getAllContractsQuery with
-        { };
+        {
+        };
 
         // Assert
         Assert.Equal(getAllContractsQuery, updateGetAllContractsQuery);

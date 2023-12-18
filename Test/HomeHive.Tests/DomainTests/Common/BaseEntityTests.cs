@@ -13,20 +13,20 @@ public class BaseEntityTests
         // Assert
         Assert.NotEqual(Guid.Empty, baseEntity.Id);
         Assert.Null(baseEntity.CreatedBy);
-        Assert.NotEqual(default(DateTime), baseEntity.CreatedDate); 
+        Assert.NotEqual(default, baseEntity.CreatedDate);
         Assert.Null(baseEntity.LastModifiedBy);
-        Assert.NotEqual(default(DateTime), baseEntity.LastModifiedDate);
+        Assert.NotEqual(default, baseEntity.LastModifiedDate);
     }
 
     [Fact]
     public void BaseEntity_SetValues_ShouldBeSetCorrectly()
     {
         // Arrange
-        Guid customId = Guid.NewGuid();
-        string createdBy = "JohnDoe";
-        DateTime customCreatedDate = new DateTime(2022, 1, 1, 12, 0, 0);
-        string lastModifiedBy = "JaneDoe";
-        DateTime customLastModifiedDate = new DateTime(2022, 2, 1, 12, 0, 0);
+        var customId = Guid.NewGuid();
+        var createdBy = "JohnDoe";
+        var customCreatedDate = new DateTime(2022, 1, 1, 12, 0, 0);
+        var lastModifiedBy = "JaneDoe";
+        var customLastModifiedDate = new DateTime(2022, 2, 1, 12, 0, 0);
 
         // Act
         var baseEntity = new BaseEntity

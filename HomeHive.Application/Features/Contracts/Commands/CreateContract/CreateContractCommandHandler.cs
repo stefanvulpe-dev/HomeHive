@@ -18,7 +18,7 @@ public class CreateContractCommandHandler(IContractRepository contractRepository
             var validationErrors = validatorResult.Errors
                 .GroupBy(x => x.PropertyName, x => x.ErrorMessage)
                 .ToDictionary(group => group.Key, group => group.ToList());
-            
+
             return new CreateContractCommandResponse
             {
                 IsSuccess = false,

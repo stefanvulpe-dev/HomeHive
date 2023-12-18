@@ -17,8 +17,8 @@ public class DeleteUserByIdCommandHandler(IUserRepository userRepository)
             var validationErrors = validationResult.Errors
                 .GroupBy(x => x.PropertyName, x => x.ErrorMessage)
                 .ToDictionary(group => group.Key, group => group.ToList());
-            
-            return new DeleteUserByIdCommandResponse()
+
+            return new DeleteUserByIdCommandResponse
             {
                 IsSuccess = false,
                 Message = "Failed to create contract.",
