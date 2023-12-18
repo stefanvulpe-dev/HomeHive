@@ -45,7 +45,7 @@ public static class AuthServiceUtils
 
         accessTokenClaims.AddRange(userRoles.Select(role => new Claim(ClaimTypes.Role, role)));
 
-        var accessTokenExpiration = DateTime.UtcNow.AddMinutes(15);
+        var accessTokenExpiration = DateTime.UtcNow.AddMinutes(10);
         var accessToken = GenerateToken(user, accessTokenClaims, configuration, accessTokenExpiration);
 
         var refreshTokenClaims = new List<Claim>

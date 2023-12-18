@@ -33,7 +33,7 @@ public class RoomDataTests
     public void RoomData_WithValidValues_ShouldCreateInstance()
     {
         // Arrange
-        EstateData estateData = new EstateData(
+        var estateData = new EstateData(
             EstateType.Apartment.ToString(),
             EstateCategory.ForSale.ToString(),
             "Test Estate",
@@ -44,12 +44,12 @@ public class RoomDataTests
             new Dictionary<string, int>(){ {"Test", 1 }, {"Test1", 2} },
             "Test Description",
             "Test Image");
-        
-        Result<Utility> utilityResult = Utility.Create("Test Utilities");
-        List<Utility> utilities = new List<Utility> { utilityResult.Value };
-        
-        Result<Estate> estateResult = Estate.Create(Guid.NewGuid(), utilities, estateData);
-        
+
+        var utilityResult = Utility.Create("Test Utilities");
+        var utilities = new List<Utility> { utilityResult.Value };
+
+        var estateResult = Estate.Create(Guid.NewGuid(), utilities, estateData);
+
         _estateRepository.FindByIdAsync(Arg.Any<Guid>())
             .Returns(Result<Estate>.Success(estateResult.Value));
 

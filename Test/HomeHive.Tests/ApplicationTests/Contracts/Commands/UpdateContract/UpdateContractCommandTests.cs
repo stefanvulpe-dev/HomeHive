@@ -14,12 +14,13 @@ public class UpdateContractCommandTests
     {
         // Arrange
         var contractId = Guid.NewGuid();
-        var contractData = new ContractData(Guid.NewGuid(), "Rent", DateTime.Now, DateTime.Now.AddMonths(6), "Updated Description");
+        var contractData = new ContractData(Guid.NewGuid(), "Rent", DateTime.Now, DateTime.Now.AddMonths(6),
+            "Updated Description");
         var updateCommand = new UpdateContractCommand(contractId, contractData);
 
         var contractRepositoryMock = Substitute.For<IContractRepository>();
-        Result<Contract> contractResult = Contract.Create(Guid.NewGuid(), contractData);
-        
+        var contractResult = Contract.Create(Guid.NewGuid(), contractData);
+
         contractRepositoryMock.FindByIdAsync(contractId)
             .Returns(Result<Contract>.Success(contractResult.Value));
 
@@ -38,11 +39,12 @@ public class UpdateContractCommandTests
     {
         // Arrange
         var contractId = Guid.NewGuid();
-        var contractData = new ContractData(Guid.NewGuid(), "Rent", DateTime.Now, DateTime.Now.AddMonths(6), "Updated Description");
+        var contractData = new ContractData(Guid.NewGuid(), "Rent", DateTime.Now, DateTime.Now.AddMonths(6),
+            "Updated Description");
         var updateCommand = new UpdateContractCommand(contractId, contractData);
 
         var contractRepositoryMock = Substitute.For<IContractRepository>();
-        
+
         contractRepositoryMock.FindByIdAsync(contractId)
             .Returns(Result<Contract>.Failure("Contract not found."));
 
@@ -55,13 +57,14 @@ public class UpdateContractCommandTests
         Assert.False(result.IsSuccess);
         Assert.Equal($"Contract with {contractId} does not exist", result.Message);
     }
-    
+
     [Fact]
     public void UpdateContractCommand_SetProperties_ShouldModifyPropertyValues()
     {
         // Arrange
-        var originalCommand = new UpdateContractCommand(Guid.NewGuid(), 
-            new ContractData(Guid.NewGuid(), ContractType.Rent.ToString(), DateTime.Now, DateTime.Now.AddMonths(6), "description"));
+        var originalCommand = new UpdateContractCommand(Guid.NewGuid(),
+            new ContractData(Guid.NewGuid(), ContractType.Rent.ToString(), DateTime.Now, DateTime.Now.AddMonths(6),
+                "description"));
 
         // Act
         var modifiedCommand = originalCommand with
@@ -71,7 +74,7 @@ public class UpdateContractCommandTests
                 Description = "modified description"
             }
         };
-        
+
         // Assert
         Assert.Equal("modified description", modifiedCommand.Data.Description);
     }

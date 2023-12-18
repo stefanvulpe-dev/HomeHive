@@ -14,7 +14,6 @@ public class CreateEstateCommandValidator : AbstractValidator<CreateEstateComman
     {
         _utilityRepository = utilityRepository;
         _roomRepository = roomRepository;
-        
         RuleFor(p => p.EstateData.EstateType)
             .NotEmpty().WithMessage("{PropertyName} is required.")
             .NotNull();

@@ -32,8 +32,8 @@ public class UpdateEstateCommandHandler : ICommandHandler<UpdateEstateCommand, U
             var validationErrors = validationResult.Errors
                 .GroupBy(x => x.PropertyName, x => x.ErrorMessage)
                 .ToDictionary(group => group.Key, group => group.ToList());
-            
-            return new UpdateEstateCommandResponse()
+
+            return new UpdateEstateCommandResponse
             {
                 IsSuccess = false,
                 Message = "Failed to update estate.",

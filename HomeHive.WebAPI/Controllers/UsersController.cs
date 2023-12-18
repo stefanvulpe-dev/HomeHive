@@ -26,7 +26,7 @@ public class UsersController(
         {
             if (result.ValidationsErrors != null)
                 foreach (var (field, error) in result.ValidationsErrors)
-                    logger.LogError($"Field: {field}, Error: {error}");
+                    logger.LogError($"Field: {field}, Message: {error}");
             return BadRequest(result);
         }
 
@@ -47,7 +47,7 @@ public class UsersController(
         {
             if (result.ValidationsErrors != null)
                 foreach (var (field, error) in result.ValidationsErrors)
-                    logger.LogError($"Field: {field}, Error: {error}");
+                    logger.LogError($"Field: {field}, Message: {error}");
             return BadRequest(result);
         }
 
@@ -69,7 +69,7 @@ public class UsersController(
         {
             if (result.ValidationsErrors != null)
                 foreach (var (field, error) in result.ValidationsErrors)
-                    logger.LogError($"Field: {field}, Error: {error}");
+                    logger.LogError($"Field: {field}, Message: {error}");
             return NotFound(result);
         }
 
@@ -116,7 +116,7 @@ public class UsersController(
 
         if (!result.IsSuccess) return BadRequest(result);
 
-        return File(result.Content, "image/jpeg");
+        return File(result.Content!, "image/jpeg");
     }
 
     [Authorize(Roles = "Admin, User")]

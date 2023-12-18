@@ -16,8 +16,8 @@ public class EstateDataTests
         string totalArea = "150 sqm";
         List<string> utilities = ["Water", "Electricity"];
         Dictionary<string, int> estateRooms = new Dictionary<string, int>(){ {"Bedroom", 2 }, {"Bathroom", 1} };
-        string description = "Modern apartment with great amenities";
-        string image = "image-url.jpg";
+        var description = "Modern apartment with great amenities";
+        var image = "image-url.jpg";
 
         // Act
         var estateData = new EstateData(

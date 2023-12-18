@@ -19,8 +19,8 @@ public class CreateEstateCommandHandler(IEstateRepository repository, IUtilityRe
             var validationErrors = validatorResult.Errors
                 .GroupBy(x => x.PropertyName, x => x.ErrorMessage)
                 .ToDictionary(group => group.Key, group => group.ToList());
-            
-            return new CreateEstateCommandResponse()
+
+            return new CreateEstateCommandResponse
             {
                 IsSuccess = false,
                 Message = "Failed to create estate.",
@@ -36,7 +36,7 @@ public class CreateEstateCommandHandler(IEstateRepository repository, IUtilityRe
             return new CreateEstateCommandResponse
             {
                 IsSuccess = false,
-                ValidationsErrors = new Dictionary<string, List<string>> { { "Estate", new List<string> { result.Error } } }
+                ValidationsErrors = new Dictionary<string, List<string>> { { "Estate", [result.Message] } }
             };
         
         var estateRooms = new List<EstateRoom>();

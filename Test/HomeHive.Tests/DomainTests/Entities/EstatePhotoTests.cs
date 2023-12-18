@@ -1,4 +1,3 @@
-using HomeHive.Domain.Common;
 using HomeHive.Domain.Common.EntitiesUtils.Estates;
 using HomeHive.Domain.Entities;
 
@@ -10,9 +9,9 @@ public class EstatePhotoTests
     public void CreatePhoto_WithValidData_ShouldCreatePhoto()
     {
         // Arrange
-        Result<Utility> utilityResult = Utility.Create("Test Utilities");
-        List<Utility> utilities = new List<Utility> { utilityResult.Value };
-        
+        var utilityResult = Utility.Create("Test Utilities");
+        var utilities = new List<Utility> { utilityResult.Value };
+
         var estate = Estate.Create(Guid.NewGuid(), utilities,
             new EstateData("House", "ForRent",
                 "Test", "Test", 100, "Test1",
@@ -28,14 +27,14 @@ public class EstatePhotoTests
         Assert.Equal(result.Value.Estate, estate);
         Assert.Equal(result.Value.ObjectName, objectName);
     }
-    
+
     [Fact]
     public void CreatePhoto_WithInvalidObjectName_ShouldNotCreatePhoto()
     {
         // Arrange
-        Result<Utility> utilityResult = Utility.Create("Test Utilities");
-        List<Utility> utilities = new List<Utility> { utilityResult.Value };
-        
+        var utilityResult = Utility.Create("Test Utilities");
+        var utilities = new List<Utility> { utilityResult.Value };
+
         var estate = Estate.Create(Guid.NewGuid(), utilities,
             new EstateData("House", "ForRent",
                 "Test", "Test", 100, "Test",
@@ -47,9 +46,9 @@ public class EstatePhotoTests
 
         // Assert
         Assert.False(result.IsSuccess);
-        Assert.Equal("Object name is not valid!", result.Error);
+        Assert.Equal("Object name is not valid!", result.Message);
     }
-    
+
     [Fact]
     public void CreatePhoto_WithInvalidEstate_ShouldNotCreatePhoto()
     {
@@ -61,7 +60,6 @@ public class EstatePhotoTests
 
         // Assert
         Assert.False(result.IsSuccess);
-        Assert.Equal("Estate is required.", result.Error);
+        Assert.Equal("Estate is required.", result.Message);
     }
-    
 }

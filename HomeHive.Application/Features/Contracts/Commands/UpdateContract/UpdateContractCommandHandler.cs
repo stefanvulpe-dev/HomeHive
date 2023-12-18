@@ -18,8 +18,8 @@ public class UpdateContractCommandHandler(IContractRepository contractRepository
             var validationErrors = validatorResult.Errors
                 .GroupBy(x => x.PropertyName, x => x.ErrorMessage)
                 .ToDictionary(group => group.Key, group => group.ToList());
-            
-            return new UpdateContractCommandResponse()
+
+            return new UpdateContractCommandResponse
             {
                 IsSuccess = false,
                 Message = "Failed to update contract.",

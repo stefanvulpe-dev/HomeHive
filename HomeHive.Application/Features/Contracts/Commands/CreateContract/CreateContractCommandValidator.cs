@@ -30,10 +30,7 @@ public class CreateContractCommandValidator : AbstractValidator<CreateContractCo
 
     private async Task<bool> ValidateEstateExistence(Guid estateId, CancellationToken cancellationToken)
     {
-        if (estateId == Guid.Empty)
-        {
-            return true;
-        }
+        if (estateId == Guid.Empty) return true;
 
         var estateResult = await _estateRepository.FindByIdAsync(estateId);
 

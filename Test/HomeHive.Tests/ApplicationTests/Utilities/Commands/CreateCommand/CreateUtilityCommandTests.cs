@@ -19,5 +19,4 @@ public class CreateUtilityCommandTests
         // Assert
         Assert.Equal("UpdatedUtilityName", command.UtilityName);
     }
-
 }

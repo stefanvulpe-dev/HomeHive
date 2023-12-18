@@ -17,8 +17,8 @@ public class DeleteEstateByIdCommandHandler(IEstateRepository estateRepository)
             var validationErrors = validationResult.Errors
                 .GroupBy(x => x.PropertyName, x => x.ErrorMessage)
                 .ToDictionary(group => group.Key, group => group.ToList());
-            
-            return new DeleteEstateByIdCommandResponse()
+
+            return new DeleteEstateByIdCommandResponse
             {
                 IsSuccess = false,
                 Message = "Failed to create contract.",
@@ -31,7 +31,7 @@ public class DeleteEstateByIdCommandHandler(IEstateRepository estateRepository)
             return new DeleteEstateByIdCommandResponse
             {
                 IsSuccess = false,
-                Message = $"Error deleting estate with Id {command.EstateId}"
+                Message = $"Message deleting estate with Id {command.EstateId}"
             };
 
         return new DeleteEstateByIdCommandResponse
