@@ -13,7 +13,7 @@ public class ResultTests
         // Assert
         Assert.True(result.IsSuccess);
         Assert.Null(result.Message);
-        Assert.Null(result.Errors);
+        Assert.Null(result.ValidationErrors);
     }
 
     [Fact]
@@ -28,7 +28,7 @@ public class ResultTests
         // Assert
         Assert.True(result.IsSuccess);
         Assert.Equal(message, result.Message);
-        Assert.Null(result.Errors);
+        Assert.Null(result.ValidationErrors);
     }
 
     [Fact]
@@ -43,7 +43,7 @@ public class ResultTests
         // Assert
         Assert.False(result.IsSuccess);
         Assert.Equal(errorMessage, result.Message);
-        Assert.Null(result.Errors);
+        Assert.Null(result.ValidationErrors);
     }
 
     [Fact]
@@ -63,6 +63,6 @@ public class ResultTests
         // Assert
         Assert.False(result.IsSuccess);
         Assert.Equal(errorMessage, result.Message);
-        Assert.Equal(errors, result.Errors!);
+        Assert.Equal(errors, result.ValidationErrors!);
     }
 }

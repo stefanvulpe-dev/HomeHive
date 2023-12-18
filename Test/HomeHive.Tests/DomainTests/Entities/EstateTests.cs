@@ -71,7 +71,7 @@ public class EstateTests
 
         // Assert
         Assert.False(result.IsSuccess);
-        Assert.Equal("OwnerId is required.", result.Error);
+        Assert.Equal("OwnerId is required.", result.Message);
     }
     
     [Fact]
@@ -98,7 +98,7 @@ public class EstateTests
 
         // Assert
         Assert.False(result.IsSuccess);
-        Assert.Equal("EstateType is not valid.", result.Error);
+        Assert.Equal("EstateType is not valid.", result.Message);
     }
     
     [Fact]
@@ -125,7 +125,7 @@ public class EstateTests
 
         // Assert
         Assert.False(result.IsSuccess);
-        Assert.Equal("EstateCategory is not valid.", result.Error);
+        Assert.Equal("EstateCategory is not valid.", result.Message);
     }
     
     [Fact]
@@ -152,7 +152,7 @@ public class EstateTests
 
         // Assert
         Assert.False(result.IsSuccess);
-        Assert.Equal("Name is required.", result.Error);
+        Assert.Equal("Name is required.", result.Message);
     }
     
     [Fact]
@@ -179,7 +179,7 @@ public class EstateTests
 
         // Assert
         Assert.False(result.IsSuccess);
-        Assert.Equal("Location is required.", result.Error);
+        Assert.Equal("Location is required.", result.Message);
         
     }
     
@@ -207,7 +207,7 @@ public class EstateTests
 
         // Assert
         Assert.False(result.IsSuccess);
-        Assert.Equal("Price is required.", result.Error);
+        Assert.Equal("Price is required.", result.Message);
     }
     
     [Fact]
@@ -234,7 +234,7 @@ public class EstateTests
 
         // Assert
         Assert.False(result.IsSuccess);
-        Assert.Equal("Total Area is required.", result.Error);
+        Assert.Equal("Total Area is required.", result.Message);
     }
     
     [Fact]
@@ -261,7 +261,7 @@ public class EstateTests
 
         // Assert
         Assert.False(result.IsSuccess);
-        Assert.Equal("Utility name is required.", result.Error);
+        Assert.Equal("Utility name is required.", result.Message);
     }
     
     [Fact]
@@ -287,7 +287,7 @@ public class EstateTests
 
         // Assert
         Assert.False(result.IsSuccess);
-        Assert.Equal("Utilities are required.", result.Error);
+        Assert.Equal("Utilities are required.", result.Message);
     }
     
     [Fact]
@@ -314,7 +314,7 @@ public class EstateTests
 
         // Assert
         Assert.False(result.IsSuccess);
-        Assert.Equal("Description is required.", result.Error);
+        Assert.Equal("Description is required.", result.Message);
         
         
     }
@@ -343,7 +343,7 @@ public class EstateTests
 
         // Assert
         Assert.False(result.IsSuccess);
-        Assert.Equal("Estate Avatar is required.", result.Error);
+        Assert.Equal("Estate Avatar is required.", result.Message);
     }
     
     [Fact]

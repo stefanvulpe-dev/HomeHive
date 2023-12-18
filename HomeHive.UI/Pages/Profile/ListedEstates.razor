@@ -1,6 +1,7 @@
 @page "/listed-estates"
 @using HomeHive.UI.ViewModels.Estates
 @using HomeHive.UI.Interfaces
+@using HomeHive.UI.Components.Profile.ListedEstates
 @inject IEstateDataService EstateService
 @inject ILogger<ListedEstates> Logger
 @layout ProfileLayout
@@ -15,7 +16,7 @@
             {
                 @foreach (var estate in Estates)
                 {
-                    <PropertyCard Estate="@estate"></PropertyCard>
+                    <EstateCard Estate="@estate"></EstateCard>
                 }
             }
             else
@@ -48,7 +49,6 @@
                     TotalArea = e.TotalArea,
                     Utilities = e.Utilities,
                     Description = e.Description,
-                    Image = e.Image
                 }).ToList();
         }
         else

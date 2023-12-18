@@ -116,7 +116,7 @@ public class UsersController(
 
         if (!result.IsSuccess) return BadRequest(result);
 
-        return File(result.Content, "image/jpeg");
+        return File(result.Content!, "image/jpeg");
     }
 
     [Authorize(Roles = "Admin, User")]

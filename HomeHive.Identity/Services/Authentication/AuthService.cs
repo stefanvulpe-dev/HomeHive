@@ -180,9 +180,7 @@ public class AuthService(
             { "accessToken", accessToken },
             { "refreshToken", newRefreshToken }
         };
-
-        await cacheService.RemoveAsync($"{userId}:{accessTokenId}");
-
-        return Result.Success("User logged out successfully!");
+        
+        return Result<TDictResponse>.Success(tokens, "User logged in successfully!");
     }
 }
