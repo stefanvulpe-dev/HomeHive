@@ -1,0 +1,16 @@
+@using HomeHive.UI.ViewModels.Estates
+@if (Estate != null)
+{
+    <div class="card col-md-3 m-md-3 mb-sm-3">
+        <img class="card-img-top" src="background1.jpg" alt="Card image cap">
+        <div class="card-body">
+            <h5 class="card-title">@Estate.Name</h5>
+            <p class="card-text">@Estate.Location</p>
+            <a href="#" class="btn btn-primary">Edit estate</a>
+        </div>
+    </div>
+}
+
+@code {
+    [Parameter] public EstateModel? Estate { get; set; }
+}

@@ -30,7 +30,7 @@ public class DeleteContractByIdCommandHandler(IContractRepository contractReposi
             return new DeleteContractByIdCommandResponse
             {
                 IsSuccess = false,
-                Message = $"Error deleting contract with Id {request.ContractId}"
+                Message = $"Message deleting contract with Id {request.ContractId}"
             };
 
         return new DeleteContractByIdCommandResponse

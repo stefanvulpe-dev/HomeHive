@@ -31,7 +31,7 @@ public class DeleteUserByIdCommandHandler(IUserRepository userRepository)
             return new DeleteUserByIdCommandResponse
             {
                 IsSuccess = false,
-                Message = $"Error deleting user with Id {command.UserId}"
+                Message = $"Message deleting user with Id {command.UserId}"
             };
 
         return new DeleteUserByIdCommandResponse

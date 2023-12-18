@@ -1,0 +1,54 @@
+﻿@page "/addContract"
+@using HomeHive.UI.ViewModels
+<PageTitle>Add Contract</PageTitle>
+
+
+<div class="add-form d-flex justify-content-center">
+    <h3 class="d-flex justify-content-center form-title">Add New Contract</h3>
+    <div class="d-flex justify-content-center">
+    <EditForm Model="@_contractViewModel" OnValidSubmit="HandleValidSubmit">
+        <DataAnnotationsValidator/>
+
+        <div class="form-group">
+            <label for="contractType" class="form-label">Contract Type:</label>
+            <InputSelect id="contractType" @bind-Value="_contractViewModel.ContractType">
+                <option value="Rent">Rent</option>
+                <option value="Sale">Sale</option>
+            </InputSelect>
+            <ValidationMessage For="@(() => _contractViewModel.ContractType)"/>
+        </div>
+
+        <div class="form-group">
+            <label for="startDate" class="form-label">Start Date:</label>
+            <InputDate id="startDate" @bind-Value="_contractViewModel.StartDate"/>
+            <ValidationMessage For="@(() => _contractViewModel.StartDate)"/>
+        </div>
+
+        <div class="form-group">
+            <label for="endDate" class="form-label">End Date:</label>
+            <InputDate id="endDate" @bind-Value="_contractViewModel.EndDate"/>
+            <ValidationMessage For="@(() => _contractViewModel.EndDate)"/>
+        </div>
+
+        <div class="form-group">
+            <label for="description" class="form-label">Description:</label>
+            <InputText id="description" @bind-Value="_contractViewModel.Description"/>
+            <ValidationMessage For="@(() => _contractViewModel.Description)"/>
+        </div>
+
+        <div class="d-flex justify-content-center mb-4">
+            <button type="submit" class="btn btn-primary btn-lg">
+                Add Contract
+            </button>
+        </div>
+    </EditForm>
+    </div>
+</div>
+
+@code {
+    private ContractViewModel _contractViewModel = new ContractViewModel();
+
+    private void HandleValidSubmit()
+    {
+    }
+}

@@ -31,7 +31,7 @@ public class DeleteEstateByIdCommandHandler(IEstateRepository estateRepository)
             return new DeleteEstateByIdCommandResponse
             {
                 IsSuccess = false,
-                Message = $"Error deleting estate with Id {command.EstateId}"
+                Message = $"Message deleting estate with Id {command.EstateId}"
             };
 
         return new DeleteEstateByIdCommandResponse

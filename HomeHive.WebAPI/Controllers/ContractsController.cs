@@ -32,7 +32,7 @@ public class ContractsController(
         {
             if (result.ValidationsErrors != null)
                 foreach (var (field, error) in result.ValidationsErrors)
-                    logger.LogError($"Field: {field}, Error: {error}");
+                    logger.LogError($"Field: {field}, Message: {error}");
             return BadRequest(result);
         }
 
@@ -52,7 +52,7 @@ public class ContractsController(
         {
             if (result.ValidationsErrors != null)
                 foreach (var (field, error) in result.ValidationsErrors)
-                    logger.LogError($"Field: {field}, Error: {error}");
+                    logger.LogError($"Field: {field}, Message: {error}");
             return BadRequest(result);
         }
 
@@ -72,7 +72,7 @@ public class ContractsController(
         {
             if (result.ValidationsErrors != null)
                 foreach (var (field, error) in result.ValidationsErrors)
-                    logger.LogError($"Field: {field}, Error: {error}");
+                    logger.LogError($"Field: {field}, Message: {error}");
             return BadRequest(result);
         }
 
@@ -93,7 +93,7 @@ public class ContractsController(
         {
             if (result.ValidationsErrors != null)
                 foreach (var (field, error) in result.ValidationsErrors)
-                    logger.LogError($"Field: {field}, Error: {error}");
+                    logger.LogError($"Field: {field}, Message: {error}");
             return BadRequest(result);
         }
 
@@ -133,7 +133,7 @@ public class ContractsController(
         {
             if (result.ValidationsErrors != null)
                 foreach (var (field, error) in result.ValidationsErrors)
-                    logger.LogError($"Field: {field}, Error: {error}");
+                    logger.LogError($"Field: {field}, Message: {error}");
             return NotFound(result);
         }
 
