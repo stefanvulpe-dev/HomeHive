@@ -23,16 +23,23 @@ public class AuthService(
 {
     public async Task<Result> Register(RegistrationModel model, string role)
     {
+        var userRegistrationValidator = new UserRegistrationValidator();
+
+        var validationResult = await userRegistrationValidator.ValidateAsync(model);
+
+        if (!validationResult.IsValid)
+            return Result.Failure("Failed to create identity user",
+                validationResult.Errors.ToDictionary(x => x.PropertyName, x => x.ErrorMessage));
+
         var identityUser = new User
         {
             Email = model.Email,
             UserName = model.UserName,
             FirstName = model.FirstName,
-            LastName = model.LastName,
-            PhoneNumber = model.PhoneNumber
+            LastName = model.LastName
         };
 
-        var result = await userManager.CreateAsync(identityUser, model.Password);
+        var result = await userManager.CreateAsync(identityUser, model.Password!);
 
         if (!result.Succeeded)
         {
@@ -44,14 +51,6 @@ public class AuthService(
                     errorDictionary.Add("UserName", error.Description);
                 else if (error.Description.Contains("Password"))
                     errorDictionary.Add("Password", error.Description);
-                else if (error.Description.Contains("Phone"))
-                    errorDictionary.Add("PhoneNumber", error.Description);
-                else if (error.Description.Contains("First"))
-                    errorDictionary.Add("FirstName", error.Description);
-                else if (error.Description.Contains("Last"))
-                    errorDictionary.Add("LastName", error.Description);
-                else if (error.Description.Contains("Confirm"))
-                    errorDictionary.Add("ConfirmPassword", error.Description);
             return Result.Failure("Failed to create identity user", errorDictionary);
         }
 
@@ -182,6 +181,8 @@ public class AuthService(
             { "refreshToken", newRefreshToken }
         };
 
-        return Result<TDictResponse>.Success(tokens, "User logged in successfully!");
+        await cacheService.RemoveAsync($"{userId}:{accessTokenId}");
+
+        return Result.Success("User logged out successfully!");
     }
 }

@@ -7,25 +7,33 @@ namespace HomeHive.Application.Features.Estates.Commands.UpdateEstate;
 public class UpdateEstateCommandHandler : ICommandHandler<UpdateEstateCommand, UpdateEstateCommandResponse>
 {
     private readonly IEstateRepository _estateRepository;
+    private readonly IUtilityRepository _utilityRepository;
 
-    public UpdateEstateCommandHandler(IEstateRepository estateRepository)
+    public UpdateEstateCommandHandler(IEstateRepository estateRepository, IUtilityRepository utilityRepository)
     {
         _estateRepository = estateRepository;
+        _utilityRepository = utilityRepository;
     }
 
     public async Task<UpdateEstateCommandResponse> Handle(UpdateEstateCommand command,
         CancellationToken cancellationToken)
     {
-        var validator = new UpdateEstateCommandValidator(_estateRepository);
+        var validator = new UpdateEstateCommandValidator(_estateRepository, _utilityRepository);
         var validationResult = await validator.ValidateAsync(command, cancellationToken);
 
         if (!validationResult.IsValid)
-            return new UpdateEstateCommandResponse
+        {
+            var validationErrors = validationResult.Errors
+                .GroupBy(x => x.PropertyName, x => x.ErrorMessage)
+                .ToDictionary(group => group.Key, group => group.ToList());
+            
+            return new UpdateEstateCommandResponse()
             {
                 IsSuccess = false,
-                Message = "Message updating estate",
-                ValidationsErrors = validationResult.Errors.ToDictionary(x => x.PropertyName, x => x.ErrorMessage)
+                Message = "Failed to create contract.",
+                ValidationsErrors = validationErrors
             };
+        }
 
         var estateResult = await validator.EstateExist(command, cancellationToken);
         if (!estateResult.IsSuccess)
@@ -36,7 +44,7 @@ public class UpdateEstateCommandHandler : ICommandHandler<UpdateEstateCommand, U
             };
 
         var existingEstate = estateResult.Value;
-        existingEstate.UpdateEstate(command.EstateData);
+        existingEstate.Update(validator.Utilities!, command.EstateData);
 
         await _estateRepository.UpdateAsync(existingEstate);
 

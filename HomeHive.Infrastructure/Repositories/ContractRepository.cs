@@ -1,11 +1,15 @@
 ﻿using HomeHive.Application.Persistence;
+using HomeHive.Domain.Common;
 using HomeHive.Domain.Entities;
+using Microsoft.EntityFrameworkCore;
 
 namespace HomeHive.Infrastructure.Repositories;
 
-public class ContractRepository : BaseRepository<Contract>, IContractRepository
+public class ContractRepository(HomeHiveContext context) : BaseRepository<Contract>(context), IContractRepository
 {
-    public ContractRepository(HomeHiveContext context) : base(context)
+    public async Task<Result<IReadOnlyList<Contract>>> GetContractsByUserId(Guid userId)
     {
+        var result = await context.Set<Contract>().Where(c => c.UserId == userId).ToListAsync();
+        return Result<IReadOnlyList<Contract>>.Success(result);
     }
 }

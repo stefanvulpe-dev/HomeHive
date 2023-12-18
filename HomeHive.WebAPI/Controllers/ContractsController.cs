@@ -4,6 +4,7 @@ using HomeHive.Application.Features.Contracts.Commands.CreateContract;
 using HomeHive.Application.Features.Contracts.Commands.DeleteContractById;
 using HomeHive.Application.Features.Contracts.Commands.UpdateContract;
 using HomeHive.Application.Features.Contracts.Queries.GetAllContracts;
+using HomeHive.Application.Features.Contracts.Queries.GetAllContractsByUserId;
 using HomeHive.Application.Features.Contracts.Queries.GetContractById;
 using HomeHive.Domain.Common.EntitiesUtils.Contracts;
 using Microsoft.AspNetCore.Authorization;
@@ -99,6 +100,24 @@ public class ContractsController(
         return Ok(result);
     }
 
+    [HttpGet("user")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    public async Task<IActionResult> GetByUser()
+    {
+        var isTokenRevoked = await tokenCacheService.IsTokenRevokedAsync();
+        if (isTokenRevoked) return Unauthorized(new { message = "Token is revoked" });
+
+        var userId = currentUserService.GetCurrentUserId();
+        var result = await Mediator.Send(new GetAllContractsByUserIdQuery(userId));
+
+        if (result.IsSuccess) return Ok(result);
+        if (result.ValidationsErrors == null) return NotFound(result);
+        foreach (var (field, error) in result.ValidationsErrors)
+            logger.LogError($"Field: {field}, Message: {error}");
+        return NotFound(result);
+    }
+
     [Authorize(Roles = "User, Admin")]
     [HttpGet("all")]
     [ProducesResponseType(StatusCodes.Status200OK)]
@@ -120,4 +139,5 @@ public class ContractsController(
 
         return Ok(result);
     }
+    
 }

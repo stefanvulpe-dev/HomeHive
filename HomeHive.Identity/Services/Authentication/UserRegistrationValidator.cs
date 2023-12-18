@@ -37,14 +37,6 @@ public sealed class UserRegistrationValidator : AbstractValidator<RegistrationMo
             .MaximumLength(25)
             .WithMessage("{PropertyName} must not exceed 25 characters");
 
-        RuleFor(x => x.PhoneNumber)
-            .NotEmpty()
-            .WithMessage("{PropertyName} is required")
-            .MinimumLength(5)
-            .WithMessage("{PropertyName} must be at least 5 characters long")
-            .MaximumLength(10)
-            .WithMessage("{PropertyName} must not exceed 10 characters");
-
         RuleFor(x => x.Password)
             .NotEmpty()
             .WithMessage("{PropertyName} is required")

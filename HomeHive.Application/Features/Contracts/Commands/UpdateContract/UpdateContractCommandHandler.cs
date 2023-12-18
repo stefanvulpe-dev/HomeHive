@@ -14,12 +14,18 @@ public class UpdateContractCommandHandler(IContractRepository contractRepository
         var validatorResult = await validator.ValidateAsync(request, cancellationToken);
 
         if (!validatorResult.IsValid)
-            return new UpdateContractCommandResponse
+        {
+            var validationErrors = validatorResult.Errors
+                .GroupBy(x => x.PropertyName, x => x.ErrorMessage)
+                .ToDictionary(group => group.Key, group => group.ToList());
+            
+            return new UpdateContractCommandResponse()
             {
                 IsSuccess = false,
                 Message = "Failed to update contract.",
-                ValidationsErrors = validatorResult.Errors.ToDictionary(x => x.PropertyName, x => x.ErrorMessage)
+                ValidationsErrors = validationErrors
             };
+        }
 
         var contractResult = await validator.ValidateContractExistence(request, cancellationToken);
         if (!contractResult.IsSuccess)

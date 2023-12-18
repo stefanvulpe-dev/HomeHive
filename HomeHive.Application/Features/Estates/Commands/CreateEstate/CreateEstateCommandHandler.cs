@@ -1,33 +1,39 @@
 ﻿using HomeHive.Application.Contracts.Commands;
-using HomeHive.Application.Features.Users.Commands.CreateEstate;
 using HomeHive.Application.Persistence;
 using HomeHive.Domain.Entities;
 
 namespace HomeHive.Application.Features.Estates.Commands.CreateEstate;
 
-public class CreateEstateCommandHandler(IEstateRepository repository)
+public class CreateEstateCommandHandler(IEstateRepository repository, IUtilityRepository utilityRepository)
     : ICommandHandler<CreateEstateCommand, CreateEstateCommandResponse>
 {
     public async Task<CreateEstateCommandResponse> Handle(CreateEstateCommand command,
         CancellationToken cancellationToken)
     {
-        var validator = new CreateEstateCommandValidator();
+        var validator = new CreateEstateCommandValidator(utilityRepository);
         var validatorResult = await validator.ValidateAsync(command, cancellationToken);
 
         if (!validatorResult.IsValid)
-            return new CreateEstateCommandResponse
+        {
+            var validationErrors = validatorResult.Errors
+                .GroupBy(x => x.PropertyName, x => x.ErrorMessage)
+                .ToDictionary(group => group.Key, group => group.ToList());
+            
+            return new CreateEstateCommandResponse()
             {
                 IsSuccess = false,
-                ValidationsErrors = validatorResult.Errors.ToDictionary(x => x.PropertyName, x => x.ErrorMessage)
+                Message = "Failed to create contract.",
+                ValidationsErrors = validationErrors
             };
+        }
 
-        var result = Estate.Create(command.OwnerId, command.EstateData);
+        var result = Estate.Create(command.OwnerId, validator.Utilities!, command.EstateData);
 
         if (!result.IsSuccess)
             return new CreateEstateCommandResponse
             {
                 IsSuccess = false,
-                ValidationsErrors = new Dictionary<string, string> { { "Estate", result.Message } }
+                ValidationsErrors = new Dictionary<string, List<string>> { { "Estate", new List<string> { result.Error } } }
             };
         var estate = result.Value;
 
