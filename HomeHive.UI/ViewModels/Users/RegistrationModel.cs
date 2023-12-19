@@ -6,17 +6,17 @@ public class RegistrationModel
 {
     [Required(ErrorMessage = "Username is required.")]
     [MinLength(5, ErrorMessage = "Username must be at least 5 characters.")]
-    [MaxLength(15, ErrorMessage = "Username cannot be more than 25 characters.")]
+    [MaxLength(25, ErrorMessage = "Username cannot be more than 25 characters.")]
     public string? UserName { get; set; }
 
     [Required(ErrorMessage = "First name is required.")]
     [MinLength(3, ErrorMessage = "First name must be at least 3 characters.")]
-    [MaxLength(25, ErrorMessage = "First name cannot be more than 25 characters.")]
+    [MaxLength(30, ErrorMessage = "First name cannot be more than 30 characters.")]
     public string? FirstName { get; set; }
 
     [Required(ErrorMessage = "Last name is required.")]
     [MinLength(3, ErrorMessage = "Last name must be at least 3 characters.")]
-    [MaxLength(25, ErrorMessage = "Last name cannot be more than 25 characters.")]
+    [MaxLength(30, ErrorMessage = "Last name cannot be more than 30 characters.")]
     public string? LastName { get; set; }
 
     [Required(ErrorMessage = "Email is required.")]

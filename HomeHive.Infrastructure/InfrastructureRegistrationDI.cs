@@ -5,6 +5,7 @@ using HomeHive.Application.Persistence;
 using HomeHive.Infrastructure.Caching;
 using HomeHive.Infrastructure.Repositories;
 using HomeHive.Infrastructure.Services.BlobStorage;
+using HomeHive.Infrastructure.Services.Email;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -30,6 +31,8 @@ public static class InfrastructureRegistrationDI
         services.AddScoped<IUtilityRepository, UtilityRepository>();
         services.AddSingleton(x => new BlobServiceClient(configuration["AzureBlobStorage:ConnectionString"]));
         services.Configure<BlobStorageOptions>(configuration.GetSection("AzureBlobStorage"));
+        services.Configure<SendGridConfigurationOptions>(configuration.GetSection("SendGrid"));
+        services.AddSingleton<IEmailService, EmailService>();
         services.AddSingleton<IBlobStorageService, BlobStorageService>();
         return services;
     }

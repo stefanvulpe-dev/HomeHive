@@ -1,6 +1,7 @@
 ﻿using HomeHive.Application.Contracts.Interfaces;
 using HomeHive.Application.Contracts.Queries;
 using HomeHive.Application.Persistence;
+using Microsoft.Extensions.Options;
 
 namespace HomeHive.Application.Features.Users.Queries.GetProfilePicture;
 
@@ -14,12 +15,10 @@ public class GetProfilePictureQueryHandler(IUserRepository userRepository, IBlob
 
         if (!user.IsSuccess)
             return new GetProfilePictureQueryResponse { IsSuccess = false, Message = "User not found" };
+        
+        var blobName = user.Value.ProfilePicture ?? "default-profile-photo.jpg";
 
-        if (user.Value.ProfilePicture == null)
-            return new GetProfilePictureQueryResponse
-                { IsSuccess = false, Message = "User has no profile picture set" };
-
-        var profilePicture = await blobStorageService.GetBlobAsync(user.Value.ProfilePicture, cancellationToken);
+        var profilePicture = await blobStorageService.GetBlobAsync(blobName, cancellationToken);
 
         return !profilePicture.IsSuccess
             ? new GetProfilePictureQueryResponse { IsSuccess = false, Message = "Profile picture not found" }
