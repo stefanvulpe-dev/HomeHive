@@ -17,7 +17,7 @@ public class EstateTests
             "Test Location",
             1000,
             "100m2",
-            ["Test Utilities"],
+            new List<String>{"Test Utilities"},
             "Test Description",
             "Test Image");
 
@@ -57,7 +57,7 @@ public class EstateTests
             "Test Location",
             1000,
             "100m2",
-            ["Test Utilities"],
+            new List<String>{"Test Utilities"},
             "Test Description",
             "Test Image");
 
@@ -84,7 +84,7 @@ public class EstateTests
             "Test Location",
             1000,
             "100m2",
-            ["Test Utilities"],
+            new List<String>{"Test Utilities"},
             "Test Description",
             "Test Image");
 
@@ -111,7 +111,7 @@ public class EstateTests
             "Test Location",
             1000,
             "100m2",
-            ["Test Utilities"],
+            new List<String>{"Test Utilities"},
             "Test Description",
             "Test Image");
 
@@ -138,7 +138,7 @@ public class EstateTests
             "Test Location",
             1000,
             "100m2",
-            ["Test Utilities"],
+            new List<String>{"Test Utilities"},
             "Test Description",
             "Test Image");
 
@@ -165,7 +165,7 @@ public class EstateTests
             "",
             1000,
             "100m2",
-            ["Test Utilities"],
+            new List<String>{"Test Utilities"},
             "Test Description",
             "Test Image");
 
@@ -192,7 +192,7 @@ public class EstateTests
             "Test Location",
             -2,
             "100m2",
-            ["Test Utilities"],
+            new List<String>{"Test Utilities"},
             "Test Description",
             "Test Image");
 
@@ -219,7 +219,7 @@ public class EstateTests
             "Test Location",
             1000,
             "",
-            ["Test Utilities"],
+            new List<String>{"Test Utilities"},
             "Test Description",
             "Test Image");
 
@@ -246,7 +246,7 @@ public class EstateTests
             "Test Location",
             1000,
             "100m2",
-            [""],
+            new List<String>{""},
             "Test Description",
             "Test Image");
 
@@ -299,7 +299,7 @@ public class EstateTests
             "Test Location",
             1000,
             "100m2",
-            ["Test Utilities"],
+            new List<String>{"Test Utilities"},
             "",
             "Test Image");
 
@@ -326,7 +326,7 @@ public class EstateTests
             "Test Location",
             1000,
             "100m2",
-            ["Test Utilities"],
+            new List<String>{"Test Utilities"},
             "Test Description",
             "");
 
@@ -355,7 +355,7 @@ public class EstateTests
             "Test Location",
             1000,
             "100m2",
-            ["Test Utilities"],
+            new List<String>{"Test Utilities"},
             "Test Description",
             "Test Image"
         )).Value;
@@ -370,7 +370,7 @@ public class EstateTests
             "Updated Test Location",
             2000,
             "200m2",
-            ["Updated Test Utilities"],
+            new List<String>{"Updated Test Utilities"},
             "Updated Test Description",
             "Updated Test Image");
 

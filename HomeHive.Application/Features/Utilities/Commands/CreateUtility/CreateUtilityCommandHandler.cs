@@ -31,7 +31,7 @@ public class CreateUtilityCommandHandler(IUtilityRepository utilityRepository)
             return new CreateUtilityCommandResponse
             {
                 IsSuccess = false,
-                ValidationsErrors = new Dictionary<string, List<string>> { { "Utility", [utilityResult.Message] } }
+                ValidationsErrors = new Dictionary<string, List<string>> { { "Utility", new List<string> { utilityResult.Message } } }
             };
 
         var utility = utilityResult.Value;

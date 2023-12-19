@@ -33,7 +33,7 @@ public class CreateEstateCommandHandler(IEstateRepository repository, IUtilityRe
             return new CreateEstateCommandResponse
             {
                 IsSuccess = false,
-                ValidationsErrors = new Dictionary<string, List<string>> { { "Estate", [result.Message] } }
+                ValidationsErrors = new Dictionary<string, List<string>> { { "Estate",  new List<string> {result.Message} } }
             };
         var estate = result.Value;
 

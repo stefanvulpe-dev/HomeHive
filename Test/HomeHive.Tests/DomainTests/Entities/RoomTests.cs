@@ -16,7 +16,7 @@ public class RoomTests
         var estate = Estate.Create(Guid.NewGuid(), utilities,
             new EstateData("House", "ForRent",
                 "Test", "Test", 100, "Test",
-                ["Test"], "Test", "Test")).Value;
+                new List<String>{"Test"}, "Test", "Test")).Value;
         var roomData = new RoomData("Test", RoomType.LivingRoom.ToString(), 200, 200, estate);
 
         // Act
@@ -42,7 +42,7 @@ public class RoomTests
         var estate = Estate.Create(Guid.NewGuid(), utilities,
             new EstateData("House", "ForRent",
                 "Test", "Test", 100, "Test",
-                ["Test"], "Test", "Test")).Value;
+                new List<String>{"Test"}, "Test", "Test")).Value;
         var roomData = new RoomData("", RoomType.LivingRoom.ToString(), 200, 200, estate);
 
         // Act
@@ -63,7 +63,7 @@ public class RoomTests
         var estate = Estate.Create(Guid.NewGuid(), utilities,
             new EstateData("House", "ForRent",
                 "Test", "Test", 100, "Test",
-                ["Test"], "Test", "Test")).Value;
+                new List<String>{"Test"}, "Test", "Test")).Value;
         var roomData = new RoomData("Test", "", 200, 200, estate);
 
         // Act
@@ -84,7 +84,7 @@ public class RoomTests
         var estate = Estate.Create(Guid.NewGuid(), utilities,
             new EstateData("House", "ForRent",
                 "Test", "Test", 100, "Test",
-                ["Test"], "Test", "Test")).Value;
+                new List<String>{"Test"}, "Test", "Test")).Value;
         var roomData = new RoomData("Test", RoomType.LivingRoom.ToString(), -20, 200, estate);
 
         // Act
@@ -105,7 +105,7 @@ public class RoomTests
         var estate = Estate.Create(Guid.NewGuid(), utilities,
             new EstateData("House", "ForRent",
                 "Test", "Test", 100, "Test",
-                ["Test"], "Test", "Test")).Value;
+                new List<String>{"Test"}, "Test", "Test")).Value;
         var roomData = new RoomData("Test", RoomType.LivingRoom.ToString(), 200, -20, estate);
 
         // Act

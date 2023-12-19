@@ -33,7 +33,7 @@ public class UpdateEmailCommandHandler(UserManager<User> userManager) : ICommand
                 Message = "Update email failed.",
                 ValidationsErrors = new Dictionary<string, List<string>>
                 {
-                    {"Token", ["Invalid token."] }
+                    {"Token", new List<string>  {"Invalid token."} }
                 }
             };
         

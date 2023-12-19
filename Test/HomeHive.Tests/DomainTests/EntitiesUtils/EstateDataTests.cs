@@ -14,7 +14,7 @@ public class EstateDataTests
         var location = "City Center";
         var price = 1000000.50m;
         var totalArea = "150 sqm";
-        List<string> utilities = ["Water", "Electricity"];
+        List<string> utilities = new List<string> { "Water", "Electricity" };
         var description = "Modern apartment with great amenities";
         var image = "image-url.jpg";
 

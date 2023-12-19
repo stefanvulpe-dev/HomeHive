@@ -12,10 +12,11 @@ public class EstatePhotoTests
         var utilityResult = Utility.Create("Test Utilities");
         var utilities = new List<Utility> { utilityResult.Value };
 
-        var estate = Estate.Create(Guid.NewGuid(), utilities,
-            new EstateData("House", "ForRent",
-                "Test", "Test", 100, "Test",
-                ["Test"], "Test", "Test")).Value;
+        var estateData = new EstateData("House", "ForRent",
+            "Test", "Test", 100, "Test",
+            new List<string> { "Test" }, "Test", "Test");
+
+        var estate = Estate.Create(Guid.NewGuid(), utilities, estateData).Value;
         var objectName = "Test";
 
         // Act
@@ -35,10 +36,11 @@ public class EstatePhotoTests
         var utilityResult = Utility.Create("Test Utilities");
         var utilities = new List<Utility> { utilityResult.Value };
 
-        var estate = Estate.Create(Guid.NewGuid(), utilities,
-            new EstateData("House", "ForRent",
-                "Test", "Test", 100, "Test",
-                ["Test"], "Test", "Test")).Value;
+        var estateData = new EstateData("House", "ForRent",
+            "Test", "Test", 100, "Test",
+            new List<string> { "Test" }, "Test", "Test");
+
+        var estate = Estate.Create(Guid.NewGuid(), utilities, estateData).Value;
         var objectName = "";
 
         // Act
@@ -47,7 +49,9 @@ public class EstatePhotoTests
         // Assert
         Assert.False(result.IsSuccess);
         Assert.Equal("Object name is not valid!", result.Message);
+        Assert.Contains("Object name cannot be empty", result.ValidationErrors["ObjectName"]);
     }
+
 
     [Fact]
     public void CreatePhoto_WithInvalidEstate_ShouldNotCreatePhoto()

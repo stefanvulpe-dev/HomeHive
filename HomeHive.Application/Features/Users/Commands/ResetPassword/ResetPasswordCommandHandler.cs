@@ -37,7 +37,7 @@ public class ResetPasswordCommandHandler(UserManager<User> userManager)
                 Message = "Reset password failed.",
                 ValidationsErrors = new Dictionary<string, List<string>>
                 {
-                    {"Token", ["Invalid token."] }
+                    {"Token", new List<string> {"Invalid token."} }
                 }
             };
         

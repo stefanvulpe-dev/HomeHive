@@ -36,9 +36,10 @@ public class RoomDataTests
             "Test Location",
             100,
             "160m2",
-            ["Test Utilities"],
+            new List<string> { "Test Utilities" }, 
             "Test Description",
             "Test Image");
+
 
         var utilityResult = Utility.Create("Test Utilities");
         var utilities = new List<Utility> { utilityResult.Value };

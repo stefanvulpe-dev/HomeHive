@@ -64,7 +64,7 @@ public class UtilityTests
                 "Test",
                 100,
                 "160m2",
-                ["test", "Water"],
+                new List<string> { "test", "Water" },
                 "Test",
                 "Test")).Value;
 

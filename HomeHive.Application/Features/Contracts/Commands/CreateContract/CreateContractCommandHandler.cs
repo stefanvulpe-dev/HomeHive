@@ -32,7 +32,7 @@ public class CreateContractCommandHandler(IContractRepository contractRepository
             return new CreateContractCommandResponse
             {
                 IsSuccess = false,
-                ValidationsErrors = new Dictionary<string, List<string>> { { "Contract", [contract.Message] } }
+                ValidationsErrors = new Dictionary<string, List<string>> { { "Contract",  new List<string> {contract.Message} } }
             };
 
         await contractRepository.AddAsync(contract.Value);

@@ -11,15 +11,15 @@ public class EmailService(IOptions<SendGridConfigurationOptions> options): IEmai
     public async Task<Result> SendEmailAsync(string email, string subject, string message)
     {
         var client = new SendGridClient(options.Value.ApiKey);
-
+        
         var from = new EmailAddress(options.Value.SenderEmail, "HomeHive");
         var to = new EmailAddress(email);
-
+        
         var htmlContent = $"<strong>{message}</strong>";
         var msg = MailHelper.CreateSingleEmail(from, to, subject, "Your reset password code: ", htmlContent);
-
+        
         var response = await client.SendEmailAsync(msg);
-
+        
         return !response.IsSuccessStatusCode
             ? Result.Failure("Failed to send email")
             : Result.Success("Email sent successfully");
