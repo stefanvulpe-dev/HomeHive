@@ -1,0 +1,40 @@
+<p class="fs-3 mt-5 mt-md-0">Token</p>
+<hr />
+
+<EditForm Model="@tokenModel" OnValidSubmit="@HandleValidSubmit" FormName="tokenForm">
+    <div>
+        <small>
+            A unique confirmation token, a dynamically generated alphanumeric code, is prepared by the system.
+            This token serves as a personalized key to verify your identity and authorize specific actions on your account.
+            The token will be sent for secure retrieval. Please remember that you can only use the token once.
+        </small>
+        <br/>
+        @if (showConfirmationMessage)
+                {
+                    <small class="text-success mb-5">
+                        An email will be sent to you in the next few minutes. Please check your inbox.
+                    </small>
+                }
+        <div class="d-flex justify-content-center mt-3 mb-3">
+            <button type="submit" class="btn btn-primary" @onclick="ShowConfirmationMessage">Send Token</button>
+        </div>
+    </div>
+</EditForm>
+
+@code {
+    public class TokenModel
+    {
+    }
+
+    private TokenModel tokenModel = new TokenModel();
+    private bool showConfirmationMessage = false;
+
+    private void HandleValidSubmit()
+    {
+        showConfirmationMessage = true;
+    }
+
+    private void ShowConfirmationMessage()
+    {
+    }
+}

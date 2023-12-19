@@ -1,0 +1,32 @@
+<p class="fs-3 mt-5 mt-md-0">Change Email</p>
+<hr/>
+
+<EditForm Model="@emailModel" OnValidSubmit="@HandleValidSubmit" FormName="changeEmailForm">
+    <div class="mb-3">
+        <label for="token" class="form-label">Token</label>
+        <InputText type="text" class="form-control" id="token" @bind-Value="emailModel.Token"/>
+    </div>
+    <div class="mb-3">
+        <label for="new-email" class="form-label"> New Email</label>
+        <InputText type="email" class="form-control" id="new-email" @bind-Value="emailModel.NewEmail"/>
+    </div>
+    <div class="d-flex justify-content-center">
+        <button type="submit" class="btn btn-primary">Change Email</button>
+    </div>
+</EditForm>
+
+@code {
+    private EmailModel emailModel = new();
+
+    public class EmailModel
+    {
+        public string Token { get; set; }
+        public string NewEmail { get; set; }
+    }
+
+    private void HandleValidSubmit()
+    {
+        throw new NotImplementedException();
+    }
+
+}

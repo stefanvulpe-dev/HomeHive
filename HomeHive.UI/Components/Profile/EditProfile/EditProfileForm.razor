@@ -20,12 +20,7 @@
         <label for="username" class="form-label">Username</label>
         <InputText class="form-control" id="username" @bind-Value="userProfile.Username"/>
     </div>
-
-    <div class="mb-3 d-flex flex-column">
-        <label for="email" class="form-label">Email address</label>
-        <small class="mb-1">Current email: john.doe@example.com</small>
-        <InputText class="form-control" id="email" @bind-Value="userProfile.Email"/>
-    </div>
+    
     <div class="mb-3 d-flex flex-column">
         <label for="phone" class="form-label">Phone Number</label>
         <small class="mb-1">Current phone number: +1 234 567 899</small>
@@ -45,7 +40,6 @@
         public string Username { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
-        public string Email { get; set; }
         public string PhoneNumber { get; set; }
     }
 
