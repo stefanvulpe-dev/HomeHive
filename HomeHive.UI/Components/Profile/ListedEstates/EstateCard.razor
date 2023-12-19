@@ -1,15 +1,22 @@
 @using HomeHive.UI.ViewModels.Estates
-@if (Estate != null)
-{
+@inject NavigationManager NavigationManager
+
+@* @if (Estate != null) *@
+@* { *@
     <div class="card col-md-3 m-md-3 mb-sm-3">
         <img class="card-img-top" src="background1.jpg" alt="Card image cap">
         <div class="card-body">
-            <h5 class="card-title">@Estate.Name</h5>
-            <p class="card-text">@Estate.Location</p>
-            <a href="#" class="btn btn-primary">Edit estate</a>
+            @* <h5 class="card-title">@Estate.Name</h5> *@
+            @* <p class="card-text">@Estate.Location</p> *@
+            <h5 class="card-title">nom</h5>
+            <p class="card-text">prenom</p>
+            <div class="d-flex justify-content-center gap-1">
+                <button class="btn btn-primary">Edit estate</button>
+                <button class="btn btn-primary">View estate</button>
+            </div>
         </div>
     </div>
-}
+@* } *@
 
 @code {
     [Parameter] public EstateModel? Estate { get; set; }

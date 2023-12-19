@@ -11,19 +11,22 @@
         <p class="fs-3">Listed Estates</p>
         <hr />
         <div class="row">
-            @if (Estates != null)
-            {
-                @foreach (var estate in Estates)
-                {
-                    <EstateCard Estate="@estate"></EstateCard>
-                }
-            }
-            else
-            {
-                <div class="col-12">
-                    <p class="text-center">You have no listed properties.</p>
-                </div>
-            }
+            @* @if (Estates != null) *@
+            @* { *@
+            @*     @foreach (var estate in Estates) *@
+            @*     { *@
+            @*         <EstateCard Estate="@estate"></EstateCard> *@
+            @*     } *@
+            @* } *@
+            @* else *@
+            @* { *@
+            @*     <div class="col-12"> *@
+            @*         <p class="text-center">You have no listed properties.</p> *@
+            @*     </div> *@
+            @* } *@
+            <EstateCard></EstateCard>
+            <EstateCard></EstateCard>
+            <EstateCard></EstateCard>
         </div>
     </div>
 </div>
