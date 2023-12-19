@@ -1,6 +1,9 @@
 <p class="fs-3">General Information</p>
 <hr/>
 <EditForm Model="@userProfile" OnValidSubmit="@HandleValidSubmit" FormName="editProfileForm">
+    <div class="d-flex justify-content-center">
+        <img src="background1.jpg" class="rounded-circle me-3" width="256" height="256" alt="profile" style="border: 2px solid #ddd; border-radius: 4px; padding: 5px;"/>
+    </div>
     <div class="mb-3">
         <label for="profileImage" class="form-label">Profile Image</label>
         <InputFile class="form-control" id="profileImage"/>
@@ -20,7 +23,7 @@
         <label for="username" class="form-label">Username</label>
         <InputText class="form-control" id="username" @bind-Value="userProfile.Username"/>
     </div>
-    
+
     <div class="mb-3 d-flex flex-column">
         <label for="phone" class="form-label">Phone Number</label>
         <small class="mb-1">Current phone number: +1 234 567 899</small>
