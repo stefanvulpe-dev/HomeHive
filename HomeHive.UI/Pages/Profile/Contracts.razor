@@ -1,0 +1,40 @@
+@page "/contracts"
+@using HomeHive.UI.ViewModels
+@using HomeHive.UI.Components.Profile.Contracts
+@using Microsoft.AspNetCore.Authorization
+@layout ProfileLayout
+@attribute [Authorize(Roles = "User, Admin")]
+
+<div class="profile-card col d-flex flex-column h-sm-100 min-vh-100">
+    <div class="card-body">
+        <p class="fs-3">Contracts</p>
+        <hr />
+        <div class="row">
+            @* @if (ContractsList != null) *@
+            @* { *@
+            @*     @foreach (var estate in ContractsList) *@
+            @*     { *@
+            @*     } *@
+            @* } *@
+            @* else *@
+            @* { *@
+            @*     <div class="col-12"> *@
+            @*         <p class="text-center">You have no signed contracts.</p> *@
+            @*     </div> *@
+            @* } *@
+            <ContractCard></ContractCard>
+            <ContractCard></ContractCard>
+            <ContractCard></ContractCard>
+            <ContractCard></ContractCard>
+        </div>
+    </div>
+</div>
+
+@code {
+    private List<ContractViewModel>? ContractsList { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+    }
+
+}
