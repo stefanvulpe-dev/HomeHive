@@ -1,25 +1,6 @@
 ﻿@using HomeHive.UI.Components.General
 @inherits LayoutComponentBase
 
-<HeadContent>
-    <!-- Custom styles for this template -->
-    <link href="/css/sidebars.css" rel="stylesheet">
-    <style>
-        .bd-placeholder-img {
-          font-size: 1.125rem;
-          text-anchor: middle;
-          -webkit-user-select: none;
-          -moz-user-select: none;
-          user-select: none;
-        }
-  
-        @@media (min-width: 768px) {
-          .bd-placeholder-img-lg {
-            font-size: 3.5rem;
-          }
-        }
-  </style>
-</HeadContent>
 
 <svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
     <symbol id="bootstrap" viewBox="0 0 118 94">
@@ -85,9 +66,7 @@
         <div class="row vh-100 overflow-auto profile-card">
             <ProfileSidebar/>
             @Body 
-            
         </div>
     </div>
 </main>
 
-<script src="js/sidebars.js"></script>

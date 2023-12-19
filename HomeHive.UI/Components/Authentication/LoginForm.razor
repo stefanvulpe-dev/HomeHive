@@ -9,9 +9,10 @@
 <EditForm Model="@LoginModel" OnValidSubmit="@HandleValidSubmit" FormName="loginForm">
     <DataAnnotationsValidator/>
     <CustomValidation @ref="@_customValidation"/>
+    <ValidationSummary/>
 
     <div class="form-outline mb-2">
-        <label class="form-label" for="login-email">Username</label>
+        <label class="form-label" for="login-username">Username</label>
         <InputText id="login-username" class="form-control" placeholder="john_doe123" @bind-Value="@LoginModel!.UserName"/>
         <ValidationMessage For="@(() => LoginModel.UserName)"/>
     </div>
@@ -63,13 +64,13 @@
                 {
                     Logger.LogInformation(result.Message);
                     await AuthStateProvider.LoginAsync();
-                    NavigationManager.NavigateTo("/");
+                    NavigationManager.NavigateTo("/profile");
                 }
                 else
                 {
                     Logger.LogError(result.Message);
                     if (result.ValidationErrors != null)
-                        _customValidation?.DisplayErrors(result.ValidationErrors);
+                        _customValidation?.DisplayErrors(new Dictionary<string, string> { { "login-username", result.Message! }, { "login-password", result.Message! } });
                 }
             }
         }

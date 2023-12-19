@@ -1,11 +1,18 @@
-﻿<div class="col-12 col-sm-3 col-xl-2 px-sm-2 px-0 bg-light d-flex sticky-top shadow-sm shadow-bottom">
+﻿@using HomeHive.UI.Interfaces
+@using HomeHive.UI.Services.Authentication
+@using HomeHive.UI.Utils
+@inject IUserDataService UserDataService
+@inject NavigationManager NavigationManager
+@inject HomeHiveAuthStateProvider AuthStateProvider
+
+<div class="col-12 col-sm-3 col-xl-2 px-sm-2 px-0 bg-light d-flex sticky-top shadow-sm shadow-bottom">
     <div class="d-flex flex-sm-column flex-row flex-grow-1 align-items-center align-items-sm-start pt-2 pb-2">
         <NavLink class="pb-sm-3 mb-md-0 mt-md-2 me-md-auto text-decoration-none">
             <div class="d-none d-sm-flex align-items-center">
-                <img src="background1.jpg" class="rounded-circle m-2" width="64" height="64" alt="profile" style="border: 2px solid #ddd; border-radius: 4px; padding: 5px;"/>
+                <img src="@_imageUrl" class="rounded-circle me-3" width="64" height="64" alt="profile"/>
                 <div class="d-flex flex-column justify-content-center">
-                    <span class="fs-4">John Doe</span>
-                    <small>john.doe</small>
+                    <span class="fs-4">@_firstName @_lastName</span>
+                    <small>@_username</small>
                 </div>
             </div>
         </NavLink>
@@ -72,7 +79,7 @@
                 </NavLink>
             </li>
             <li>
-                <NavLink href="login" class="nav-link link-dark">
+                <NavLink href="login" class="nav-link link-dark" @onclick="@Logout">
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi me-2 bi-door-closed" viewBox="0 0 16 16">
                         <path d="M3 2a1 1 0 0 1 1-1h8a1 1 0 0 1 1 1v13h1.5a.5.5 0 0 1 0 1h-13a.5.5 0 0 1 0-1H3zm1 13h8V2H4z"/>
                         <path d="M9 9a1 1 0 1 0 2 0 1 1 0 0 0-2 0"/>
@@ -83,3 +90,31 @@
         </ul>
     </div>
 </div>
+
+@code {
+    private string? _username = "john.doe";
+    private string? _firstName = "John";
+    private string? _lastName = "Doe";
+    private string _imageUrl = "background4.jpg";
+
+    protected override async Task OnInitializedAsync()
+    {
+        _imageUrl = await UserDataService.GetProfilePicture();
+        
+        var userResponse = await UserDataService.GetUserInfo();
+
+        if (userResponse is { IsSuccess: true })
+        {
+            _username = userResponse.User!.UserName;
+            _firstName = userResponse.User!.FirstName;
+            _lastName = userResponse.User!.LastName;
+        }
+    }
+    
+    private async Task Logout()
+    {
+        await AuthStateProvider.LogoutAsync();
+        NavigationManager.NavigateTo("/login");
+    }
+
+}

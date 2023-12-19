@@ -1,46 +1,82 @@
-<EditForm Model="@userProfile" OnValidSubmit="@HandleValidSubmit" FormName="editProfileForm">
+@using HomeHive.UI.ViewModels.Users
+@using HomeHive.UI.Utils
+@using HomeHive.UI.Interfaces
+@inject IUserDataService UserDataService
+@inject ILogger<EditProfileForm> Logger
+
+<EditForm Model="@User" OnValidSubmit="@HandleValidSubmit" FormName="editProfileForm">
+    <DataAnnotationsValidator/>
+    <CustomValidation @ref="@_customValidation"/>
+    
     <div class="row mb-3">
         <div class="col-md-6">
             <label for="firstName" class="form-label">First Name</label>
-            <InputText class="form-control" id="firstName" @bind-Value="userProfile.FirstName"/>
+            <InputText class="form-control" id="firstName" @bind-Value="@User!.FirstName"/>
         </div>
         <div class="col-md-6">
             <label for="lastName" class="form-label">Last Name</label>
-            <InputText class="form-control" id="lastName" @bind-Value="userProfile.LastName"/>
+            <InputText class="form-control" id="lastName" @bind-Value="@User.LastName"/>
         </div>
     </div>
 
-    <div class="mb-3 d-flex flex-column">
-        <label for="username" class="form-label">Username</label>
-        <InputText class="form-control" id="username" @bind-Value="userProfile.Username"/>
-    </div>
-
-    <div class="mb-3 d-flex flex-column">
-        <label for="phone" class="form-label">Phone Number</label>
-        <small class="mb-1">Current phone number: +1 234 567 899</small>
-        <InputText class="form-control" id="phone" @bind-Value="userProfile.PhoneNumber"/>
-    </div>
     <div class="d-flex justify-content-center">
-        <button type="submit" class="btn btn-primary">Save Changes</button>
+        <button type="submit" class="btn btn-primary mb-3">Change your info</button>
     </div>
-
+    
+    @if (_isSuccess)
+    {
+        <div class="alert alert-success" role="alert">
+            Profile updated successfully!
+        </div>
+    }
 </EditForm>
 
 @code {
-    private UserProfile userProfile = new();
+    [SupplyParameterFromForm] private UserModel? User { get; set; }
 
-    public class UserProfile
+    private CustomValidation? _customValidation;
+
+    private bool _isSubmitting;
+
+    private bool _isSuccess;
+
+    protected override void OnInitialized()
     {
-        public string Username { get; set; }
-        public string FirstName { get; set; }
-        public string LastName { get; set; }
-        public string PhoneNumber { get; set; }
+        User ??= new UserModel();
     }
 
-
-    private void HandleValidSubmit()
+    private async void HandleValidSubmit()
     {
-        throw new NotImplementedException();
+        _customValidation?.ClearErrors();
+        try
+        {
+            _isSubmitting = true;
+            var result = await UserDataService.UpdateGeneralInfo(User!);
+
+            if (result != null)
+            {
+                if (result.IsSuccess)
+                {
+                    _isSuccess = true;
+                    StateHasChanged();
+                    Logger.LogInformation(result.Message);
+                }
+                else
+                {
+                    Logger.LogError(result.Message);
+                    if (result.ValidationsErrors != null)
+                        _customValidation?.DisplayErrors(result.ValidationsErrors);
+                }
+            }
+        }
+        catch (Exception)
+        {
+            Logger.LogError("An error occurred while registering");
+        }
+        finally
+        {
+            _isSubmitting = false;
+        }
     }
 
 }

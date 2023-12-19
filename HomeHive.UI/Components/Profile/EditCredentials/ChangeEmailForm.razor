@@ -1,32 +1,75 @@
+@using HomeHive.UI.ViewModels.Users
+@using HomeHive.UI.Utils
+@using HomeHive.UI.Interfaces
+@inject IUserDataService UserService
+@inject ILogger<ChangeEmailForm> Logger
+
 <p class="fs-3 mt-5 mt-md-0">Change Email</p>
 <hr/>
 
-<EditForm Model="@emailModel" OnValidSubmit="@HandleValidSubmit" FormName="changeEmailForm">
+<EditForm Model="@UpdateEmailModel" OnValidSubmit="@HandleValidSubmit" FormName="changeEmailForm">
+    <DataAnnotationsValidator />
+    <CustomValidation @ref="@_customValidation"/>
+
     <div class="mb-3">
         <label for="token" class="form-label">Token</label>
-        <InputText type="text" class="form-control" id="token" @bind-Value="emailModel.Token"/>
+        <InputText type="text" class="form-control" id="token" @bind-Value="@UpdateEmailModel!.EmailResetToken"/>
     </div>
     <div class="mb-3">
         <label for="new-email" class="form-label"> New Email</label>
-        <InputText type="email" class="form-control" id="new-email" @bind-Value="emailModel.NewEmail"/>
+        <InputText type="email" class="form-control" id="new-email" @bind-Value="@UpdateEmailModel.NewEmail"/>
     </div>
     <div class="d-flex justify-content-center">
         <button type="submit" class="btn btn-primary">Change Email</button>
     </div>
+
+    @if (_success)
+    {
+        <div class="alert alert-success" role="alert">
+            Email updated successfully!
+        </div>
+    }
 </EditForm>
 
 @code {
-    private EmailModel emailModel = new();
-
-    public class EmailModel
+    [SupplyParameterFromForm] private UpdateEmailModel? UpdateEmailModel { get; set; }
+    
+    private CustomValidation? _customValidation;
+    
+    private bool _isSubmitting;
+    private bool _success;
+    
+    protected override void OnInitialized()
     {
-        public string Token { get; set; }
-        public string NewEmail { get; set; }
+        UpdateEmailModel ??= new UpdateEmailModel();
     }
-
-    private void HandleValidSubmit()
+    
+    private async Task HandleValidSubmit(EditContext editContext)
     {
-        throw new NotImplementedException();
+        _customValidation?.ClearErrors();
+        try
+        {
+            _isSubmitting = true;
+            var result = await UserService.UpdateEmail(UpdateEmailModel!);
+
+            if (result is {IsSuccess: true})
+            {
+                _success = true;
+                StateHasChanged();
+            }
+            else
+            {
+                _customValidation?.DisplayErrors(new Dictionary<string, string> { { "token", "Invalid token" }});
+            }
+        }
+        catch (Exception)
+        {
+            Logger.LogError("An error occurred while registering");
+        }
+        finally
+        {
+            _isSubmitting = false;
+        }
     }
 
 }

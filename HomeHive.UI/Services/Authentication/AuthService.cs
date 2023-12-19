@@ -44,6 +44,7 @@ public class AuthService(IHttpClientFactory httpClientFactory, ILocalStorageServ
     public async Task<bool> Logout()
     {
         var responseMessage = await _httpClient.DeleteAsync("api/v1/Authentication/logout");
+        await RemoveTokensFromBrowserStorage();
         return responseMessage.StatusCode == HttpStatusCode.NoContent;
     }
 
@@ -70,6 +71,12 @@ public class AuthService(IHttpClientFactory httpClientFactory, ILocalStorageServ
     {
         await localStorageService.SetItemAsync("accessToken", accessToken);
         await localStorageService.SetItemAsync("refreshToken", refreshToken);
+    }
+    
+    private async Task RemoveTokensFromBrowserStorage()
+    {
+        await localStorageService.RemoveItemAsync("accessToken");
+        await localStorageService.RemoveItemAsync("refreshToken");
     }
 
     public static IEnumerable<Claim>? ParseClaimsFromJwt(string accessToken)
