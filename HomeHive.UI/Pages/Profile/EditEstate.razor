@@ -1,6 +1,27 @@
-@page "/EditEstate"
-<h3>EditEstate</h3>
+@page "/edit-estate"
+@inject NavigationManager NavigationManager
+@using  HomeHive.UI.Components.Profile.EditEstate
+@using Microsoft.AspNetCore.Authorization
+@layout ProfileLayout
+@attribute [Authorize(Roles = "User, Admin")]
 
-@code {
-    
+<div class="profile-card col d-flex flex-column h-sm-100 min-vh-100">
+    <div class="card-body">
+        <div class="row">
+            <div class="mb-3">
+                <EditEstateForm></EditEstateForm>
+            </div>
+        </div>
+        <hr/>
+        <button class="btn btn-primary" @onclick="Cancel">Cancel Edit</button>
+    </div>
+</div>
+
+@code{
+
+    private void Cancel()
+    {
+        NavigationManager.NavigateTo("/listed-estates");
+    }
+
 }

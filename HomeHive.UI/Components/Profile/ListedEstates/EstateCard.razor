@@ -11,7 +11,7 @@
             <h5 class="card-title">nom</h5>
             <p class="card-text">prenom</p>
             <div class="d-flex justify-content-center gap-1">
-                <button class="btn btn-primary">Edit estate</button>
+                <button class="btn btn-primary" @onclick="EditEstate">Edit estate</button>
                 <button class="btn btn-primary">View estate</button>
             </div>
         </div>
@@ -20,4 +20,9 @@
 
 @code {
     [Parameter] public EstateModel? Estate { get; set; }
+
+    private void EditEstate()
+    {
+        NavigationManager.NavigateTo("/edit-estate");
+    }
 }
