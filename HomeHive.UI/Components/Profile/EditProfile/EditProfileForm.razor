@@ -1,13 +1,4 @@
-<p class="fs-3">Edit Profile</p>
-<hr/>
 <EditForm Model="@userProfile" OnValidSubmit="@HandleValidSubmit" FormName="editProfileForm">
-    <div class="d-flex justify-content-center">
-        <img src="background1.jpg" class="rounded-circle me-3" width="256" height="256" alt="profile" style="border: 2px solid #ddd; border-radius: 4px; padding: 5px;"/>
-    </div>
-    <div class="mb-3">
-        <label for="profileImage" class="form-label">Profile Image</label>
-        <InputFile class="form-control" id="profileImage"/>
-    </div>
     <div class="row mb-3">
         <div class="col-md-6">
             <label for="firstName" class="form-label">First Name</label>
