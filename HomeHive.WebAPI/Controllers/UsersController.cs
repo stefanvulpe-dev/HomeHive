@@ -4,6 +4,7 @@ using HomeHive.Application.Features.Users.Commands.DeleteProfilePicture;
 using HomeHive.Application.Features.Users.Commands.DeleteUserById;
 using HomeHive.Application.Features.Users.Commands.ResetPassword;
 using HomeHive.Application.Features.Users.Commands.UpdateEmail;
+using HomeHive.Application.Features.Users.Commands.UpdateGeneralInfo;
 using HomeHive.Application.Features.Users.Commands.UploadProfilePicture;
 using HomeHive.Application.Features.Users.Queries.GetAllUsers;
 using HomeHive.Application.Features.Users.Queries.GetProfilePicture;
@@ -81,10 +82,10 @@ public class UsersController(
     }
 
     [Authorize(Roles = "Admin, User")]
-    [HttpPost("profile-picture")]
+    [HttpPut("profile-picture")]
     [ProducesResponseType(StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> UploadProfilePicture([FromForm] IFormFile file)
+    public async Task<IActionResult> UpdateProfilePicture([FromForm] IFormFile file)
     {
         var isTokenRevoked = await tokenCacheService.IsTokenRevokedAsync();
         if (isTokenRevoked) return Unauthorized(new { message = "Token is revoked" });
@@ -102,7 +103,7 @@ public class UsersController(
             return BadRequest(result);
         }
 
-        return CreatedAtAction(nameof(UploadProfilePicture), result);
+        return CreatedAtAction(nameof(UpdateProfilePicture), result);
     }
 
     [Authorize(Roles = "Admin, User")]
@@ -187,5 +188,28 @@ public class UsersController(
         if (!result.IsSuccess) return BadRequest(result);
 
         return Ok(result);
+    }
+    
+    
+    [Authorize(Roles = "Admin, User")]
+    [HttpPut]
+    [ProducesResponseType(StatusCodes.Status201Created)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> Update([FromBody] UpdateUserModel model)
+    {
+        var isTokenRevoked = await tokenCacheService.IsTokenRevokedAsync();
+        if (isTokenRevoked) return Unauthorized(new { message = "Token is revoked" });
+
+        var result = await Mediator.Send(new UpdateGeneralInfoCommand(currentUserService.GetCurrentUserId(), model));
+
+        if (!result.IsSuccess)
+        {
+            if (result.ValidationsErrors != null)
+                foreach (var (field, error) in result.ValidationsErrors)
+                    logger.LogError($"Field: {field}, Error: {error}");
+            return BadRequest(result);
+        }
+
+        return CreatedAtAction(nameof(Update), result);
     }
 }
