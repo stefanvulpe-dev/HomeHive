@@ -34,12 +34,9 @@ public class UpdateRoomCommandHandler: ICommandHandler<UpdateRoomCommand, Update
         }
         
         var room = await _roomRepository.FindByIdAsync(request.Id);
-        room.Value.Update(request.Data.RoomType);
-        await _roomRepository.UpdateAsync(room.Value);
+        room.Value.Update(request.RoomType);
         
-        var roomEstate = await _estateRoomRepository.FindBy(request.Data.EstateId, request.Id);
-        roomEstate.Value.Update(request.Data.EstateId, request.Id, request.Data.Quantity);
-        await _estateRoomRepository.UpdateAsync(roomEstate.Value);
+        await _roomRepository.UpdateAsync(room.Value);
         
         return new UpdateRoomCommandResponse
         {
@@ -47,7 +44,7 @@ public class UpdateRoomCommandHandler: ICommandHandler<UpdateRoomCommand, Update
             Room = new CreateRoomDto
             {
                 Id = request.Id,
-                RoomType = request.Data.RoomType,
+                RoomType = request.RoomType,
             }
         };
 

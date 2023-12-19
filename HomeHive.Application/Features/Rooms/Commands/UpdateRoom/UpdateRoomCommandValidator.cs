@@ -1,5 +1,6 @@
 using FluentValidation;
 using HomeHive.Application.Persistence;
+using HomeHive.Domain.Common.EntitiesUtils.Rooms;
 
 namespace HomeHive.Application.Features.Rooms.Commands.UpdateRoom;
 
@@ -17,26 +18,12 @@ public class UpdateRoomCommandValidator: AbstractValidator<UpdateRoomCommand>
             .NotEmpty().WithMessage("Id is required.")
             .MustAsync(RoomExists).WithMessage("Room does not exist.");
 
-        RuleFor(r => r.Data)
-            .NotNull().WithMessage("Room data is required.")
-            .Custom((roomData, context) =>
-            {
-                if (string.IsNullOrWhiteSpace(roomData.RoomType)
-                    && roomData.Quantity <= 0
-                    && roomData.EstateId == Guid.Empty)
-                    context.AddFailure("At least one field in RoomData must be provided.");
-            });
-        RuleFor(r => r.Data.EstateId)
-            .MustAsync(EstateExists).WithMessage("Estate does not exist.");
+        RuleFor(r => r.RoomType)
+            .NotNull().WithMessage("Room Type is required.")
+            .MustAsync(RoomTypeUnique).WithMessage("Room type already exists.")
+            .Must((r, roomType) => Enum.TryParse(typeof(RoomType), roomType.ToString(), out _))
+            .WithMessage("Invalid Room Type.");
         
-
-    }
-    
-    private async Task<bool> EstateExists(Guid estateId, CancellationToken cancellationToken)
-    {
-        var estateResult = await _estateRepository.FindByIdAsync(estateId);
-            
-        return estateResult.IsSuccess;
     }
     
     private async Task<bool> RoomExists(Guid roomId, CancellationToken cancellationToken)
@@ -44,5 +31,15 @@ public class UpdateRoomCommandValidator: AbstractValidator<UpdateRoomCommand>
         var roomResult = await _roomRepository.FindByIdAsync(roomId);
             
         return roomResult.IsSuccess;
+    }
+    
+    private async Task<bool> RoomTypeUnique(string roomType, CancellationToken cancellationToken)
+    {
+        var roomsResult = await _roomRepository.GetAllAsync();
+        if (!roomsResult.IsSuccess)
+            return false;
+        
+        var rooms = roomsResult.Value.Select(r => r.RoomType).ToList();
+        return !roomsResult.Value.Any(r => r.RoomType.ToString() == roomType);
     }
 }

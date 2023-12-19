@@ -36,12 +36,12 @@ public class RoomsController(ITokenCacheService tokenCacheService,
     [Authorize(Roles = "User, Admin")]
     [HttpPut("{roomId}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
-    public async Task<IActionResult> Update([FromRoute] Guid roomId, [FromBody] RoomData data)
+    public async Task<IActionResult> Update([FromRoute] Guid roomId, [FromBody] string roomType)
     {
         var isTokenRevoked = await tokenCacheService.IsTokenRevokedAsync();
         if (isTokenRevoked) return Unauthorized(new { message = "Token is revoked" });
         
-        var result = await Mediator.Send(new UpdateRoomCommand(roomId, data));
+        var result = await Mediator.Send(new UpdateRoomCommand(roomId, roomType));
         
         if (!result.IsSuccess)
         {
