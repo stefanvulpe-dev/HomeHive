@@ -15,6 +15,7 @@ public class EstateRepository : BaseRepository<Estate>, IEstateRepository
     {
         var result = await Context.Set<Estate>()
             .Include(x => x.Utilities)
+            .Include(x => x.EstateRooms)
             .FirstOrDefaultAsync(x => EF.Property<Guid>(x, "Id") == id);
 
         return result == null
@@ -26,6 +27,7 @@ public class EstateRepository : BaseRepository<Estate>, IEstateRepository
     {
         var result = await Context.Set<Estate>()
             .Include(x => x.Utilities)
+            .Include(x => x.EstateRooms)
             .ToListAsync();
 
         return Result<IReadOnlyList<Estate>>.Success(result);

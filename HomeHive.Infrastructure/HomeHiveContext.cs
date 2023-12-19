@@ -2,6 +2,7 @@
 using HomeHive.Domain.Common;
 using HomeHive.Domain.Common.EntitiesUtils.Contracts;
 using HomeHive.Domain.Common.EntitiesUtils.Estates;
+using HomeHive.Domain.Common.EntitiesUtils.Rooms;
 using HomeHive.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 
@@ -13,6 +14,7 @@ public class HomeHiveContext(
     : DbContext(options)
 {
     public DbSet<EstatePhoto>? EstatePhotos { get; set; }
+    public DbSet<EstateRoom>? EstateRoom { get; set; }
     public DbSet<Contract>? Contracts { get; set; }
     public DbSet<Estate>? Estates { get; set; }
     public DbSet<Room>? Rooms { get; set; }
@@ -56,5 +58,10 @@ public class HomeHiveContext(
             .HasConversion(
                 v => v.ToString(),
                 v => (ContractType)Enum.Parse(typeof(ContractType), v!));
+        
+        modelBuilder.Entity<Room>().Property(r => r.RoomType)
+            .HasConversion(
+                v => v.ToString(),
+                v => (RoomType)Enum.Parse(typeof(RoomType), v!));
     }
 }

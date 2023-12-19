@@ -3,6 +3,7 @@ using System;
 using HomeHive.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace HomeHive.Infrastructure.Migrations
 {
     [DbContext(typeof(HomeHiveContext))]
-    partial class HomeHiveContextModelSnapshot : ModelSnapshot
+    [Migration("20231218203139_Change_EstateRooms_Relationship")]
+    partial class Change_EstateRooms_Relationship
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -215,8 +218,8 @@ namespace HomeHive.Infrastructure.Migrations
                     b.Property<DateTime>("LastModifiedDate")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<string>("RoomType")
-                        .HasColumnType("text");
+                    b.Property<int?>("RoomType")
+                        .HasColumnType("integer");
 
                     b.HasKey("Id");
 
@@ -295,7 +298,7 @@ namespace HomeHive.Infrastructure.Migrations
                         .IsRequired();
 
                     b.HasOne("HomeHive.Domain.Entities.Room", "Room")
-                        .WithMany("EstateRooms")
+                        .WithMany()
                         .HasForeignKey("RoomId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -311,11 +314,6 @@ namespace HomeHive.Infrastructure.Migrations
 
                     b.Navigation("EstatePhotos");
 
-                    b.Navigation("EstateRooms");
-                });
-
-            modelBuilder.Entity("HomeHive.Domain.Entities.Room", b =>
-                {
                     b.Navigation("EstateRooms");
                 });
 #pragma warning restore 612, 618

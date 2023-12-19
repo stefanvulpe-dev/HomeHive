@@ -8,5 +8,6 @@ public record EstateData(
     decimal? Price,
     string? TotalArea,
     List<string>? Utilities,
+    Dictionary<string, int>? Rooms,
     string? Description,
     string? EstateAvatar);

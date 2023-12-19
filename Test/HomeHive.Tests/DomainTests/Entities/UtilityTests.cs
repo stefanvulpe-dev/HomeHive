@@ -65,6 +65,7 @@ public class UtilityTests
                 100,
                 "160m2",
                 ["test", "Water"],
+                new Dictionary<string, int>(){ {"Test", 1 }, {"Test1", 2} },
                 "Test",
                 "Test")).Value;
 
