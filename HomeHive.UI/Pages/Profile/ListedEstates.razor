@@ -38,25 +38,25 @@
     {
         var result = await EstateService.GetAll();
 
-        if (result is { IsSuccess: true })
-        {
-            if (result.Estates != null)
-                Estates = result.Estates.Select(e => new EstateModel
-                {
-                    EstateCategory = e.EstateCategory,
-                    EstateType = e.EstateType,
-                    Name = e.Name,
-                    Location = e.Location,
-                    Price = e.Price.ToString(),
-                    TotalArea = e.TotalArea,
-                    Utilities = e.Utilities,
-                    Description = e.Description
-                }).ToList();
-        }
-        else
-        {
-            Logger.LogError($"Error getting estates: {result?.Message}");
-        }
+        // if (result is { IsSuccess: true })
+        // {
+        //     if (result.Estates != null)
+        //         Estates = result.Estates.Select(e => new EstateModel
+        //         {
+        //             EstateCategory = e.EstateCategory,
+        //             EstateType = e.EstateType,
+        //             Name = e.Name,
+        //             Location = e.Location,
+        //             Price = e.Price.ToString(),
+        //             TotalArea = e.TotalArea,
+        //             Utilities = new string[] { e.Utilities },
+        //             Description = e.Description
+        //         }).ToList();
+        // }
+        // else
+        // {
+        //     Logger.LogError($"Error getting estates: {result?.Message}");
+        // }
     }
 
 }

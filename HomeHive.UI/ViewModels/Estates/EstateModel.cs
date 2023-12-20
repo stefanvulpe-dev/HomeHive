@@ -28,7 +28,10 @@ public class EstateModel
     public string? TotalArea { get; set; }
 
     [Required(ErrorMessage = "Estate utilities is required")]
-    public List<string>? Utilities { get; set; }
+    public string[] Utilities { get; set; } = Array.Empty<string>();
+
+    [Required(ErrorMessage = "Rooms are required")]
+    public string[] Rooms { get; set; } = Array.Empty<string>();
 
     [Required(ErrorMessage = "Estate description is required")]
     public string? Description { get; set; }
