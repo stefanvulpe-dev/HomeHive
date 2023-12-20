@@ -29,6 +29,9 @@ public static class InfrastructureRegistrationDI
         services.AddScoped<IContractRepository, ContractRepository>();
         services.AddScoped<IEstateRepository, EstateRepository>();
         services.AddScoped<IUtilityRepository, UtilityRepository>();
+        services.AddScoped<IRoomRepository, RoomRepository>();
+        services.AddScoped<IEstatePhotoRepository, EstatePhotoRepository>();
+        services.AddScoped<IEstateRoomRepository, EstateRoomRepository>();
         services.AddSingleton(x => new BlobServiceClient(configuration["AzureBlobStorage:ConnectionString"]));
         services.Configure<BlobStorageOptions>(configuration.GetSection("AzureBlobStorage"));
         services.Configure<SendGridConfigurationOptions>(configuration.GetSection("SendGrid"));

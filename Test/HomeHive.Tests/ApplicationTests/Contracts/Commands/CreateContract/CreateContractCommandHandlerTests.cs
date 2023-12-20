@@ -12,14 +12,15 @@ public class CreateContractCommandHandlerTests
 {
     private static readonly Guid OwnerId = Guid.NewGuid();
 
-    private static readonly EstateData EstateData = new EstateData(
+    private static readonly EstateData EstateData = new(
         EstateType.Apartment.ToString(),
         EstateCategory.ForSale.ToString(),
         "Test",
         "Test",
         100,
         "Test",
-        new List<string> { "Test" }, 
+        ["Test"],
+        new Dictionary<string, int>(){ {"Test", 1 }, {"Test1", 2} },
         "Test",
         "Test");
 

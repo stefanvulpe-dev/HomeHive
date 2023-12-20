@@ -1,3 +1,4 @@
+using HomeHive.Domain.Common;
 using HomeHive.Domain.Common.EntitiesUtils.Estates;
 using HomeHive.Domain.Entities;
 
@@ -11,18 +12,19 @@ public class EstateTests
         // Arrange
         var ownerId = Guid.NewGuid();
         var estateData = new EstateData(
-            "House",
-            "ForRent",
-            "Test Estate",
-            "Test Location",
-            1000,
-            "100m2",
-            new List<String>{"Test Utilities"},
-            "Test Description",
-            "Test Image");
-
-        var utilityResult = Utility.Create("Test Utilities");
-        var utilities = new List<Utility> { utilityResult.Value };
+            EstateType: "House",
+            EstateCategory: "ForRent",
+            Name: "Test Estate",
+            Location: "Test Location",
+            Price: 1000,
+            TotalArea: "100m2",
+            Utilities: ["Test Utilities"],
+            Rooms: new Dictionary<string, int>(){ {"Test", 1 }, {"Test1", 2} },
+            Description: "Test Description",
+            EstateAvatar: "Test Image");
+        
+        Result<Utility> utilityResult = Utility.Create("Test Utilities");
+        List<Utility> utilities = new List<Utility> { utilityResult.Value };
 
         // Act
         var result = Estate.Create(ownerId, utilities, estateData);
@@ -39,30 +41,32 @@ public class EstateTests
         Assert.Equal(utilities, result.Value.Utilities);
         Assert.Equal(estateData.Description, result.Value.Description);
         Assert.Equal(estateData.EstateAvatar, result.Value.EstateAvatar);
-
+        
         Assert.Null(result.Value.EstatePhotos);
-        Assert.Null(result.Value.Rooms);
+        Assert.Null(result.Value.EstateRooms);
         Assert.Null(result.Value.Contracts);
+        
     }
-
+    
     [Fact]
     public void CreateEstate_WithInvalidOwnerId_ShouldFail()
     {
         // Arrange
         var ownerId = Guid.Empty;
         var estateData = new EstateData(
-            "Apartment",
-            "ForRent",
-            "Test Estate",
-            "Test Location",
-            1000,
-            "100m2",
-            new List<String>{"Test Utilities"},
-            "Test Description",
-            "Test Image");
+            EstateType: "Apartment",
+            EstateCategory: "ForRent",
+            Name: "Test Estate",
+            Location: "Test Location",
+            Price: 1000,
+            TotalArea: "100m2",
+            Utilities: ["Test Utilities"],
+            Rooms: new Dictionary<string, int>(){ {"Test", 1 }, {"Test1", 2} },
+            Description: "Test Description",
+            EstateAvatar: "Test Image");
 
-        var utilityResult = Utility.Create("Test Utilities");
-        var utilities = new List<Utility> { utilityResult.Value };
+        Result<Utility> utilityResult = Utility.Create("Test Utilities");
+        List<Utility> utilities = new List<Utility> { utilityResult.Value };
 
         // Act
         var result = Estate.Create(ownerId, utilities, estateData);
@@ -71,25 +75,26 @@ public class EstateTests
         Assert.False(result.IsSuccess);
         Assert.Equal("OwnerId is required.", result.Message);
     }
-
+    
     [Fact]
     public void CreateEstate_WithInvalidEstateType_ShouldFail()
     {
         // Arrange
         var ownerId = Guid.NewGuid();
         var estateData = new EstateData(
-            "NotExistentEstateType",
-            "ForSale",
-            "Test Estate",
-            "Test Location",
-            1000,
-            "100m2",
-            new List<String>{"Test Utilities"},
-            "Test Description",
-            "Test Image");
+            EstateType: "NotExistentEstateType",
+            EstateCategory: "ForSale",
+            Name: "Test Estate",
+            Location: "Test Location",
+            Price: 1000,
+            TotalArea: "100m2",
+            Utilities: ["Test Utilities"],
+            Rooms: new Dictionary<string, int>(){ {"Test", 1 }, {"Test1", 2} },
+            Description: "Test Description",
+            EstateAvatar: "Test Image");
 
-        var utilityResult = Utility.Create("Test Utilities");
-        var utilities = new List<Utility> { utilityResult.Value };
+        Result<Utility> utilityResult = Utility.Create("Test Utilities");
+        List<Utility> utilities = new List<Utility> { utilityResult.Value };
 
         // Act
         var result = Estate.Create(ownerId, utilities, estateData);
@@ -98,25 +103,26 @@ public class EstateTests
         Assert.False(result.IsSuccess);
         Assert.Equal("EstateType is not valid.", result.Message);
     }
-
+    
     [Fact]
     public void CreateEstate_WithInvalidEstateCategory_ShouldFail()
     {
         // Arrange
         var ownerId = Guid.NewGuid();
         var estateData = new EstateData(
-            "Villa",
-            "NotExistentEstateCategory",
-            "Test Estate",
-            "Test Location",
-            1000,
-            "100m2",
-            new List<String>{"Test Utilities"},
-            "Test Description",
-            "Test Image");
+            EstateType: "Villa",
+            EstateCategory: "NotExistentEstateCategory",
+            Name: "Test Estate",
+            Location: "Test Location",
+            Price: 1000,
+            TotalArea: "100m2",
+            Utilities: ["Test Utilities"],
+            Rooms: new Dictionary<string, int>(){ {"Test", 1 }, {"Test1", 2} },
+            Description: "Test Description",
+            EstateAvatar: "Test Image");
 
-        var utilityResult = Utility.Create("Test Utilities");
-        var utilities = new List<Utility> { utilityResult.Value };
+        Result<Utility> utilityResult = Utility.Create("Test Utilities");
+        List<Utility> utilities = new List<Utility> { utilityResult.Value };
 
         // Act
         var result = Estate.Create(ownerId, utilities, estateData);
@@ -125,25 +131,26 @@ public class EstateTests
         Assert.False(result.IsSuccess);
         Assert.Equal("EstateCategory is not valid.", result.Message);
     }
-
+    
     [Fact]
     public void CreateEstate_WithInvalidName_ShouldFail()
     {
         // Arrange
         var ownerId = Guid.NewGuid();
         var estateData = new EstateData(
-            "Cottage",
-            "ForRent",
-            "",
-            "Test Location",
-            1000,
-            "100m2",
-            new List<String>{"Test Utilities"},
-            "Test Description",
-            "Test Image");
+            EstateType: "Cottage",
+            EstateCategory: "ForRent",
+            Name: "",
+            Location: "Test Location",
+            Price: 1000,
+            TotalArea: "100m2",
+            Utilities: ["Test Utilities"],
+            Rooms: new Dictionary<string, int>(){ {"Test", 1 }, {"Test1", 2} },
+            Description: "Test Description",
+            EstateAvatar: "Test Image");
 
-        var utilityResult = Utility.Create("Test Utilities");
-        var utilities = new List<Utility> { utilityResult.Value };
+        Result<Utility> utilityResult = Utility.Create("Test Utilities");
+        List<Utility> utilities = new List<Utility> { utilityResult.Value };
 
         // Act
         var result = Estate.Create(ownerId, utilities, estateData);
@@ -152,25 +159,26 @@ public class EstateTests
         Assert.False(result.IsSuccess);
         Assert.Equal("Name is required.", result.Message);
     }
-
+    
     [Fact]
     public void CreateEstate_WithInvalidLocation_ShouldFail()
     {
         // Arrange
         var ownerId = Guid.NewGuid();
         var estateData = new EstateData(
-            "Farmhouse",
-            "ForRent",
-            "Test Estate",
-            "",
-            1000,
-            "100m2",
-            new List<String>{"Test Utilities"},
-            "Test Description",
-            "Test Image");
+            EstateType: "Farmhouse",
+            EstateCategory: "ForRent",
+            Name: "Test Estate",
+            Location: "",
+            Price: 1000,
+            TotalArea: "100m2",
+            Utilities: ["Test Utilities"],
+            Rooms: new Dictionary<string, int>(){ {"Test", 1 }, {"Test1", 2} },
+            Description: "Test Description",
+            EstateAvatar: "Test Image");
 
-        var utilityResult = Utility.Create("Test Utilities");
-        var utilities = new List<Utility> { utilityResult.Value };
+        Result<Utility> utilityResult = Utility.Create("Test Utilities");
+        List<Utility> utilities = new List<Utility> { utilityResult.Value };
 
         // Act
         var result = Estate.Create(ownerId, utilities, estateData);
@@ -178,26 +186,28 @@ public class EstateTests
         // Assert
         Assert.False(result.IsSuccess);
         Assert.Equal("Location is required.", result.Message);
+        
     }
-
+    
     [Fact]
     public void CreateEstate_WithInvalidPrice_ShouldFail()
     {
         // Arrange
         var ownerId = Guid.NewGuid();
         var estateData = new EstateData(
-            "Bungalow",
-            "ForRent",
-            "Test Estate",
-            "Test Location",
-            -2,
-            "100m2",
-            new List<String>{"Test Utilities"},
-            "Test Description",
-            "Test Image");
+            EstateType: "Bungalow",
+            EstateCategory: "ForRent",
+            Name: "Test Estate",
+            Location: "Test Location",
+            Price: -2,
+            TotalArea: "100m2",
+            Utilities: ["Test Utilities"],
+            Rooms: new Dictionary<string, int>(){ {"Test", 1 }, {"Test1", 2} },
+            Description: "Test Description",
+            EstateAvatar: "Test Image");
 
-        var utilityResult = Utility.Create("Test Utilities");
-        var utilities = new List<Utility> { utilityResult.Value };
+        Result<Utility> utilityResult = Utility.Create("Test Utilities");
+        List<Utility> utilities = new List<Utility> { utilityResult.Value };
 
         // Act
         var result = Estate.Create(ownerId, utilities, estateData);
@@ -206,25 +216,26 @@ public class EstateTests
         Assert.False(result.IsSuccess);
         Assert.Equal("Price is required.", result.Message);
     }
-
+    
     [Fact]
     public void CreateEstate_WithInvalidTotalArea_ShouldFail()
     {
         // Arrange
         var ownerId = Guid.NewGuid();
         var estateData = new EstateData(
-            "Townhouse",
-            "ForRent",
-            "Test Estate",
-            "Test Location",
-            1000,
-            "",
-            new List<String>{"Test Utilities"},
-            "Test Description",
-            "Test Image");
+            EstateType: "Townhouse",
+            EstateCategory: "ForRent",
+            Name: "Test Estate",
+            Location: "Test Location",
+            Price: 1000,
+            TotalArea: "",
+            Utilities: ["Test Utilities"],
+            Rooms: new Dictionary<string, int>(){ {"Test", 1 }, {"Test1", 2} },
+            Description: "Test Description",
+            EstateAvatar: "Test Image");
 
-        var utilityResult = Utility.Create("Test Utilities");
-        var utilities = new List<Utility> { utilityResult.Value };
+        Result<Utility> utilityResult = Utility.Create("Test Utilities");
+        List<Utility> utilities = new List<Utility> { utilityResult.Value };
 
         // Act
         var result = Estate.Create(ownerId, utilities, estateData);
@@ -233,25 +244,26 @@ public class EstateTests
         Assert.False(result.IsSuccess);
         Assert.Equal("Total Area is required.", result.Message);
     }
-
+    
     [Fact]
     public void CreateEstate_WithInvalidUtilitiesNames_ShouldFail()
     {
         // Arrange
         var ownerId = Guid.NewGuid();
         var estateData = new EstateData(
-            "Penthouse",
-            "ForRent",
-            "Test Estate",
-            "Test Location",
-            1000,
-            "100m2",
-            new List<String>{""},
-            "Test Description",
-            "Test Image");
+            EstateType: "Penthouse",
+            EstateCategory: "ForRent",
+            Name: "Test Estate",
+            Location: "Test Location",
+            Price: 1000,
+            TotalArea: "100m2",
+            Utilities: [""],
+            Rooms: new Dictionary<string, int>(){ {"Test", 1 }, {"Test1", 2} },
+            Description: "Test Description",
+            EstateAvatar: "Test Image");
 
-        var utilityResult = Utility.Create("");
-        var utilities = new List<Utility> { utilityResult.Value };
+        Result<Utility> utilityResult = Utility.Create("");
+        List<Utility> utilities = new List<Utility> { utilityResult.Value };
 
         // Act
         var result = Estate.Create(ownerId, utilities, estateData);
@@ -260,24 +272,25 @@ public class EstateTests
         Assert.False(result.IsSuccess);
         Assert.Equal("Utility name is required.", result.Message);
     }
-
+    
     [Fact]
     public void CreateEstate_WithInvalidUtilitiesList_ShouldFail()
     {
         // Arrange
         var ownerId = Guid.NewGuid();
         var estateData = new EstateData(
-            "Penthouse",
-            "ForRent",
-            "Test Estate",
-            "Test Location",
-            1000,
-            "100m2",
-            null,
-            "Test Description",
-            "Test Image");
+            EstateType: "Penthouse",
+            EstateCategory: "ForRent",
+            Name: "Test Estate",
+            Location: "Test Location",
+            Price: 1000,
+            TotalArea: "100m2",
+            Utilities: null,
+            Rooms: new Dictionary<string, int>(){ {"Test", 1 }, {"Test1", 2} },
+            Description: "Test Description",
+            EstateAvatar: "Test Image");
 
-        List<Utility> utilities = null!;
+        List<Utility> utilities =  null!;
 
         // Act
         var result = Estate.Create(ownerId, utilities, estateData);
@@ -286,25 +299,26 @@ public class EstateTests
         Assert.False(result.IsSuccess);
         Assert.Equal("Utilities are required.", result.Message);
     }
-
+    
     [Fact]
     public void CreateEstate_WithInvalidDescription_ShouldFail()
     {
         // Arrange
         var ownerId = Guid.NewGuid();
         var estateData = new EstateData(
-            "Studio",
-            "ForRent",
-            "Test Estate",
-            "Test Location",
-            1000,
-            "100m2",
-            new List<String>{"Test Utilities"},
-            "",
-            "Test Image");
+            EstateType: "Studio",
+            EstateCategory: "ForRent",
+            Name: "Test Estate",
+            Location: "Test Location",
+            Price: 1000,
+            TotalArea: "100m2",
+            Utilities: ["Test Utilities"],
+            Rooms: new Dictionary<string, int>(){ {"Test", 1 }, {"Test1", 2} },
+            Description: "",
+            EstateAvatar: "Test Image");
 
-        var utilityResult = Utility.Create("Test Utilities");
-        var utilities = new List<Utility> { utilityResult.Value };
+        Result<Utility> utilityResult = Utility.Create("Test Utilities");
+        List<Utility> utilities = new List<Utility> { utilityResult.Value };
 
         // Act
         var result = Estate.Create(ownerId, utilities, estateData);
@@ -312,26 +326,29 @@ public class EstateTests
         // Assert
         Assert.False(result.IsSuccess);
         Assert.Equal("Description is required.", result.Message);
+        
+        
     }
-
+    
     [Fact]
     public void CreateEstate_WithInvalidImage_ShouldFail()
     {
         // Arrange
         var ownerId = Guid.NewGuid();
         var estateData = new EstateData(
-            "Duplex",
-            "ForRent",
-            "Test Estate",
-            "Test Location",
-            1000,
-            "100m2",
-            new List<String>{"Test Utilities"},
-            "Test Description",
-            "");
+            EstateType: "Duplex",
+            EstateCategory: "ForRent",
+            Name: "Test Estate",
+            Location: "Test Location",
+            Price: 1000,
+            TotalArea: "100m2",
+            Utilities: ["Test Utilities"],
+            Rooms: new Dictionary<string, int>(){ {"Test", 1 }, {"Test1", 2} },
+            Description: "Test Description",
+            EstateAvatar: "");
 
-        var utilityResult = Utility.Create("Test Utilities");
-        var utilities = new List<Utility> { utilityResult.Value };
+        Result<Utility> utilityResult = Utility.Create("Test Utilities");
+        List<Utility> utilities = new List<Utility> { utilityResult.Value };
 
         // Act
         var result = Estate.Create(ownerId, utilities, estateData);
@@ -340,42 +357,44 @@ public class EstateTests
         Assert.False(result.IsSuccess);
         Assert.Equal("Estate Avatar is required.", result.Message);
     }
-
+    
     [Fact]
     public void UpdateEstate_WithValidData_ShouldSucceed()
     {
         // Arrange
-        var utilityResult = Utility.Create("Test Utilities");
-        var utilities = new List<Utility> { utilityResult.Value };
+        Result<Utility> utilityResult = Utility.Create("Test Utilities");
+        List<Utility> utilities = new List<Utility> { utilityResult.Value };
 
         var estate = Estate.Create(Guid.NewGuid(), utilities, new EstateData(
-            EstateType.Bungalow.ToString(),
-            EstateCategory.ForSale.ToString(),
-            "Test Estate",
-            "Test Location",
-            1000,
-            "100m2",
-            new List<String>{"Test Utilities"},
-            "Test Description",
-            "Test Image"
-        )).Value;
-
-        var utilityResult1 = Utility.Create("Updated Test Utilities");
+            EstateType: EstateType.Bungalow.ToString(),
+            EstateCategory: EstateCategory.ForSale.ToString(),
+            Name: "Test Estate",
+            Location: "Test Location",
+            Price: 1000,
+            TotalArea: "100m2",
+            Utilities: ["Test Utilities"],
+            Rooms: new Dictionary<string, int>(){ {"Test", 1 }, {"Test1", 2} },
+            Description: "Test Description",
+            EstateAvatar: "Test Image"
+            )).Value;
+        
+        Result<Utility> utilityResult1 = Utility.Create("Updated Test Utilities");
         utilities = new List<Utility> { utilityResult1.Value };
-
+        
         var estateData = new EstateData(
-            "Apartment",
-            "ForSale",
-            "Updated Test Estate",
-            "Updated Test Location",
-            2000,
-            "200m2",
-            new List<String>{"Updated Test Utilities"},
-            "Updated Test Description",
-            "Updated Test Image");
+            EstateType: "Apartment",
+            EstateCategory: "ForSale",
+            Name: "Updated Test Estate",
+            Location: "Updated Test Location",
+            Price: 2000,
+            TotalArea: "200m2",
+            Utilities: ["Updated Test Utilities"],
+            Rooms: new Dictionary<string, int>(){ {"Test", 1 }, {"Test1", 2} },
+            Description: "Updated Test Description",
+            EstateAvatar: "Updated Test Image");
 
         // Act
-        estate.Update(utilities, estateData);
+        estate.Update(utilities, null!,  estateData);
 
         // Assert
         Assert.Equal(EstateType.Apartment, estate.EstateType);

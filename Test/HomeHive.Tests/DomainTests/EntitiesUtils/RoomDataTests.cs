@@ -10,21 +10,25 @@ namespace HomeHive.Tests.DomainTests.EntitiesUtils;
 public class RoomDataTests
 {
     private readonly IEstateRepository _estateRepository = Substitute.For<IEstateRepository>();
-
+    
     [Fact]
     public void RoomData_SetProperties_ShouldModifyProperties()
     {
         // Arrange
-        var roomData = new RoomData(null, null, 0, 0, null);
+        var roomData = new RoomData
+        {
+            EstateId = Guid.Empty,
+            RoomType = "Living",
+            Quantity = 4
+        };
 
         // Act
-        roomData = roomData with { Name = "Updated Room Name", Capacity = 10 };
+        roomData = roomData with { RoomType = "Updated Room Type" };
 
         // Assert
-        Assert.Equal("Updated Room Name", roomData.Name);
-        Assert.Equal(10, roomData.Capacity);
+        Assert.Equal("Updated Room Type", roomData.RoomType);
     }
-
+    
     [Fact]
     public void RoomData_WithValidValues_ShouldCreateInstance()
     {
@@ -36,10 +40,10 @@ public class RoomDataTests
             "Test Location",
             100,
             "160m2",
-            new List<string> { "Test Utilities" }, 
+            ["Test Utilities"],
+            new Dictionary<string, int>(){ {"Test", 1 }, {"Test1", 2} },
             "Test Description",
             "Test Image");
-
 
         var utilityResult = Utility.Create("Test Utilities");
         var utilities = new List<Utility> { utilityResult.Value };
@@ -49,34 +53,34 @@ public class RoomDataTests
         _estateRepository.FindByIdAsync(Arg.Any<Guid>())
             .Returns(Result<Estate>.Success(estateResult.Value));
 
-        var name = "Living Room";
-        var roomType = "Living";
-        var capacity = 4;
-        var size = 25;
-        var estate = estateResult.Value;
-
         // Act
-        var roomData = new RoomData(name, roomType, capacity, size, estate);
-
+        var roomData = new RoomData
+        {
+            EstateId = estateResult.Value.Id,
+            RoomType = "Living",
+            Quantity = 4
+        };
+       
         // Assert
-        Assert.Equal(name, roomData.Name);
-        Assert.Equal(roomType, roomData.RoomType);
-        Assert.Equal(capacity, roomData.Capacity);
-        Assert.Equal(size, roomData.Size);
-        Assert.Equal(estate, roomData.Estate);
+        Assert.Equal(estateResult.Value.Id, roomData.EstateId);
+        Assert.Equal("Living", roomData.RoomType);
+        Assert.Equal(4, roomData.Quantity);
     }
 
     [Fact]
     public void RoomData_WithNullValues_ShouldCreateInstanceWithNulls()
     {
         // Act
-        var roomData = new RoomData(null, null, 0, 0, null);
+        var roomData = new RoomData
+        {
+            EstateId = Guid.Empty,
+            RoomType = null,
+            Quantity = 0
+        };
 
         // Assert
-        Assert.Null(roomData.Name);
+        Assert.Equal(Guid.Empty, roomData.EstateId);
         Assert.Null(roomData.RoomType);
-        Assert.Equal(0, roomData.Capacity);
-        Assert.Equal(0, roomData.Size);
-        Assert.Null(roomData.Estate);
+        Assert.Equal(0, roomData.Quantity);
     }
 }

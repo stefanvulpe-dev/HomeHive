@@ -3,6 +3,7 @@ using System;
 using HomeHive.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace HomeHive.Infrastructure.Migrations
 {
     [DbContext(typeof(HomeHiveContext))]
-    partial class HomeHiveContextModelSnapshot : ModelSnapshot
+    [Migration("20231218074857_CreateCustom_ManyToMany_Estate_Rooms")]
+    partial class CreateCustom_ManyToMany_Estate_Rooms
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -203,6 +206,9 @@ namespace HomeHive.Infrastructure.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
+                    b.Property<int>("Capacity")
+                        .HasColumnType("integer");
+
                     b.Property<string>("CreatedBy")
                         .HasColumnType("text");
 
@@ -215,8 +221,11 @@ namespace HomeHive.Infrastructure.Migrations
                     b.Property<DateTime>("LastModifiedDate")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<string>("RoomType")
-                        .HasColumnType("text");
+                    b.Property<int?>("RoomType")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("Size")
+                        .HasColumnType("integer");
 
                     b.HasKey("Id");
 
