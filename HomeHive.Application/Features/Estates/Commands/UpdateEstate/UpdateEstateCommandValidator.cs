@@ -1,6 +1,5 @@
 ﻿using FluentValidation;
 using HomeHive.Application.Persistence;
-using HomeHive.Domain.Common;
 using HomeHive.Domain.Entities;
 
 namespace HomeHive.Application.Features.Estates.Commands.UpdateEstate;
@@ -58,10 +57,10 @@ public class UpdateEstateCommandValidator : AbstractValidator<UpdateEstateComman
     private async Task<bool> ValidateUtilitiesExistence(List<string>? utilities, CancellationToken cancellationToken)
     {
         var utilitiesResult = await _utilityRepository.GetAllAsync();
-        var utilitiesNames = utilitiesResult.Value.Select(u => u.UtilityName).ToList();
-        Utilities = utilitiesResult.Value.Where(u => utilities.Contains(u.UtilityName!)).ToList();
+        var utilitiesNames = utilitiesResult.Value.Select(u => u.UtilityType.ToString()).ToList();
+        Utilities = utilitiesResult.Value.Where(u => utilities!.Contains(u.UtilityType.ToString())).ToList();
         if (utilities!.Any(utility => !utilitiesNames.Contains(utility))) return false;
-        Utilities = utilitiesResult.Value.Where(u => utilities!.Contains(u.UtilityName!)).ToList();
+        Utilities = utilitiesResult.Value.Where(u => utilities!.Contains(u.UtilityType.ToString())).ToList();
         return true;
     }
     

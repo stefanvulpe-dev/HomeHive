@@ -19,8 +19,11 @@ public class UpdateUtilityCommandHandlerTests
     public async Task Handle_ShouldReturnFailureResponse_WhenUtilityIdIsInvalid()
     {
         // Arrange
-        var command = new UpdateUtilityCommand(Guid.Empty, "UtilityName");
+        var command = new UpdateUtilityCommand(Guid.Empty, "Gas");
         var handler = new UpdateUtilityCommandHandler(_utilityRepository);
+        
+        _utilityRepository.GetAllAsync().Returns(Result<IReadOnlyList<Utility>>
+            .Success(new List<Utility>()));
 
         // Act
         var result = await handler.Handle(command, CancellationToken.None);
@@ -50,11 +53,14 @@ public class UpdateUtilityCommandHandlerTests
     {
         // Arrange
         var utilityId = Guid.NewGuid();
-        var command = new UpdateUtilityCommand(utilityId, "UtilityName");
+        var command = new UpdateUtilityCommand(utilityId, "Gas");
         var handler = new UpdateUtilityCommandHandler(_utilityRepository);
 
         _utilityRepository.FindByIdAsync(utilityId)
             .Returns(Result<Utility>.Failure("Utility not found"));
+        
+        _utilityRepository.GetAllAsync().Returns(Result<IReadOnlyList<Utility>>
+            .Success(new List<Utility>()));
 
         // Act
         var result = await handler.Handle(command, CancellationToken.None);
@@ -68,13 +74,16 @@ public class UpdateUtilityCommandHandlerTests
     public async Task Handle_ShouldReturnFailureResponse_WhenUtilityIsUpdated()
     {
         // Arrange
-        var utility = Utility.Create("UtilityName").Value;
+        var utility = Utility.Create("Gas").Value;
 
-        var command = new UpdateUtilityCommand(utility.Id, "UtilityName");
+        var command = new UpdateUtilityCommand(utility.Id, "Water");
         var handler = new UpdateUtilityCommandHandler(_utilityRepository);
 
         _utilityRepository.FindByIdAsync(utility.Id)
             .Returns(Result<Utility>.Success(utility));
+        
+        _utilityRepository.GetAllAsync().Returns(Result<IReadOnlyList<Utility>>
+            .Success(new List<Utility>()));
 
         // Act
         var result = await handler.Handle(command, CancellationToken.None);
@@ -83,6 +92,6 @@ public class UpdateUtilityCommandHandlerTests
         Assert.True(result.IsSuccess);
         Assert.Equal("Utility updated successfully", result.Message);
         Assert.Equal(utility.Id, result.Utility!.Id);
-        Assert.Equal("UtilityName", result.Utility.UtilityName);
+        Assert.Equal("Water", result.Utility.UtilityName);
     }
 }

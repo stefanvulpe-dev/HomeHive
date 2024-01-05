@@ -26,7 +26,7 @@ public class GetEstateByIdQueryHandler(IEstateRepository repository, IRoomReposi
             Location = estateResult.Value.Location,
             Price = estateResult.Value.Price,
             TotalArea = estateResult.Value.TotalArea,
-            Utilities = estateResult.Value.Utilities.Select(u => u.UtilityName).ToList(),
+            Utilities = estateResult.Value.Utilities!.Select(u => u.UtilityType.ToString()).ToList(),
             EstateRooms = new Dictionary<string, int>(),
             Description = estateResult.Value.Description,
             EstateAvatar = estateResult.Value.EstateAvatar

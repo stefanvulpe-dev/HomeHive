@@ -29,7 +29,7 @@ public class GetAllEstatesQueryHandler(IEstateRepository estateRepository, IRoom
                 Location = estate.Location,
                 Price = estate.Price,
                 TotalArea = estate.TotalArea,
-                Utilities = estate.Utilities.Select(u => u.UtilityName).ToList(),
+                Utilities = estate.Utilities!.Select(u => u.UtilityType.ToString()).ToList(),
                 Description = estate.Description,
                 EstateAvatar = estate.EstateAvatar,
                 EstateRooms = new Dictionary<string, int>()
