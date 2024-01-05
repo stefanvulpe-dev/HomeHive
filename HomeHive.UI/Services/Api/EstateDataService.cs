@@ -26,13 +26,13 @@ public class EstatesDataService(IHttpClientFactory httpClientFactory) : IEstateD
         return await responseMessage.Content.ReadFromJsonAsync<GetEstateByIdResponse>();
     }
 
-    public async Task<CreateEstateCommandResponse?> Add(EstateModel entity)
+    public async Task<CreateEstateCommandResponse?> Add(CreateEstateModel entity)
     {
         var responseMessage = await _httpClient.PostAsJsonAsync("/api/v1/Estates", entity);
         return await responseMessage.Content.ReadFromJsonAsync<CreateEstateCommandResponse>();
     }
 
-    public async Task<UpdateEstateCommandResponse?> UpdateById(Guid id, EstateModel entity)
+    public async Task<UpdateEstateCommandResponse?> UpdateById(Guid id, CreateEstateModel entity)
     {
         var responseMessage = await _httpClient.PutAsJsonAsync($"/api/v1/Estates/{id}", entity);
         return await responseMessage.Content.ReadFromJsonAsync<UpdateEstateCommandResponse>();

@@ -1,9 +1,9 @@
 @using HomeHive.UI.ViewModels.Estates
-@using HomeHive.Domain.Common.EntitiesUtils.Estates
-@using HomeHive.Domain.Common.EntitiesUtils.Rooms
 @using HomeHive.UI.Utils
 @using HomeHive.UI.Components.Authentication
 @using HomeHive.UI.Interfaces
+@using HomeHive.Domain.Common.EntitiesUtils.Estates
+@using HomeHive.Domain.Common.EntitiesUtils.Rooms
 @inject NavigationManager NavigationManager
 @inject ILogger<LoginForm> Logger
 @inject IEstateDataService EstateService
@@ -55,7 +55,7 @@
             </div>
             <div class="mb-3">
                 <label for="price" class="form-label">Price</label>
-                <InputText class="form-control" id="price" @bind-Value="EstateModel.Price"/>
+                <InputText class="form-control" id="price" @bind-Value="@_priceString"/>
                 <ValidationMessage For="@(() => EstateModel.Price)"></ValidationMessage>
             </div>
 
@@ -68,19 +68,23 @@
             </div>
             <div class="mb-3">
                 <label for="utilities" class="form-label">Utilities</label>
-                @* <InputText class="form-control" id="utilities" @bind-Value="EstateModel.Utilities"/> *@
-                <ValidationMessage For="@(() => EstateModel.Utilities)"></ValidationMessage>
+                <InputSelect class="form-control" id="utilities" @bind-Value="@_selectedUtilities" multiple="">
+                    @foreach (var type in EstateModel.Utilities!)
+                    {
+                        <option value="@type">@type</option>
+                    }
+                </InputSelect>
             </div>
             <div class="mb-3">
                 <label for="rooms" class="form-label">Rooms</label>
-                <InputSelect class="form-control" id="rooms" @bind-Value="EstateModel.Rooms" multiple="">
+                <InputSelect class="form-control" id="rooms" @bind-Value="@_selectedRooms" multiple="">
                     @foreach (var type in Enum.GetValues<RoomType>())
                     {
                         <option value="@type">@type</option>
                     }
                 </InputSelect>
-                
-                @foreach (var selectedOption in EstateModel.Rooms)
+
+                @foreach (var selectedOption in _selectedRooms)
                 {
                     <div class="w-100 mt-2 d-flex justify-content-between align-items-center bg-white p-2 rounded">
                         <span>@selectedOption</span>
@@ -88,7 +92,7 @@
                             <span>@_quantities[selectedOption]</span>
                             <button class="btn-primary align-self-stretch px-2" @onclick="() => IncreaseQuantity(selectedOption)">+</button>
                             <button class="btn-primary align-self-stretch px-2" @onclick="() => DecreaseQuantity(selectedOption)">-</button>
-                        </div>    
+                        </div>
                     </div>
                 }
             </div>
@@ -99,7 +103,7 @@
             </div>
             @* <div class="mb-3"> *@
             @*     <label for="image" class="form-label">Images</label> *@
-            @*     <InputFile class="form-control" id="image" @bind-Value="EstateModel.Image"/> *@
+            @*     <InputFile class="form-control" id="image" @bind-Value="CreateEstateModel.Image"/> *@
             @* </div> *@
             <div class="d-flex justify-content-center">
                 <button type="submit" class="btn btn-primary" disabled="@_isSubmitting">Edit Estate</button>
@@ -110,20 +114,51 @@
 
 @code {
     private readonly Dictionary<string, int> _quantities = new();
-    
-    [SupplyParameterFromForm] private EstateModel? EstateModel { get; set; }
+
+    [SupplyParameterFromForm] private CreateEstateModel? EstateModel { get; set; }
+
+    [Parameter] public EstateViewModel? Estate { get; set; }
 
     private CustomValidation? _customValidation;
 
     private bool _isSubmitting;
 
+    private string _priceString = "";
+    
+    private string[] _selectedRooms = Array.Empty<string>();
+    
+    private string[] _selectedUtilities = Array.Empty<string>();
+
     protected override void OnInitialized()
     {
-        EstateModel ??= new EstateModel();
-        foreach (var option in Enum.GetValues<RoomType>())
+        EstateModel = new CreateEstateModel
         {
-            _quantities.Add(Enum.GetName(option)!, 0);
+            EstateCategory = Estate!.EstateCategory,
+            EstateType = Estate.EstateType,
+            Name = Estate.Name,
+            Location = Estate.Location,
+            Price = Estate.Price,
+            TotalArea = Estate.TotalArea,
+            EstateRooms = Estate.Rooms!,
+            Utilities = Estate.Utilities!,
+            Description = Estate.Description
+        };
+        foreach (var utility in EstateModel.Utilities!)
+        {
+            var newArray = new string[_selectedUtilities.Length + 1];
+            _selectedUtilities.CopyTo(newArray, 0);
+            newArray[^1] = utility;
+            _selectedUtilities = newArray;   
         }
+        foreach (var (key, value) in EstateModel.EstateRooms)
+        {
+            var newArray = new string[_selectedRooms.Length + 1];
+            _selectedRooms.CopyTo(newArray, 0);
+            newArray[^1] = key;
+            _selectedRooms = newArray;
+            _quantities.Add(key, value);
+        }
+        _priceString = EstateModel.Price.ToString()!;
     }
 
     private async void HandleValidSubmit()
@@ -132,8 +167,10 @@
         try
         {
             _isSubmitting = true;
-
-            var result = await EstateService.Add(EstateModel!);
+            EstateModel!.Utilities = _selectedUtilities.ToList();
+            EstateModel!.EstateRooms = _quantities;
+            EstateModel!.Price = decimal.Parse(_priceString);
+            var result = await EstateService.UpdateById(Guid.Parse(Estate!.Id ?? string.Empty), EstateModel!);
 
             if (result != null)
             {
@@ -164,7 +201,7 @@
     {
         _quantities[option]++;
     }
-    
+
     private void DecreaseQuantity(string option)
     {
         if (_quantities[option] > 0)

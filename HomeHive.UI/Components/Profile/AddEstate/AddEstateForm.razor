@@ -52,7 +52,7 @@
             </div>
             <div class="mb-3">
                 <label for="price" class="form-label">Price</label>
-                <InputText class="form-control" id="price" @bind-Value="EstateModel.Price"/>
+                <InputText class="form-control" id="price" @bind-Value="@_priceString"/>
                 <ValidationMessage For="@(() => EstateModel.Price)"></ValidationMessage>
             </div>
 
@@ -65,17 +65,13 @@
             </div>
             <div class="mb-3">
                 <label for="utilities" class="form-label">Utilities</label>
-                @* <InputText class="form-control" id="utilities" @bind-Value="EstateModel.Utilities"/> *@
+                @* <InputText class="form-control" id="utilities" @bind-Value="CreateEstateModel.Utilities"/> *@
                 <ValidationMessage For="@(() => EstateModel.Utilities)"></ValidationMessage>
             </div>
             <div class="mb-3">
                 <label for="description" class="form-label">Description</label>
                 <InputText class="form-control" id="description" @bind-Value="EstateModel.Description"/>
                 <ValidationMessage For="@(() => EstateModel.Description)"></ValidationMessage>
-            </div>
-            <div class="mb-3">
-                <label for="image" class="form-label">Images</label>
-                <InputFile class="form-control" id="image" @bind-Value="EstateModel.Image"/>
             </div>
             <div class="d-flex justify-content-center">
                 <button type="submit" class="btn btn-primary" disabled="@_isSubmitting">Add Estate</button>
@@ -85,15 +81,17 @@
 </EditForm>
 
 @code {
-    [SupplyParameterFromForm] private EstateModel? EstateModel { get; set; }
+    [SupplyParameterFromForm] private CreateEstateModel? EstateModel { get; set; }
 
     private CustomValidation? _customValidation;
 
     private bool _isSubmitting;
+    
+    private string _priceString = "";
 
     protected override void OnInitialized()
     {
-        EstateModel ??= new EstateModel();
+        EstateModel ??= new CreateEstateModel();
     }
 
     private async void HandleValidSubmit()

@@ -22,6 +22,7 @@ public class GetAllEstatesQueryHandler(IEstateRepository estateRepository, IRoom
         {
             var estateDto = new EstateDto
             {
+                Id = estate.Id,
                 OwnerId = estate.OwnerId,
                 EstateType = estate.EstateType.ToString(),
                 EstateCategory = estate.EstateCategory.ToString(),
@@ -29,7 +30,7 @@ public class GetAllEstatesQueryHandler(IEstateRepository estateRepository, IRoom
                 Location = estate.Location,
                 Price = estate.Price,
                 TotalArea = estate.TotalArea,
-                Utilities = estate.Utilities.Select(u => u.UtilityName).ToList(),
+                Utilities = estate.Utilities!.Select(u => u.UtilityName).ToList(),
                 Description = estate.Description,
                 EstateAvatar = estate.EstateAvatar,
                 EstateRooms = new Dictionary<string, int>()

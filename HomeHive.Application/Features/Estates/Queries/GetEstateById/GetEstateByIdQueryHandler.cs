@@ -19,6 +19,7 @@ public class GetEstateByIdQueryHandler(IEstateRepository repository, IRoomReposi
 
         var estateDto = new EstateDto
         {
+            Id = estateResult.Value.Id,
             OwnerId = estateResult.Value.OwnerId,
             EstateType = estateResult.Value.EstateType.ToString(),
             EstateCategory = estateResult.Value.EstateCategory.ToString(),
@@ -26,7 +27,7 @@ public class GetEstateByIdQueryHandler(IEstateRepository repository, IRoomReposi
             Location = estateResult.Value.Location,
             Price = estateResult.Value.Price,
             TotalArea = estateResult.Value.TotalArea,
-            Utilities = estateResult.Value.Utilities.Select(u => u.UtilityName).ToList(),
+            Utilities = estateResult.Value.Utilities!.Select(u => u.UtilityName).ToList(),
             EstateRooms = new Dictionary<string, int>(),
             Description = estateResult.Value.Description,
             EstateAvatar = estateResult.Value.EstateAvatar

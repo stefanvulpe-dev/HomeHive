@@ -11,52 +11,51 @@
         <p class="fs-3">Listed Estates</p>
         <hr />
         <div class="row">
-            @* @if (Estates != null) *@
-            @* { *@
-            @*     @foreach (var estate in Estates) *@
-            @*     { *@
-            @*         <EstateCard Estate="@estate"></EstateCard> *@
-            @*     } *@
-            @* } *@
-            @* else *@
-            @* { *@
-            @*     <div class="col-12"> *@
-            @*         <p class="text-center">You have no listed properties.</p> *@
-            @*     </div> *@
-            @* } *@
-            <EstateCard></EstateCard>
-            <EstateCard></EstateCard>
-            <EstateCard></EstateCard>
+            @if (Estates != null)
+            {
+                @foreach (var estate in Estates)
+                {
+                    <EstateCard Estate="@estate"></EstateCard>
+                }
+            }
+            else
+            {
+                <div class="col-12">
+                    <p class="text-center">You have no listed properties.</p>
+                </div>
+            }
         </div>
     </div>
 </div>
 
 @code {
-    private List<EstateModel>? Estates { get; set; }
+    private List<EstateViewModel>? Estates { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
         var result = await EstateService.GetAll();
 
-        // if (result is { IsSuccess: true })
-        // {
-        //     if (result.Estates != null)
-        //         Estates = result.Estates.Select(e => new EstateModel
-        //         {
-        //             EstateCategory = e.EstateCategory,
-        //             EstateType = e.EstateType,
-        //             Name = e.Name,
-        //             Location = e.Location,
-        //             Price = e.Price.ToString(),
-        //             TotalArea = e.TotalArea,
-        //             Utilities = new string[] { e.Utilities },
-        //             Description = e.Description
-        //         }).ToList();
-        // }
-        // else
-        // {
-        //     Logger.LogError($"Error getting estates: {result?.Message}");
-        // }
+        if (result is { IsSuccess: true })
+        {
+            if (result.Estates != null)
+                Estates = result.Estates.Select(e => new EstateViewModel
+                {
+                    Id = e.Id.ToString(),
+                    OwnerId = e.OwnerId.ToString(),
+                    EstateCategory = e.EstateCategory,
+                    EstateType = e.EstateType,
+                    Name = e.Name,
+                    Location = e.Location,
+                    Price = e.Price,
+                    TotalArea = e.TotalArea,
+                    Utilities = e.Utilities!,
+                    Description = e.Description
+                }).ToList();
+        }
+        else
+        {
+            Logger.LogError($"Error getting estates: {result?.Message}");
+        }
     }
 
 }

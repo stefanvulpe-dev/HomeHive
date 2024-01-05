@@ -1,23 +1,67 @@
-@page "/edit-estate"
-@inject NavigationManager NavigationManager
-@using  HomeHive.UI.Components.Profile.EditEstate
+@page "/edit-estate/{EstateId}"
+@using HomeHive.UI.ViewModels.Estates
 @using Microsoft.AspNetCore.Authorization
+@using HomeHive.UI.Interfaces
+@using HomeHive.UI.Components.Profile.EditEstate
+@inject NavigationManager NavigationManager
+@inject IEstateDataService EstateDataService
+@inject ILogger<EditEstate> Logger
 @layout ProfileLayout
 @attribute [Authorize(Roles = "User, Admin")]
 
-<div class="profile-card col d-flex flex-column h-sm-100 min-vh-100">
-    <div class="card-body">
-        <div class="row">
-            <div class="mb-3">
-                <EditEstateForm></EditEstateForm>
+@if (_isLoading)
+{
+    <p>
+        <em>Loading...</em>
+    </p>
+}
+else
+{
+    <div class="profile-card col d-flex flex-column h-sm-100 min-vh-100">
+        <div class="card-body">
+            <div class="row">
+                <div class="mb-3">
+                    <EditEstateForm Estate="@Estate"></EditEstateForm>
+                </div>
             </div>
+            <hr/>
+            <button class="btn btn-primary" @onclick="Cancel">Cancel Edit</button>
         </div>
-        <hr/>
-        <button class="btn btn-primary" @onclick="Cancel">Cancel Edit</button>
     </div>
-</div>
+}
 
 @code{
+    [Parameter] public string? EstateId { get; set; }
+
+    private EstateViewModel? Estate { get; set; }
+
+    private bool _isLoading = true;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var result = await EstateDataService.GetById(Guid.Parse(EstateId!));
+
+        if (result is { IsSuccess: true })
+        {
+            var e = result.Estate!;
+
+            Estate = new EstateViewModel
+            {
+                Id = e.Id.ToString(),
+                Name = e.Name,
+                EstateType = e.EstateType,
+                Location = e.Location,
+                Price = e.Price,
+                TotalArea = e.TotalArea,
+                Utilities = e.Utilities!,
+                Rooms = e.EstateRooms,
+                Description = e.Description
+            };
+
+            Logger.LogInformation("Estate loaded successfully");
+            _isLoading = false;
+        }
+    }
 
     private void Cancel()
     {
