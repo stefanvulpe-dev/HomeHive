@@ -24,9 +24,10 @@ public class CreateUtilityCommandValidator : AbstractValidator<CreateUtilityComm
             return true;
 
         var utilitiesResult = await _utilityRepository.GetAllAsync();
-        foreach (var utility in utilitiesResult.Value)
-            if (utility.UtilityName == utilityName)
-                return false;
-        return true;
+        if (!utilitiesResult.IsSuccess)
+            return false;
+        
+        var utilities = utilitiesResult.Value.Select(u => u.UtilityType.ToString()).ToList();
+        return !utilities.Contains(utilityName);
     }
 }

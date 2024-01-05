@@ -1,6 +1,5 @@
 using FluentValidation;
 using HomeHive.Application.Persistence;
-using HomeHive.Domain.Common.EntitiesUtils.Rooms;
 
 namespace HomeHive.Application.Features.Rooms.Commands.CreateRoom;
 
@@ -22,7 +21,7 @@ public class CreateRoomCommandValidator: AbstractValidator<CreateRoomCommand>
         if (!roomsResult.IsSuccess)
             return false;
         
-        var rooms = roomsResult.Value.Select(r => r.RoomType).ToList();
-        return !roomsResult.Value.Any(r => r.RoomType.ToString() == roomType);
+        var rooms = roomsResult.Value.Select(r => r.RoomType.ToString()).ToList();
+        return !rooms.Contains(roomType);
     }
 }

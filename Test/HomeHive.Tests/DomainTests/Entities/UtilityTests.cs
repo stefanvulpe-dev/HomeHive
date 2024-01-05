@@ -17,7 +17,7 @@ public class UtilityTests
         // Assert
         Assert.True(result.IsSuccess);
         Assert.NotNull(result.Value);
-        Assert.Equal(utilityName, result.Value.UtilityName);
+        Assert.Equal(utilityName, result.Value.UtilityType.ToString());
         Assert.Null(result.Value.Estates!);
     }
 
@@ -33,7 +33,7 @@ public class UtilityTests
         // Assert
         Assert.False(result.IsSuccess);
         Assert.Null(result.Value);
-        Assert.Equal("Name is required.", result.Message);
+        Assert.Equal("UtilityType is not valid.", result.Message);
     }
 
     [Fact]
@@ -47,7 +47,7 @@ public class UtilityTests
         utility.Update(newUtilityName);
 
         // Assert
-        Assert.Equal(newUtilityName, utility.UtilityName);
+        Assert.Equal(newUtilityName, utility.UtilityType.ToString());
     }
 
     [Fact]

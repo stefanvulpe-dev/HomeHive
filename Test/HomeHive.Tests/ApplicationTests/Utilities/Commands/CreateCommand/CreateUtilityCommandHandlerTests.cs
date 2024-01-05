@@ -19,7 +19,7 @@ public class CreateUtilityCommandHandlerTests
     public async Task Handle_ShouldReturnFailureResponse_WhenUtilityNameIsNotUnique()
     {
         // Arrange
-        var utilityName = "Utility Name";
+        var utilityName = "Gas";
         var request = new CreateUtilityCommand(utilityName);
 
         _utilityRepository.GetAllAsync()
@@ -69,7 +69,7 @@ public class CreateUtilityCommandHandlerTests
     public async Task Handle_ShouldReturnSuccessResponse_WhenUtilityNameIsValid()
     {
         // Arrange
-        var utilityName = "Utility Name";
+        var utilityName = "Gas";
         var request = new CreateUtilityCommand(utilityName);
 
         _utilityRepository.GetAllAsync().Returns(Result<IReadOnlyList<Utility>>.Success(new List<Utility>()));

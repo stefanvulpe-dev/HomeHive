@@ -4,7 +4,6 @@ using HomeHive.Application.Features.Rooms.Commands.DeleteRoomById;
 using HomeHive.Application.Features.Rooms.Commands.UpdateRoom;
 using HomeHive.Application.Features.Rooms.Queries.GetAllRooms;
 using HomeHive.Application.Features.Rooms.Queries.GetRoomById;
-using HomeHive.Domain.Common.EntitiesUtils.Rooms;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 

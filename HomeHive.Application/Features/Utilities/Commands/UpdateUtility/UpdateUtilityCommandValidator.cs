@@ -19,7 +19,9 @@ public class UpdateUtilityCommandValidator : AbstractValidator<UpdateUtilityComm
 
         RuleFor(v => v.UtilityName)
             .NotEmpty().WithMessage("{PropertyName} is required.")
-            .NotNull();
+            .NotNull()
+            .MustAsync(ValidateUtilityNameDoesNotExist)
+            .WithMessage("A utility with the same name already exists.");
     }
 
     public async Task<Result<Utility>> UtilityExists(Guid arg1, CancellationToken arg2)
@@ -28,5 +30,18 @@ public class UpdateUtilityCommandValidator : AbstractValidator<UpdateUtilityComm
         return result.IsSuccess
             ? Result<Utility>.Success(result.Value)
             : Result<Utility>.Failure("Utility does not exist.");
+    }
+    
+    private async Task<bool> ValidateUtilityNameDoesNotExist(string utilityName, CancellationToken cancellationToken)
+    {
+        if (string.IsNullOrEmpty(utilityName))
+            return true;
+
+        var utilitiesResult = await _utilityRepository.GetAllAsync();
+        if (!utilitiesResult.IsSuccess)
+            return false;
+        
+        var utilities = utilitiesResult.Value.Select(u => u.UtilityType.ToString()).ToList();
+        return !utilities.Contains(utilityName);
     }
 }

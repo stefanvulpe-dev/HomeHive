@@ -48,7 +48,7 @@ public class UpdateUtilityCommandHandler(IUtilityRepository utilityRepository)
             Utility = new CreateUtilityDto
             {
                 Id = existingUtility.Id,
-                UtilityName = existingUtility.UtilityName
+                UtilityName = existingUtility.UtilityType.ToString()
             }
         };
     }
