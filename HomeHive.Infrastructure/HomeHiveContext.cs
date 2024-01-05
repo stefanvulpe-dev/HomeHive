@@ -3,6 +3,7 @@ using HomeHive.Domain.Common;
 using HomeHive.Domain.Common.EntitiesUtils.Contracts;
 using HomeHive.Domain.Common.EntitiesUtils.Estates;
 using HomeHive.Domain.Common.EntitiesUtils.Rooms;
+using HomeHive.Domain.Common.EntitiesUtils.Utility;
 using HomeHive.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 
@@ -63,5 +64,10 @@ public class HomeHiveContext(
             .HasConversion(
                 v => v.ToString(),
                 v => (RoomType)Enum.Parse(typeof(RoomType), v!));
+        
+        modelBuilder.Entity<Utility>().Property(u => u.UtilityType)
+            .HasConversion(
+                v => v.ToString(),
+                v => (UtilityType)Enum.Parse(typeof(UtilityType), v));
     }
 }

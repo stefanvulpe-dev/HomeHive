@@ -17,7 +17,7 @@ public class GetAllUtilitiesQueryHandler(IUtilityRepository utilityRepository)
                 Message = "Utilities not found."
             };
 
-        IReadOnlyList<string> utilitiesNames = utilities.Value.Select(u => u.UtilityName!).ToList();
+        IReadOnlyList<string> utilitiesNames = utilities.Value.Select(u => u.UtilityType.ToString()).ToList();
 
         return new GetAllUtilitiesResponse
         {

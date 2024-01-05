@@ -53,7 +53,7 @@ public class CreateEstateCommandValidator : AbstractValidator<CreateEstateComman
     {
         var utilitiesResult = await _utilityRepository.GetAllAsync();
         
-        Utilities = utilitiesResult.Value.Where(u => utilities.Contains(u.UtilityName!)).ToList();
+        Utilities = utilitiesResult.Value.Where(u => utilities.Contains(u.UtilityType.ToString())).ToList();
         
         if (Utilities == null || Utilities.Count != utilities.Count)
             return false;

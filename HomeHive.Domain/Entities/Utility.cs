@@ -1,4 +1,5 @@
 ﻿using HomeHive.Domain.Common;
+using HomeHive.Domain.Common.EntitiesUtils.Utility;
 
 namespace HomeHive.Domain.Entities;
 
@@ -8,21 +9,25 @@ public class Utility : BaseEntity
     {
     }
 
-    public string? UtilityName { get; set; }
+    public UtilityType UtilityType { get; set; }
     public List<Estate>? Estates { get; set; }
 
-    public static Result<Utility> Create(string name)
+    public static Result<Utility> Create(string utilityType)
     {
-        if (string.IsNullOrWhiteSpace(name)) return Result<Utility>.Failure("Name is required.");
+        if (string.IsNullOrWhiteSpace(utilityType) || !Enum.TryParse(utilityType, out UtilityType typeEnum))
+            return Result<Utility>.Failure("UtilityType is not valid.");
 
         return Result<Utility>.Success(new Utility
         {
-            UtilityName = name
+            UtilityType = Enum.Parse<UtilityType>(utilityType)
         });
     }
 
-    public void Update(string name)
+    public void Update(string utilityType)
     {
-        UtilityName = name;
+        if (string.IsNullOrWhiteSpace(utilityType) || !Enum.TryParse(utilityType, out UtilityType typeEnum))
+            return;
+
+        UtilityType = typeEnum;
     }
 }

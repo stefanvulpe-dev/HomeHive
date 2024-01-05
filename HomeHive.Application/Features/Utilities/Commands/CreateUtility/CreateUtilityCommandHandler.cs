@@ -43,7 +43,7 @@ public class CreateUtilityCommandHandler(IUtilityRepository utilityRepository)
             Utility = new CreateUtilityDto
             {
                 Id = utility.Id,
-                UtilityName = utility.UtilityName
+                UtilityName = utility.UtilityType.ToString()
             }
         };
     }

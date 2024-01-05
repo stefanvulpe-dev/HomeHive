@@ -28,7 +28,7 @@ public class CreateRoomCommandHandler(IRoomRepository roomRepository): ICommandH
             return new CreateRoomCommandResponse
             {
                 IsSuccess = false,
-                ValidationsErrors = new Dictionary<string, List<string>> { { "Room",  result.ValidationErrors!.Select(er => er.Value).ToList() } }
+                ValidationsErrors = new Dictionary<string, List<string>> { { "Room",  [ result.Message ] } }
             };
         
         var room = await roomRepository.AddAsync(result.Value);
