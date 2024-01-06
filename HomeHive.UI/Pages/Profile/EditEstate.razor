@@ -10,7 +10,6 @@
 @attribute [Authorize(Roles = "User, Admin")]
 
 
-
 <div class="profile-card col d-flex flex-column h-sm-100 min-vh-100">
     <div class="card-body">
         <div class="row">
@@ -40,12 +39,7 @@
                     </div>
                     <hr/>
                     <EditEstateAvatarForm></EditEstateAvatarForm>
-                    @* <div class="row justify-content-center"> *@
-                    @*     <ImagePreview></ImagePreview> *@
-                    @*     <ImagePreview></ImagePreview> *@
-                    @*     <ImagePreview></ImagePreview> *@
-                    @* </div> *@
-                    @* *@
+                    <Carousel></Carousel>
                     <AddEstateImagesForm></AddEstateImagesForm>
                     <EditEstateForm Estate="@Estate"></EditEstateForm>
                 }
@@ -55,8 +49,6 @@
 </div>
 
 @code{
-    
-    private string _selectedSlide = "2";
     
     [Parameter] public string? EstateId { get; set; }
 
