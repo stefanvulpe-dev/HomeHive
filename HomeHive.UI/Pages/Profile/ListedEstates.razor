@@ -11,18 +11,28 @@
         <p class="fs-3">Listed Estates</p>
         <hr />
         <div class="row">
-            @if (Estates != null && Estates.Any())
+            @if (_isLoading)
             {
-                @foreach (var estate in Estates)
-                {
-                    <EstateCard Estate="@estate"></EstateCard>
-                }
+                <div class="fw-bold" style="display:flex; gap:10px; justify-content:center; align-items:center">
+                    <div class="spinner-border" role="status"></div>
+                    Loading...
+                </div>
             }
             else
             {
-                <div class="col-12">
-                    <p class="text-center">You have no listed properties.</p>
-                </div>
+                @if (Estates != null && Estates.Any())
+                {
+                    @foreach (var estate in Estates)
+                    {
+                        <EstateCard Estate="@estate"></EstateCard>
+                    }
+                }
+                else
+                {
+                    <div class="col-12">
+                        <p class="text-center">You have no listed properties.</p>
+                    </div>
+                }
             }
         </div>
         
@@ -31,6 +41,8 @@
 
 @code {
     private List<EstateViewModel>? Estates { get; set; }
+    
+    private bool _isLoading = true;
 
     protected override async Task OnInitializedAsync()
     {
@@ -58,6 +70,7 @@
         {
             Logger.LogError($"Error getting estates: {result?.Message}");
         }
+        _isLoading = false;
     }
 
 }

@@ -17,9 +17,16 @@
             <div class="mb-3">
                 @if (_isLoading)
                 {
-                    <p>
-                        <em>Loading...</em>
-                    </p>
+                    <div class="row justify-content-between align-items-center">
+                        <div class="col-auto">
+                            <p class="fs-3 mb-0">Edit Estate</p>
+                        </div>
+                    </div>
+                    <hr/>
+                    <div class="fw-bold" style="display:flex; gap:10px; justify-content:center; align-items:center">
+                        <div class="spinner-border" role="status"></div>
+                        Loading...
+                    </div>
                 }
                 else
                 {
@@ -37,7 +44,6 @@
                 }
             </div>
         </div>
-        <hr/>
     </div>
 </div>
 
