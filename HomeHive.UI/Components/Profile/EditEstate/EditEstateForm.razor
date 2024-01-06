@@ -10,9 +10,6 @@
 @inject IEstateDataService EstateService
 
 
-<p class="fs-3">Edit Estate</p>
-<hr/>
-
 <EditForm Model="@EstateModel" OnValidSubmit="@HandleValidSubmit" FormName="editEstateForm">
     <DataAnnotationsValidator/>
     <CustomValidation @ref="@_customValidation"/>

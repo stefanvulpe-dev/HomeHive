@@ -9,26 +9,37 @@
 @layout ProfileLayout
 @attribute [Authorize(Roles = "User, Admin")]
 
-@if (_isLoading)
-{
-    <p>
-        <em>Loading...</em>
-    </p>
-}
-else
-{
-    <div class="profile-card col d-flex flex-column h-sm-100 min-vh-100">
-        <div class="card-body">
-            <div class="row">
-                <div class="mb-3">
+
+
+<div class="profile-card col d-flex flex-column h-sm-100 min-vh-100">
+    <div class="card-body">
+        <div class="row">
+            <div class="mb-3">
+                @if (_isLoading)
+                {
+                    <p>
+                        <em>Loading...</em>
+                    </p>
+                }
+                else
+                {
+                    <div class="row justify-content-between align-items-center">
+                        <div class="col-auto">
+                            <p class="fs-3 mb-0">Edit Estate</p>
+                        </div>
+                        <div class="col-auto">
+                            <button class="btn btn-primary" @onclick="Cancel">Cancel Edit</button>
+                        </div>
+                    </div>
+                    <hr/>
+                    <EditEstateAvatarForm></EditEstateAvatarForm>
                     <EditEstateForm Estate="@Estate"></EditEstateForm>
-                </div>
+                }
             </div>
-            <hr/>
-            <button class="btn btn-primary" @onclick="Cancel">Cancel Edit</button>
         </div>
+        <hr/>
     </div>
-}
+</div>
 
 @code{
     [Parameter] public string? EstateId { get; set; }
