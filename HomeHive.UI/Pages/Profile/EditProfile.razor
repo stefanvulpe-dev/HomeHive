@@ -3,20 +3,35 @@
 @using Microsoft.AspNetCore.Authorization
 @layout ProfileLayout
 @attribute [Authorize(Roles = "User, Admin")]
+@using HomeHive.UI.Components.Profile.EditCredentials
 
 <div class="profile-card col d-flex flex-column h-sm-100 min-vh-100">
     <div class="card-body">
-        <p class="fs-3">Edit Profile</p>
-        <hr/>
+        @* <p class="fs-3">Edit Profile</p> *@
+        @* <hr/> *@
         <div class="row justify-content-center">
-            <div class="col-12 col-md-8 col-lg-6">
-                  <EditProfileImageForm></EditProfileImageForm>
-            </div>
+            <p class="fs-3">Edit Profile Image</p>
             <hr/>
             <div class="col-12 col-md-8 col-lg-6">
-               <EditProfileForm></EditProfileForm> 
+                <EditProfileImageForm></EditProfileImageForm>
             </div>
-            
+            <p class="fs-3 mt-3">Edit General Information</p>
+            <hr/>
+            <div class="col-12 col-md-8 col-lg-6">
+                <EditProfileForm></EditProfileForm>
+            </div>
+            <p class="fs-3 mt-3">Change Email</p>
+            <hr/>
+            <div class="col-12 col-md-8 col-lg-6">
+                <SendToken Purpose="UpdateEmail"></SendToken>
+                <ChangeEmailForm></ChangeEmailForm>
+            </div>
+            <p class="fs-3 mt-3">Change Password</p>
+            <hr/>
+            <div class="col-12 col-md-8 col-lg-6">
+                <SendToken Purpose="ResetPassword"></SendToken>
+                <ChangePasswordForm></ChangePasswordForm>
+            </div>
         </div>
     </div>
 </div>
