@@ -19,7 +19,7 @@
     <DataAnnotationsValidator/>
     <CustomValidation @ref="@_customValidation"/>
     <div class="image-container mb-3">
-        <img src="@_imgSrc" alt="avatar image"/>
+        <img src="@_imgSrc" alt="avatar image rounded"/>
         <small>This is the first image the clients we'll see when searching for this estate.</small>
         <InputFile class="form-control" id="estateAvatar" OnChange="@OnInputFileChange" accept=".jpg,.jpeg,.png"/>
         <ValidationMessage For="@(() => EstateModel!.EstateAvatar)"></ValidationMessage>

@@ -25,6 +25,13 @@ a, .btn-link, a:hover, .btn-link:hover {
     border-color: #1A1C20;
     border-radius: 8px;
 }
+.btn-danger, .btn-danger:hover, .btn-danger:active, .btn-danger:visited {
+    border-radius: 8px;
+}
+
+.btn{
+    border-radius: 8px;
+}
 
 .btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
     box-shadow: 0 0 0 0.1rem white;
@@ -170,4 +177,12 @@ h1:focus {
 
 .site-header {
     box-shadow: 0 0 15px rgb(0, 0, 0, 0.4);
+}
+
+.online {
+    color: darkgreen;
+}
+
+.offline {
+    color: darkred;
 }
