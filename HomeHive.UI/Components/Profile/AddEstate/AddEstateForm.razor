@@ -5,7 +5,6 @@
 @using HomeHive.Domain.Common.EntitiesUtils.Estates
 @using HomeHive.Domain.Common.EntitiesUtils.Rooms
 @using HomeHive.Domain.Common.EntitiesUtils.Utility
-@using Microsoft.Net.Http.Headers
 @using ContentDispositionHeaderValue = System.Net.Http.Headers.ContentDispositionHeaderValue
 @using MediaTypeHeaderValue = System.Net.Http.Headers.MediaTypeHeaderValue
 @using System.Text.Json.Serialization
@@ -64,7 +63,6 @@
                 <ValidationMessage For="@(() => EstateModel.Price)"></ValidationMessage>
             </div>
         </div>
-        
         <div class="col-md-6">
             <div class="mb-3">
                 <label for="totalArea" class="form-label">Total Area</label>
@@ -104,7 +102,6 @@
                     </div>
                 }
             </div>
-
             <div class="mb-3">
                 <label for="description" class="form-label">Description</label>
                 <InputText class="form-control" id="description" @bind-Value="EstateModel.Description"/>
@@ -141,7 +138,7 @@
             
             var content = new MultipartFormDataContent();
         
-            const long maxFileSize = 1024L * 1024L * 2L; // 2 MB
+            const int maxFileSize = 1024 * 1024 * 2; // 2 MB
             
             var fileContent = new StreamContent(EstateModel!.EstateAvatar?.OpenReadStream(maxAllowedSize: maxFileSize)!);
 
@@ -207,6 +204,17 @@
 
     private void OnInputFileChange(InputFileChangeEventArgs obj)
     {
+        _customValidation?.ClearErrors();
+        const int maxAllowedSize = 2 * 1024 * 1024; // 2MB
+        if (obj.File.Size > maxAllowedSize)
+        {
+            _customValidation?.DisplayErrors(new Dictionary<string, string>
+            {
+                { "EstateAvatar", "File size exceeds 2MB limit" }
+            });
+            EstateModel!.EstateAvatar = null;
+            return;
+        }
         EstateModel!.EstateAvatar = obj.File;
         ShowImagePreview(EstateModel.EstateAvatar!);
     }
@@ -216,7 +224,8 @@
         var format = file.ContentType.Contains("png") ? "png" : "jpeg";
         var resizedImageFile = await file.RequestImageFileAsync(format, 600, 600);
         var buffer = new byte[resizedImageFile.Size];
-        var readAsync = await resizedImageFile.OpenReadStream().ReadAsync(buffer);
+        const int maxAllowedSize = 2 * 1024 * 1024; // 2MB
+        var readAsync = await resizedImageFile.OpenReadStream(maxAllowedSize: maxAllowedSize).ReadAsync(buffer);
         var imageBase64 = Convert.ToBase64String(buffer);
         _imgSrc = $"data:{file.ContentType};base64,{imageBase64}";
         StateHasChanged();

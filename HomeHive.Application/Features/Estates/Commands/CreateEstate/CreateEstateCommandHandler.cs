@@ -1,5 +1,4 @@
-﻿using System.Text.Json;
-using HomeHive.Application.Contracts.Commands;
+﻿using HomeHive.Application.Contracts.Commands;
 using HomeHive.Application.Contracts.Interfaces;
 using HomeHive.Application.Persistence;
 using HomeHive.Domain.Common.EntitiesUtils.Estates;
@@ -85,7 +84,7 @@ public class CreateEstateCommandHandler(IBlobStorageService blobStorageService, 
                 return new CreateEstateCommandResponse
                 {
                     IsSuccess = false,
-                    ValidationsErrors = new Dictionary<string, List<string>> { { "EstateRoom",  estateRoom.ValidationErrors!.Select(er => er.Value).ToList() } }
+                    ValidationsErrors = new Dictionary<string, List<string>> { { "Rooms",  estateRoom.ValidationErrors!.Select(er => er.Value).ToList() } }
                 };
         
             await estateRoomRepository.AddAsync(estateRoom.Value);

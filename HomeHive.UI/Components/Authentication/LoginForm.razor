@@ -9,7 +9,6 @@
 <EditForm Model="@LoginModel" OnValidSubmit="@HandleValidSubmit" FormName="loginForm">
     <DataAnnotationsValidator/>
     <CustomValidation @ref="@_customValidation"/>
-    <ValidationSummary/>
 
     <div class="form-outline mb-2">
         <label class="form-label" for="login-username">Username</label>
@@ -70,7 +69,7 @@
                 {
                     Logger.LogError(result.Message);
                     if (result.ValidationErrors != null)
-                        _customValidation?.DisplayErrors(new Dictionary<string, string> { { "login-username", result.Message! }, { "login-password", result.Message! } });
+                        _customValidation?.DisplayErrors(result.ValidationErrors);
                 }
             }
         }

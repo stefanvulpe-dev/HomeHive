@@ -56,14 +56,14 @@ public class AuthService(IHttpClientFactory httpClientFactory, ILocalStorageServ
     public async Task<ApiResponse<TLoginResponse>?> Login(LoginModel loginModel)
     {
         var responseMessage = await _httpClient.PostAsJsonAsync("api/v1/Authentication/login", loginModel);
-
-        if (!responseMessage.IsSuccessStatusCode) return null;
-
+        
         var loginResult = await responseMessage.Content.ReadFromJsonAsync<ApiResponse<TLoginResponse>>();
-        if (loginResult is not { IsSuccess: true }) return null;
-
-        await PersistTokensToBrowserStorage(loginResult.Value!["accessToken"], loginResult.Value!["refreshToken"]);
-
+        
+        if (loginResult is { IsSuccess: true })
+        {
+            await PersistTokensToBrowserStorage(loginResult.Value!["accessToken"], loginResult.Value!["refreshToken"]);
+        }
+        
         return loginResult;
     }
 

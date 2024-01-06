@@ -4,6 +4,7 @@
 @using HomeHive.UI.Interfaces
 @using HomeHive.Domain.Common.EntitiesUtils.Estates
 @using HomeHive.Domain.Common.EntitiesUtils.Rooms
+@using HomeHive.Domain.Common.EntitiesUtils.Utility
 @inject NavigationManager NavigationManager
 @inject ILogger<LoginForm> Logger
 @inject IEstateDataService EstateService
@@ -15,12 +16,6 @@
 <EditForm Model="@EstateModel" OnValidSubmit="@HandleValidSubmit" FormName="editEstateForm">
     <DataAnnotationsValidator/>
     <CustomValidation @ref="@_customValidation"/>
-    @* <div class="image-container mb-3"> *@
-    @*     <img src="background1.jpg" alt="avatar image"/> *@
-    @*     <small>This is the first image the clients we'll see when searching for this estate.</small> *@
-    @*     <InputFile class="form-control"/> *@
-    @* </div> *@
-    @* <hr/> *@
     <div class="row">
         <div class="col-md-6">
             <div class="mb-3">
@@ -68,8 +63,8 @@
             </div>
             <div class="mb-3">
                 <label for="utilities" class="form-label">Utilities</label>
-                <InputSelect class="form-control" id="utilities" @bind-Value="@_selectedUtilities" multiple="">
-                    @foreach (var type in EstateModel.Utilities!)
+                <InputSelect class="form-control" id="utilities" @bind-Value="@EstateModel.EstateUtilities" multiple="">
+                    @foreach (var type in Enum.GetValues<UtilityType>())
                     {
                         <option value="@type">@type</option>
                     }
@@ -77,21 +72,21 @@
             </div>
             <div class="mb-3">
                 <label for="rooms" class="form-label">Rooms</label>
-                <InputSelect class="form-control" id="rooms" @bind-Value="@_selectedRooms" multiple="">
+                <InputSelect class="form-control" id="rooms" @bind-Value="@EstateModel.EstateRoomsKeys" multiple="">
                     @foreach (var type in Enum.GetValues<RoomType>())
                     {
                         <option value="@type">@type</option>
                     }
                 </InputSelect>
 
-                @foreach (var selectedOption in _selectedRooms)
+                @foreach (var selectedOption in EstateModel.EstateRoomsKeys)
                 {
                     <div class="w-100 mt-2 d-flex justify-content-between align-items-center bg-white p-2 rounded">
                         <span>@selectedOption</span>
                         <div class="d-flex justify-content-center align-items-center gap-2">
-                            <span>@_quantities[selectedOption]</span>
-                            <button class="btn-primary align-self-stretch px-2" @onclick="() => IncreaseQuantity(selectedOption)">+</button>
-                            <button class="btn-primary align-self-stretch px-2" @onclick="() => DecreaseQuantity(selectedOption)">-</button>
+                            <span>@EstateModel.Rooms![selectedOption]</span>
+                            <button type="button" class="btn-primary align-self-stretch px-2" @onclick="() => IncreaseQuantity(selectedOption)">+</button>
+                            <button type="button" class="btn-primary align-self-stretch px-2" @onclick="() => DecreaseQuantity(selectedOption)">-</button>
                         </div>
                     </div>
                 }
@@ -101,10 +96,6 @@
                 <InputText class="form-control" id="description" @bind-Value="EstateModel.Description"/>
                 <ValidationMessage For="@(() => EstateModel.Description)"></ValidationMessage>
             </div>
-            @* <div class="mb-3"> *@
-            @*     <label for="image" class="form-label">Images</label> *@
-            @*     <InputFile class="form-control" id="image" @bind-Value="CreateEstateModel.Image"/> *@
-            @* </div> *@
             <div class="d-flex justify-content-center">
                 <button type="submit" class="btn btn-primary" disabled="@_isSubmitting">Edit Estate</button>
             </div>
@@ -113,8 +104,6 @@
 </EditForm>
 
 @code {
-    private readonly Dictionary<string, int> _quantities = new();
-
     [SupplyParameterFromForm] private EditEstateModel? EstateModel { get; set; }
 
     [Parameter] public EstateViewModel? Estate { get; set; }
@@ -122,14 +111,10 @@
     private CustomValidation? _customValidation;
 
     private bool _isSubmitting;
-    
-    private string[] _selectedRooms = Array.Empty<string>();
-    
-    private string[] _selectedUtilities = Array.Empty<string>();
 
     protected override void OnInitialized()
     {
-        EstateModel = new EditEstateModel
+        EstateModel ??= new EditEstateModel
         {
             EstateCategory = Estate!.EstateCategory,
             EstateType = Estate.EstateType,
@@ -137,25 +122,11 @@
             Location = Estate.Location,
             PriceString = Estate.Price.ToString()!,
             TotalArea = Estate.TotalArea,
-            EstateRooms = Estate.Rooms!,
-            EstateUtilities = Estate.Utilities.ToArray()!,
-            Description = Estate.Description
+            Rooms = Estate.Rooms!,
+            Description = Estate.Description,
+            EstateUtilities = Estate.Utilities!.ToArray()!,
+            EstateRoomsKeys = Estate.Rooms!.Keys.ToArray()
         };
-        foreach (var utility in EstateModel.Utilities)
-        {
-            var newArray = new string[_selectedUtilities.Length + 1];
-            _selectedUtilities.CopyTo(newArray, 0);
-            newArray[^1] = utility;
-            _selectedUtilities = newArray;   
-        }
-        foreach (var (key, value) in EstateModel.EstateRooms)
-        {
-            var newArray = new string[_selectedRooms.Length + 1];
-            _selectedRooms.CopyTo(newArray, 0);
-            newArray[^1] = key;
-            _selectedRooms = newArray;
-            _quantities.Add(key, value);
-        }
     }
 
     private async void HandleValidSubmit()
@@ -164,9 +135,8 @@
         try
         {
             _isSubmitting = true;
-            // EstateModel!.Utilities = _selectedUtilities.ToList();
-            EstateModel!.EstateRooms = _quantities;
-            var result = await EstateService.UpdateById(Guid.Parse(Estate!.Id ?? string.Empty), EstateModel);
+            
+            var result = await EstateService.UpdateById(Guid.Parse(Estate!.Id!), EstateModel!);
 
             if (result != null)
             {
@@ -178,8 +148,8 @@
                 else
                 {
                     Logger.LogError(result.Message);
-                    // if (result.ValidationsErrors != null)
-                    //     _customValidation?.DisplayErrors(result.ValidationsErrors);
+                    if (result.ValidationsErrors != null)
+                        _customValidation?.DisplayErrors(result.ValidationsErrors);
                 }
             }
         }
@@ -195,14 +165,14 @@
 
     private void IncreaseQuantity(string option)
     {
-        _quantities[option]++;
+        EstateModel!.Rooms![option]++;
     }
 
     private void DecreaseQuantity(string option)
     {
-        if (_quantities[option] > 0)
+        if (EstateModel!.Rooms![option] > 0)
         {
-            _quantities[option]--;
+            EstateModel!.Rooms![option]--;
         }
     }
 

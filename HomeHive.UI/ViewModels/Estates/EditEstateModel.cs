@@ -33,11 +33,12 @@ public class EditEstateModel
     [MinLength(1, ErrorMessage = "Estate utilities must be at least 1")]
     public List<string> Utilities => EstateUtilities.ToList();
     
+    [MinLength(1, ErrorMessage = "Estate rooms must be at least 1")]
     public string[] EstateRoomsKeys { get; set; } = Array.Empty<string>();
     
     [Required(ErrorMessage = "Rooms are required")]
     [MinLength(1, ErrorMessage = "Rooms must be at least 1")]
-    public Dictionary<string, int>? EstateRooms { get; set; }
+    public Dictionary<string, int>? Rooms { get; set; }
 
     [Required(ErrorMessage = "Estate description is required")]
     public string? Description { get; set; }
