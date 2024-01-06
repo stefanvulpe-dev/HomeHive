@@ -40,6 +40,13 @@
                     </div>
                     <hr/>
                     <EditEstateAvatarForm></EditEstateAvatarForm>
+                    @* <div class="row justify-content-center"> *@
+                    @*     <ImagePreview></ImagePreview> *@
+                    @*     <ImagePreview></ImagePreview> *@
+                    @*     <ImagePreview></ImagePreview> *@
+                    @* </div> *@
+                    @* *@
+                    <AddEstateImagesForm></AddEstateImagesForm>
                     <EditEstateForm Estate="@Estate"></EditEstateForm>
                 }
             </div>
@@ -48,6 +55,9 @@
 </div>
 
 @code{
+    
+    private string _selectedSlide = "2";
+    
     [Parameter] public string? EstateId { get; set; }
 
     private EstateViewModel? Estate { get; set; }
