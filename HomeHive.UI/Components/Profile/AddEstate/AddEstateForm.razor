@@ -62,13 +62,13 @@
                 <InputText class="form-control" id="price" @bind-Value="@EstateModel.PriceString"/>
                 <ValidationMessage For="@(() => EstateModel.Price)"></ValidationMessage>
             </div>
-        </div>
-        <div class="col-md-6">
             <div class="mb-3">
                 <label for="totalArea" class="form-label">Total Area</label>
                 <InputText class="form-control" id="totalArea" @bind-Value="EstateModel.TotalArea"/>
                 <ValidationMessage For="@(() => EstateModel.TotalArea)"></ValidationMessage>
             </div>
+        </div>
+        <div class="col-md-6">
             <div class="mb-3">
                 <label for="utilities" class="form-label">Utilities</label>
                 <InputSelect class="form-control" id="utilities" @bind-Value="@EstateModel.EstateUtilities" multiple="">
@@ -107,9 +107,9 @@
                 <InputText class="form-control" id="description" @bind-Value="EstateModel.Description"/>
                 <ValidationMessage For="@(() => EstateModel.Description)"></ValidationMessage>
             </div>
-            <div class="d-flex justify-content-center">
-                <button type="submit" class="btn btn-primary" disabled="@_isSubmitting">Add Estate</button>
-            </div>
+        </div>
+        <div class="d-flex justify-content-center">
+            <button type="submit" class="btn btn-primary" disabled="@_isSubmitting">Add Estate</button>
         </div>
     </div>
 </EditForm>
