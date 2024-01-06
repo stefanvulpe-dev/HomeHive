@@ -80,7 +80,7 @@ public class UpdateEstateCommandHandler : ICommandHandler<UpdateEstateCommand, U
             }
         }
         
-        existingEstate.Update(validator.Utilities!, estateRooms, command.EstateData);
+        existingEstate.Update(validator.Utilities!, estateRooms, command.CreateEstateData);
 
         await _estateRepository.UpdateAsync(existingEstate);
 

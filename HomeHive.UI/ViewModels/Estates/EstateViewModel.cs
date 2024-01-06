@@ -18,11 +18,11 @@ public class EstateViewModel
 
     public string? TotalArea { get; set; }
 
-    public List<string?> Utilities { get; set; }
+    public List<string?>? Utilities { get; set; }
 
     public Dictionary<string, int>? Rooms { get; set; }
     
     public string? Description { get; set; }
 
-    public string? Image { get; set; }
+    public string? EstateAvatar { get; set; }
 }

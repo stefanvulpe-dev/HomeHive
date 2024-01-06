@@ -11,7 +11,7 @@ public class EstateTests
     {
         // Arrange
         var ownerId = Guid.NewGuid();
-        var estateData = new EstateData(
+        var estateData = new CreateEstateData(
             EstateType: "House",
             EstateCategory: "ForRent",
             Name: "Test Estate",
@@ -53,7 +53,7 @@ public class EstateTests
     {
         // Arrange
         var ownerId = Guid.Empty;
-        var estateData = new EstateData(
+        var estateData = new CreateEstateData(
             EstateType: "Apartment",
             EstateCategory: "ForRent",
             Name: "Test Estate",
@@ -81,7 +81,7 @@ public class EstateTests
     {
         // Arrange
         var ownerId = Guid.NewGuid();
-        var estateData = new EstateData(
+        var estateData = new CreateEstateData(
             EstateType: "NotExistentEstateType",
             EstateCategory: "ForSale",
             Name: "Test Estate",
@@ -109,7 +109,7 @@ public class EstateTests
     {
         // Arrange
         var ownerId = Guid.NewGuid();
-        var estateData = new EstateData(
+        var estateData = new CreateEstateData(
             EstateType: "Villa",
             EstateCategory: "NotExistentEstateCategory",
             Name: "Test Estate",
@@ -137,7 +137,7 @@ public class EstateTests
     {
         // Arrange
         var ownerId = Guid.NewGuid();
-        var estateData = new EstateData(
+        var estateData = new CreateEstateData(
             EstateType: "Cottage",
             EstateCategory: "ForRent",
             Name: "",
@@ -165,7 +165,7 @@ public class EstateTests
     {
         // Arrange
         var ownerId = Guid.NewGuid();
-        var estateData = new EstateData(
+        var estateData = new CreateEstateData(
             EstateType: "Farmhouse",
             EstateCategory: "ForRent",
             Name: "Test Estate",
@@ -194,7 +194,7 @@ public class EstateTests
     {
         // Arrange
         var ownerId = Guid.NewGuid();
-        var estateData = new EstateData(
+        var estateData = new CreateEstateData(
             EstateType: "Bungalow",
             EstateCategory: "ForRent",
             Name: "Test Estate",
@@ -222,7 +222,7 @@ public class EstateTests
     {
         // Arrange
         var ownerId = Guid.NewGuid();
-        var estateData = new EstateData(
+        var estateData = new CreateEstateData(
             EstateType: "Townhouse",
             EstateCategory: "ForRent",
             Name: "Test Estate",
@@ -250,7 +250,7 @@ public class EstateTests
     {
         // Arrange
         var ownerId = Guid.NewGuid();
-        var estateData = new EstateData(
+        var estateData = new CreateEstateData(
             EstateType: "Penthouse",
             EstateCategory: "ForRent",
             Name: "Test Estate",
@@ -278,7 +278,7 @@ public class EstateTests
     {
         // Arrange
         var ownerId = Guid.NewGuid();
-        var estateData = new EstateData(
+        var estateData = new CreateEstateData(
             EstateType: "Penthouse",
             EstateCategory: "ForRent",
             Name: "Test Estate",
@@ -305,7 +305,7 @@ public class EstateTests
     {
         // Arrange
         var ownerId = Guid.NewGuid();
-        var estateData = new EstateData(
+        var estateData = new CreateEstateData(
             EstateType: "Studio",
             EstateCategory: "ForRent",
             Name: "Test Estate",
@@ -335,7 +335,7 @@ public class EstateTests
     {
         // Arrange
         var ownerId = Guid.NewGuid();
-        var estateData = new EstateData(
+        var estateData = new CreateEstateData(
             EstateType: "Duplex",
             EstateCategory: "ForRent",
             Name: "Test Estate",
@@ -365,7 +365,7 @@ public class EstateTests
         Result<Utility> utilityResult = Utility.Create("Test Utilities");
         List<Utility> utilities = new List<Utility> { utilityResult.Value };
 
-        var estate = Estate.Create(Guid.NewGuid(), utilities, new EstateData(
+        var estate = Estate.Create(Guid.NewGuid(), utilities, new CreateEstateData(
             EstateType: EstateType.Bungalow.ToString(),
             EstateCategory: EstateCategory.ForSale.ToString(),
             Name: "Test Estate",
@@ -381,7 +381,7 @@ public class EstateTests
         Result<Utility> utilityResult1 = Utility.Create("Updated Test Utilities");
         utilities = new List<Utility> { utilityResult1.Value };
         
-        var estateData = new EstateData(
+        var estateData = new CreateEstateData(
             EstateType: "Apartment",
             EstateCategory: "ForSale",
             Name: "Updated Test Estate",

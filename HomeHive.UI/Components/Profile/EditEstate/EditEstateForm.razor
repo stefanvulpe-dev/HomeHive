@@ -55,7 +55,7 @@
             </div>
             <div class="mb-3">
                 <label for="price" class="form-label">Price</label>
-                <InputText class="form-control" id="price" @bind-Value="@_priceString"/>
+                <InputText class="form-control" id="price" @bind-Value="@EstateModel.PriceString"/>
                 <ValidationMessage For="@(() => EstateModel.Price)"></ValidationMessage>
             </div>
 
@@ -115,15 +115,13 @@
 @code {
     private readonly Dictionary<string, int> _quantities = new();
 
-    [SupplyParameterFromForm] private CreateEstateModel? EstateModel { get; set; }
+    [SupplyParameterFromForm] private EditEstateModel? EstateModel { get; set; }
 
     [Parameter] public EstateViewModel? Estate { get; set; }
 
     private CustomValidation? _customValidation;
 
     private bool _isSubmitting;
-
-    private string _priceString = "";
     
     private string[] _selectedRooms = Array.Empty<string>();
     
@@ -131,19 +129,19 @@
 
     protected override void OnInitialized()
     {
-        EstateModel = new CreateEstateModel
+        EstateModel = new EditEstateModel
         {
             EstateCategory = Estate!.EstateCategory,
             EstateType = Estate.EstateType,
             Name = Estate.Name,
             Location = Estate.Location,
-            Price = Estate.Price,
+            PriceString = Estate.Price.ToString()!,
             TotalArea = Estate.TotalArea,
             EstateRooms = Estate.Rooms!,
-            Utilities = Estate.Utilities!,
+            EstateUtilities = Estate.Utilities.ToArray()!,
             Description = Estate.Description
         };
-        foreach (var utility in EstateModel.Utilities!)
+        foreach (var utility in EstateModel.Utilities)
         {
             var newArray = new string[_selectedUtilities.Length + 1];
             _selectedUtilities.CopyTo(newArray, 0);
@@ -158,7 +156,6 @@
             _selectedRooms = newArray;
             _quantities.Add(key, value);
         }
-        _priceString = EstateModel.Price.ToString()!;
     }
 
     private async void HandleValidSubmit()
@@ -167,10 +164,9 @@
         try
         {
             _isSubmitting = true;
-            EstateModel!.Utilities = _selectedUtilities.ToList();
+            // EstateModel!.Utilities = _selectedUtilities.ToList();
             EstateModel!.EstateRooms = _quantities;
-            EstateModel!.Price = decimal.Parse(_priceString);
-            var result = await EstateService.UpdateById(Guid.Parse(Estate!.Id ?? string.Empty), EstateModel!);
+            var result = await EstateService.UpdateById(Guid.Parse(Estate!.Id ?? string.Empty), EstateModel);
 
             if (result != null)
             {

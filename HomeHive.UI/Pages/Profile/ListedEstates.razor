@@ -11,7 +11,7 @@
         <p class="fs-3">Listed Estates</p>
         <hr />
         <div class="row">
-            @if (Estates != null)
+            @if (Estates != null && Estates.Any())
             {
                 @foreach (var estate in Estates)
                 {
@@ -49,7 +49,8 @@
                     Price = e.Price,
                     TotalArea = e.TotalArea,
                     Utilities = e.Utilities!,
-                    Description = e.Description
+                    Description = e.Description,
+                    EstateAvatar = e.EstateAvatar
                 }).ToList();
         }
         else

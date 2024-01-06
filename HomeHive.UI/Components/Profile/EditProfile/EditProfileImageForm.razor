@@ -40,7 +40,6 @@
     {
         _file = e.File;
         ShowImagePreview(_file);
-
     }
 
     private async void ShowImagePreview(IBrowserFile file)
@@ -48,7 +47,7 @@
         var format = file.ContentType.Contains("png") ? "png" : "jpeg";
         var resizedImageFile = await file.RequestImageFileAsync(format, 600, 600);
         var buffer = new byte[resizedImageFile.Size];
-        await resizedImageFile.OpenReadStream().ReadAsync(buffer);
+        var readAsync = await resizedImageFile.OpenReadStream().ReadAsync(buffer);
         var imageBase64 = Convert.ToBase64String(buffer);
         _imgSrc = $"data:{file.ContentType};base64,{imageBase64}";
         StateHasChanged();
@@ -69,7 +68,7 @@
         fileContent.Headers.ContentType = new MediaTypeHeaderValue(_file.ContentType);
 
         content.Add(fileContent);
-
+        
         _isUploading = true;
 
         var response = await UserDataService.UploadProfilePicture(content);

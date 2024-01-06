@@ -29,7 +29,7 @@ public class
             };
         }
 
-        var blobName = $"{Guid.NewGuid().ToString()}.{command.ContentType.Split('/')[1]}";
+        var blobName = Guid.NewGuid().ToString();
 
         var uploadResult = await blobStorageService.UploadBlobAsync(blobName, command.Content, cancellationToken);
 

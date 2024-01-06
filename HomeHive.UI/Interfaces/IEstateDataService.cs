@@ -11,7 +11,7 @@ public interface IEstateDataService
 {
     Task<GetAllEstatesResponse?> GetAll();
     Task<GetEstateByIdResponse?> GetById(Guid id);
-    Task<CreateEstateCommandResponse?> Add(CreateEstateModel entity);
-    Task<UpdateEstateCommandResponse?> UpdateById(Guid id, CreateEstateModel entity);
+    Task<CreateEstateCommandResponse?> Add(MultipartFormDataContent content);
+    Task<UpdateEstateCommandResponse?> UpdateById(Guid id, EditEstateModel entity);
     Task<DeleteEstateByIdCommandResponse?> DeleteById(Guid id);
 }

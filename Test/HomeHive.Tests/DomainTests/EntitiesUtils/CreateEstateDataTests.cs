@@ -2,7 +2,7 @@
 
 namespace HomeHive.Tests.DomainTests.EntitiesUtils;
 
-public class EstateDataTests
+public class CreateEstateDataTests
 {
     [Fact]
     public void EstateData_ParameterizedConstructor_ShouldSetProperties()
@@ -20,7 +20,7 @@ public class EstateDataTests
         var image = "image-url.jpg";
 
         // Act
-        var estateData = new EstateData(
+        var estateData = new CreateEstateData(
             estateType, estateCategory, name, location, price, totalArea, utilities, estateRooms, description, image);
 
         // Assert
@@ -39,7 +39,7 @@ public class EstateDataTests
     public void EstateData_SetProperties_ShouldModifyProperties()
     {
         // Arrange
-        var estateData = new EstateData(null, null, null, null, null, null, null, null, null, null);
+        var estateData = new CreateEstateData(null, null, null, null, null, null, null, null, null, null);
 
         // Act
         estateData = estateData with { EstateType = "House", Price = 500000.75m };

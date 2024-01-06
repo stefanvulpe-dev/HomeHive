@@ -1,9 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using Microsoft.AspNetCore.Components.Forms;
 
 namespace HomeHive.UI.ViewModels.Estates;
 
-public class CreateEstateModel
+public class EditEstateModel
 {
     [Required(ErrorMessage = "Estate type is required")]
     public string? EstateType { get; set; }
@@ -34,15 +33,12 @@ public class CreateEstateModel
     [MinLength(1, ErrorMessage = "Estate utilities must be at least 1")]
     public List<string> Utilities => EstateUtilities.ToList();
     
-    [MinLength(1, ErrorMessage = "Rooms must be at least 1")]
     public string[] EstateRoomsKeys { get; set; } = Array.Empty<string>();
     
     [Required(ErrorMessage = "Rooms are required")]
-    public Dictionary<string, int>? Rooms { get; set; }
+    [MinLength(1, ErrorMessage = "Rooms must be at least 1")]
+    public Dictionary<string, int>? EstateRooms { get; set; }
 
     [Required(ErrorMessage = "Estate description is required")]
     public string? Description { get; set; }
-    
-    [Required(ErrorMessage = "Estate avatar is required")]
-    public IBrowserFile? EstateAvatar { get; set; }
 }

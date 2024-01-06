@@ -1,6 +1,6 @@
 ﻿namespace HomeHive.Domain.Common.EntitiesUtils.Estates;
 
-public record EstateData(
+public record CreateEstateData(
     string? EstateType,
     string? EstateCategory,
     string? Name,

@@ -12,7 +12,7 @@ public class CreateContractCommandHandlerTests
 {
     private static readonly Guid OwnerId = Guid.NewGuid();
 
-    private static readonly EstateData EstateData = new(
+    private static readonly CreateEstateData CreateEstateData = new(
         EstateType.Apartment.ToString(),
         EstateCategory.ForSale.ToString(),
         "Test",
@@ -81,7 +81,7 @@ public class CreateContractCommandHandlerTests
     public async Task Handle_ShouldReturnFailure_WhenContractDescriptionIsEmpty()
     {
         //Arrange
-        var estateCreationResult = Estate.Create(OwnerId, Utilities, EstateData);
+        var estateCreationResult = Estate.Create(OwnerId, Utilities, CreateEstateData);
 
         _estateRepositoryMock.FindByIdAsync(estateCreationResult.Value.Id)
             .Returns(Result<Estate>.Success(estateCreationResult.Value));
@@ -106,7 +106,7 @@ public class CreateContractCommandHandlerTests
     public async Task Handle_ShouldReturnFailure_WhenContractDescriptionIsNull()
     {
         //Arrange
-        var estateCreationResult = Estate.Create(OwnerId, Utilities, EstateData);
+        var estateCreationResult = Estate.Create(OwnerId, Utilities, CreateEstateData);
 
         _estateRepositoryMock.FindByIdAsync(estateCreationResult.Value.Id)
             .Returns(Result<Estate>.Success(estateCreationResult.Value));
@@ -131,7 +131,7 @@ public class CreateContractCommandHandlerTests
     public async Task Handle_ShouldReturnFailure_WhenContractDescriptionIsTooLong()
     {
         //Arrange
-        var estateCreationResult = Estate.Create(OwnerId, Utilities, EstateData);
+        var estateCreationResult = Estate.Create(OwnerId, Utilities, CreateEstateData);
 
         _estateRepositoryMock.FindByIdAsync(estateCreationResult.Value.Id)
             .Returns(Result<Estate>.Success(estateCreationResult.Value));
@@ -159,7 +159,7 @@ public class CreateContractCommandHandlerTests
     public async Task Handle_ShouldReturnFailure_WhenContractStartDateIsNull()
     {
         // Arrange
-        var estateCreationResult = Estate.Create(OwnerId, Utilities, EstateData);
+        var estateCreationResult = Estate.Create(OwnerId, Utilities, CreateEstateData);
 
         _estateRepositoryMock.FindByIdAsync(estateCreationResult.Value.Id)
             .Returns(Result<Estate>.Success(estateCreationResult.Value));
@@ -184,7 +184,7 @@ public class CreateContractCommandHandlerTests
     public async Task Handle_ShouldReturnFailure_WhenContractEndDateIsNull()
     {
         //Arrange
-        var estateCreationResult = Estate.Create(OwnerId, Utilities, EstateData);
+        var estateCreationResult = Estate.Create(OwnerId, Utilities, CreateEstateData);
 
         _estateRepositoryMock.FindByIdAsync(estateCreationResult.Value.Id)
             .Returns(Result<Estate>.Success(estateCreationResult.Value));
@@ -209,7 +209,7 @@ public class CreateContractCommandHandlerTests
     public async Task Handle_ShouldReturnFailure_WhenContractTypeIsEmpty()
     {
         //Arrange
-        var estateCreationResult = Estate.Create(OwnerId, Utilities, EstateData);
+        var estateCreationResult = Estate.Create(OwnerId, Utilities, CreateEstateData);
 
         _estateRepositoryMock.FindByIdAsync(estateCreationResult.Value.Id)
             .Returns(Result<Estate>.Success(estateCreationResult.Value));
@@ -234,7 +234,7 @@ public class CreateContractCommandHandlerTests
     public async Task Handle_ShouldReturnFailure_WhenContractTypeIsNull()
     {
         //Arrange
-        var estateCreationResult = Estate.Create(OwnerId, Utilities, EstateData);
+        var estateCreationResult = Estate.Create(OwnerId, Utilities, CreateEstateData);
 
         _estateRepositoryMock.FindByIdAsync(estateCreationResult.Value.Id)
             .Returns(Result<Estate>.Success(estateCreationResult.Value));
@@ -259,7 +259,7 @@ public class CreateContractCommandHandlerTests
     public async Task Handle_ShouldReturnSuccess_WhenContractIsValid()
     {
         //Arrange
-        var estateCreationResult = Estate.Create(OwnerId, Utilities, EstateData);
+        var estateCreationResult = Estate.Create(OwnerId, Utilities, CreateEstateData);
 
         _estateRepositoryMock.FindByIdAsync(estateCreationResult.Value.Id)
             .Returns(Result<Estate>.Success(estateCreationResult.Value));
