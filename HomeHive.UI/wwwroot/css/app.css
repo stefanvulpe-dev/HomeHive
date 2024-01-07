@@ -179,14 +179,6 @@ h1:focus {
     box-shadow: 0 0 15px rgb(0, 0, 0, 0.4);
 }
 
-.online {
-    color: darkgreen;
-}
-
-.offline {
-    color: darkred;
-}
-
 .max-w-24 {
     max-width: 5rem;
 }
@@ -219,3 +211,13 @@ h1:focus {
     max-width: 48rem;
 }
 
+
+.effect {
+    font-weight: normal;
+    transition: font-weight 0.3s ease-out;
+    
+}
+
+.effect:hover {
+    font-weight: bold;
+}
