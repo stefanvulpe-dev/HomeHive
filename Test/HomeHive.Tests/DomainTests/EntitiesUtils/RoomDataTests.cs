@@ -33,7 +33,7 @@ public class RoomDataTests
     public void RoomData_WithValidValues_ShouldCreateInstance()
     {
         // Arrange
-        var estateData = new CreateEstateData(
+        var estateData = new EstateData(
             EstateType.Apartment.ToString(),
             EstateCategory.ForSale.ToString(),
             "Test Estate",

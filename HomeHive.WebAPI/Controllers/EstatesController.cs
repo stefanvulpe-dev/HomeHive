@@ -4,6 +4,7 @@ using HomeHive.Application.Contracts.Interfaces;
 using HomeHive.Application.Features.Estates.Commands.CreateEstate;
 using HomeHive.Application.Features.Estates.Commands.DeleteEstateById;
 using HomeHive.Application.Features.Estates.Commands.UpdateEstate;
+using HomeHive.Application.Features.Estates.Commands.UpdateEstateAvatar;
 using HomeHive.Application.Features.Estates.Queries.GetAllEstates;
 using HomeHive.Application.Features.Estates.Queries.GetEstateById;
 using HomeHive.Domain.Common.EntitiesUtils.Estates;
@@ -59,12 +60,32 @@ public class EstatesController(
     [Authorize(Roles = "User, Admin")]
     [HttpPut("{estateId}", Name = "Update")]
     [ProducesResponseType(StatusCodes.Status200OK)]
-    public async Task<IActionResult> Update([FromRoute] Guid estateId, [FromBody] CreateEstateData data)
+    public async Task<IActionResult> Update([FromRoute] Guid estateId, [FromBody] UpdateEstateData data)
     {
         var isTokenRevoked = await tokenCacheService.IsTokenRevokedAsync();
         if (isTokenRevoked) return Unauthorized(new { message = "Token is revoked" });
 
         var result = await Mediator.Send(new UpdateEstateCommand(estateId, data));
+        if (!result.IsSuccess)
+        {
+            if (result.ValidationsErrors != null)
+                foreach (var (field, error) in result.ValidationsErrors)
+                    logger.LogError($"Field: {field}, Message: {error}");
+            return BadRequest(result);
+        }
+
+        return Ok(result);
+    }
+    
+    [Authorize(Roles = "User, Admin")]
+    [HttpPut("{estateId}/Avatar", Name = "UpdateAvatar")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    public async Task<IActionResult> UpdateAvatar([FromRoute] Guid estateId, [FromForm] IFormFile estateAvatar)
+    {
+        var isTokenRevoked = await tokenCacheService.IsTokenRevokedAsync();
+        if (isTokenRevoked) return Unauthorized(new { message = "Token is revoked" });
+
+        var result = await Mediator.Send(new UpdateEstateAvatarCommand(estateId, estateAvatar));
         if (!result.IsSuccess)
         {
             if (result.ValidationsErrors != null)

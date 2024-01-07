@@ -2,6 +2,7 @@
 using HomeHive.Application.Features.Estates.Commands.CreateEstate;
 using HomeHive.Application.Features.Estates.Commands.DeleteEstateById;
 using HomeHive.Application.Features.Estates.Commands.UpdateEstate;
+using HomeHive.Application.Features.Estates.Commands.UpdateEstateAvatar;
 using HomeHive.Application.Features.Estates.Queries.GetAllEstates;
 using HomeHive.Application.Features.Estates.Queries.GetEstateById;
 using HomeHive.UI.Interfaces;
@@ -42,5 +43,11 @@ public class EstatesDataService(IHttpClientFactory httpClientFactory) : IEstateD
     {
         var responseMessage = await _httpClient.DeleteAsync($"/api/v1/Estates/{id}");
         return await responseMessage.Content.ReadFromJsonAsync<DeleteEstateByIdCommandResponse>();
+    }
+
+    public async Task<UpdateEstateAvatarCommandResponse?> UpdateAvatar(MultipartFormDataContent content, string estateId)
+    {
+        var responseMessage = await _httpClient.PutAsync($"/api/v1/Estates/{estateId}/avatar", content);
+        return await responseMessage.Content.ReadFromJsonAsync<UpdateEstateAvatarCommandResponse>();
     }
 }

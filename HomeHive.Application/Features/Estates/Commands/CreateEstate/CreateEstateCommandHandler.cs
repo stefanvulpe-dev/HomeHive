@@ -43,7 +43,7 @@ public class CreateEstateCommandHandler(IBlobStorageService blobStorageService, 
                 ValidationsErrors = new Dictionary<string, List<string>> { { "EstateAvatar",  new List<string> {"Failed to upload estate avatar."} } }
             };
 
-        var createEstateData = new CreateEstateData(
+        var createEstateData = new EstateData(
             command.CreateEstateFormData.EstateType,
             command.CreateEstateFormData.EstateCategory,
             command.CreateEstateFormData.Name,

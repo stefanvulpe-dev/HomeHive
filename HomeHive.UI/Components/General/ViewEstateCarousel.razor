@@ -1,7 +1,7 @@
-@inject IJSRuntime JSRuntime
+@inject IJSRuntime JsRuntime
 
 <div class="m-2 ms-md-5 me-md-5">
-    <div id="@carouselName" class="carousel slide" data-bs-ride="carousel" data-bs-wrap="true" data-bs-interval="20000" data-bs-pause="false">
+    <div id="@CarouselName" class="carousel slide" data-bs-ride="carousel" data-bs-wrap="true" data-bs-interval="20000" data-bs-pause="false">
         <div class="carousel-indicators">
             <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
             <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="1" aria-label="Slide 2"></button>
@@ -32,11 +32,11 @@
 
 @code {
     
-	const string carouselName = "carouselExampleIndicators"; 
+	const string CarouselName = "carouselExampleIndicators"; 
 
 	protected override async Task OnAfterRenderAsync(bool firstRender)
 	{
-		object[] args = { carouselName };
-		await JSRuntime.InvokeVoidAsync("startCarousel", args); 
+		object[] args = { CarouselName };
+		await JsRuntime.InvokeVoidAsync("startCarousel", args); 
 	}
 }

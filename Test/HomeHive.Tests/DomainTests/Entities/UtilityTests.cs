@@ -57,7 +57,7 @@ public class UtilityTests
         var utility = Utility.Create("Water").Value;
         var utilities = new List<Utility> { utility };
         var estate = Estate.Create(Guid.NewGuid(), utilities,
-            new CreateEstateData(
+            new EstateData(
                 EstateType.Apartment.ToString(),
                 EstateCategory.ForRent.ToString(),
                 "Test",
