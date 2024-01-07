@@ -11,17 +11,20 @@ namespace IntegrationTests.Controllers;
 public class ContractsControllerTests: BaseApplicationContextTexts
 {
     private const string BaseUrl = "/api/v1/Contracts";
-    
-    [Fact]
-    public async Task GetAllContracts_WhenCalled_ReturnsOkResult()
+    private string? _token;
+
+    private ContractsControllerTests()
     {
-        // Arrange
-        var getAllContracts = $"{BaseUrl}/all";
-        
+        InitializeAsync().Wait();
+    }
+
+    private async Task InitializeAsync()
+    {
         var authenticateEndpoint = "/api/v1/Authentication/login";
 
         var fakeUser = new LoginModel
         {
+            //Provide valid credentials of an existing user
             UserName = "octav123",
             Password = "!Scr00l33"
         };
@@ -29,13 +32,20 @@ public class ContractsControllerTests: BaseApplicationContextTexts
         var loginResponse = await Client
             .PostAsJsonAsync(authenticateEndpoint, fakeUser);
 
-        // Assert
         loginResponse.EnsureSuccessStatusCode();
         var stringResponse = await loginResponse.Content.ReadAsStringAsync();
         var loginResult = JObject.Parse(stringResponse);
 
-        var token = loginResult["value"]!["accessToken"]?.Value<string>();
-        Client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+        _token = loginResult["value"]!["accessToken"]?.Value<string>()!;
+    }
+    
+    [Fact]
+    public async Task GetAllContracts_WhenCalled_ReturnsOkResult()
+    {
+        // Arrange
+        var getAllContracts = $"{BaseUrl}/all";
+        
+        Client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _token);
 
         var response = await Client.GetAsync(getAllContracts);
         // Act
@@ -43,9 +53,6 @@ public class ContractsControllerTests: BaseApplicationContextTexts
         var responseString = await response.Content.ReadAsStringAsync();
         var result = JsonConvert.DeserializeObject<GetAllContractsQueryResponse>(responseString);
         // Assert
-        result?.Contracts.Should().NotBeNullOrEmpty();
-
+        result?.Contracts!.Count.Should().Be(4);
     }
-    
-    
 }
