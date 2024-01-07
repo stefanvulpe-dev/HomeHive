@@ -1,9 +1,10 @@
-﻿using HomeHive.Application.Contracts.Queries;
+﻿using HomeHive.Application.Contracts.Interfaces;
+using HomeHive.Application.Contracts.Queries;
 using HomeHive.Application.Persistence;
 
 namespace HomeHive.Application.Features.Estates.Queries.GetEstateById;
 
-public class GetEstateByIdQueryHandler(IEstateRepository repository, IRoomRepository roomRepository)
+public class GetEstateByIdQueryHandler(IEstateRepository repository, IRoomRepository roomRepository, IBlobStorageService blobStorageService)
     : IQueryHandler<GetEstateByIdQuery, GetEstateByIdResponse>
 {
     public async Task<GetEstateByIdResponse> Handle(GetEstateByIdQuery request, CancellationToken cancellationToken)
@@ -16,7 +17,21 @@ public class GetEstateByIdQueryHandler(IEstateRepository repository, IRoomReposi
                 IsSuccess = false,
                 Message = "Estate not found."
             };
-
+        
+        var estateAvatarResult = await blobStorageService.GetBlobAsync(estateResult.Value.EstateAvatar!, cancellationToken);
+            
+        var estateAvatarStream = estateAvatarResult.Value;
+            
+        using var memoryStream = new MemoryStream();
+            
+        await estateAvatarStream.CopyToAsync(memoryStream, cancellationToken);
+            
+        var estateAvatarBytes = memoryStream.ToArray();
+        
+        var estateAvatarBase64 = Convert.ToBase64String(estateAvatarBytes);
+        
+        var estateAvatar = $"data:image/jpeg;base64,{estateAvatarBase64}";
+        
         var estateDto = new EstateDto
         {
             Id = estateResult.Value.Id,
@@ -27,10 +42,10 @@ public class GetEstateByIdQueryHandler(IEstateRepository repository, IRoomReposi
             Location = estateResult.Value.Location,
             Price = estateResult.Value.Price,
             TotalArea = estateResult.Value.TotalArea,
-            Utilities = estateResult.Value.Utilities!.Select(u => u.UtilityType.ToString()).ToList(),
+            Utilities = estateResult.Value.Utilities!.Select(u => u.UtilityType.ToString()).ToList()!,
             EstateRooms = new Dictionary<string, int>(),
             Description = estateResult.Value.Description,
-            EstateAvatar = estateResult.Value.EstateAvatar
+            EstateAvatar = estateAvatar
         };
 
         foreach (var estateRoom in estateResult.Value.EstateRooms!)

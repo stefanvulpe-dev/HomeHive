@@ -14,4 +14,5 @@ public interface IEstateDataService
     Task<CreateEstateCommandResponse?> Add(MultipartFormDataContent content);
     Task<UpdateEstateCommandResponse?> UpdateById(Guid id, EditEstateModel entity);
     Task<DeleteEstateByIdCommandResponse?> DeleteById(Guid id);
+    Task UpdateAvatar(MultipartFormDataContent content, Guid estateId);
 }

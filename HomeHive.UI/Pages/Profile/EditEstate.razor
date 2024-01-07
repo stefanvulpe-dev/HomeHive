@@ -40,7 +40,7 @@
                     <hr/>
                     <div class="row justify-content-center align-items-start gap-4 gap-lg-0">
                         <div class="col-lg-6">
-                            <EditEstateAvatarForm></EditEstateAvatarForm>
+                            <EditEstateAvatarForm EstateAvatar="@Estate!.EstateAvatar"></EditEstateAvatarForm>
                         </div>
                         <div class="col-lg-6">
                             <div class="max-w-md mx-auto">
@@ -90,7 +90,8 @@
                 TotalArea = e.TotalArea,
                 Utilities = e.Utilities!,
                 Rooms = e.EstateRooms,
-                Description = e.Description
+                Description = e.Description,
+                EstateAvatar = e.EstateAvatar
             };
 
             Logger.LogInformation("Estate loaded successfully");

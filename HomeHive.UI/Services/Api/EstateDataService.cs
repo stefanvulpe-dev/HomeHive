@@ -43,4 +43,9 @@ public class EstatesDataService(IHttpClientFactory httpClientFactory) : IEstateD
         var responseMessage = await _httpClient.DeleteAsync($"/api/v1/Estates/{id}");
         return await responseMessage.Content.ReadFromJsonAsync<DeleteEstateByIdCommandResponse>();
     }
+
+    public async Task UpdateAvatar(MultipartFormDataContent content, Guid estateId)
+    {
+        throw new NotImplementedException();
+    }
 }
