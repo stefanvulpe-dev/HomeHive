@@ -13,17 +13,17 @@
                 <div class="d-flex flex-column justify-content-center">
                     <span class="fs-4">@_firstName @_lastName</span>
                     <small>@_username</small>
-                </div>s
+                </div>
             </div>
         </NavLink>
         <hr>
-        <ul class="nav nav-pills flex-md-column flex-row flex-nowrap flex-shrink-1 flex-md-grow-0 flex-grow-1 mb-md-auto mb-0 justify-content-center align-items-center align-items-md-start" id="menu">
-            <li>
-                <NavLink href="profile" class="nav-link link-dark">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi me-2 bi-person-lines-fill" viewBox="0 0 16 16">
+        <ul class="nav nav-pills flex-md-column flex-row flex-nowrap flex-shrink-1 flex-md-grow-0 flex-grow-1 mb-md-auto mb-0 justify-content-center align-items-start align-items-md-star w-100" id="menu">
+            <li class="w-100">
+                <NavLink href="profile" class="nav-link link-dark d-flex justify-content-start align-items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="me-3 bi bi-person-lines-fill" viewBox="0 0 16 16">
                         <path d="M6 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6m-5 6s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1zM11 3.5a.5.5 0 0 1 .5-.5h4a.5.5 0 0 1 0 1h-4a.5.5 0 0 1-.5-.5m.5 2.5a.5.5 0 0 0 0 1h4a.5.5 0 0 0 0-1zm2 3a.5.5 0 0 0 0 1h2a.5.5 0 0 0 0-1zm0 3a.5.5 0 0 0 0 1h2a.5.5 0 0 0 0-1z"/>
                     </svg>
-                    <i class="fs-5 bi-speedometer2"></i><span class="ms-1 d-none d-md-inline">Edit Profile</span>
+                    <i class="fs-5 bi-speedometer2"></i><span class="d-none d-md-inline">Edit Profile</span>
                 </NavLink>
             </li>
             @* <li> *@
@@ -43,48 +43,47 @@
             @*         <i class="fs-5 bi-speedometer2"></i><span class="ms-1 d-none d-md-inline">Change Password</span> *@
             @*     </NavLink> *@
             @* </li> *@
-            <li>
-                <NavLink href="listed-estates" class="nav-link link-dark">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi me-2 bi-houses" viewBox="0 0 16 16">
+            <li class="w-100">
+                <NavLink href="listed-estates" class="nav-link link-dark d-flex justify-content-start align-items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="me-3 bi bi-houses" viewBox="0 0 16 16">
                         <path d="M5.793 1a1 1 0 0 1 1.414 0l.647.646a.5.5 0 1 1-.708.708L6.5 1.707 2 6.207V12.5a.5.5 0 0 0 .5.5.5.5 0 0 1 0 1A1.5 1.5 0 0 1 1 12.5V7.207l-.146.147a.5.5 0 0 1-.708-.708zm3 1a1 1 0 0 1 1.414 0L12 3.793V2.5a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v3.293l1.854 1.853a.5.5 0 0 1-.708.708L15 8.207V13.5a1.5 1.5 0 0 1-1.5 1.5h-8A1.5 1.5 0 0 1 4 13.5V8.207l-.146.147a.5.5 0 1 1-.708-.708zm.707.707L5 7.207V13.5a.5.5 0 0 0 .5.5h8a.5.5 0 0 0 .5-.5V7.207z"/>
                     </svg>
-                    <span class="ms-1 d-none d-md-inline">Listed Estates</span>
+                    <span class="d-none d-md-inline">Listed Estates</span>
                 </NavLink>
             </li>
-            <li>
-                <NavLink href="add-estate" class="nav-link link-dark">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi me-2 bi-house-add" viewBox="0 0 16 16">
+            <li class="w-100">
+                <NavLink href="add-estate" class="nav-link link-dark d-flex justify-content-start align-items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="me-3 bi bi-house-add" viewBox="0 0 16 16">
                         <path d="M8.707 1.5a1 1 0 0 0-1.414 0L.646 8.146a.5.5 0 0 0 .708.708L2 8.207V13.5A1.5 1.5 0 0 0 3.5 15h4a.5.5 0 1 0 0-1h-4a.5.5 0 0 1-.5-.5V7.207l5-5 6.646 6.647a.5.5 0 0 0 .708-.708L13 5.793V2.5a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5v1.293z"/>
                         <path d="M16 12.5a3.5 3.5 0 1 1-7 0 3.5 3.5 0 0 1 7 0m-3.5-2a.5.5 0 0 0-.5.5v1h-1a.5.5 0 0 0 0 1h1v1a.5.5 0 1 0 1 0v-1h1a.5.5 0 1 0 0-1h-1v-1a.5.5 0 0 0-.5-.5"/>
                     </svg>
-                    <i class="fs-5 bi-grid"></i><span class="ms-1 d-none d-md-inline">Add new Estate</span>
+                    <i class="fs-5 bi-grid"></i><span class="d-none d-md-inline">Add new Estate</span>
                 </NavLink>
             </li>
-            <li>
-                <NavLink href="contracts" class="nav-link link-dark">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-journal" viewBox="0 0 16 16">
+            <li class="w-100">
+                <NavLink href="contracts" class="nav-link link-dark d-flex justify-content-start align-items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="me-3 bi bi-journal" viewBox="0 0 16 16">
                         <path d="M3 0h10a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2v-1h1v1a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H3a1 1 0 0 0-1 1v1H1V2a2 2 0 0 1 2-2"/>
                         <path d="M1 5v-.5a.5.5 0 0 1 1 0V5h.5a.5.5 0 0 1 0 1h-2a.5.5 0 0 1 0-1zm0 3v-.5a.5.5 0 0 1 1 0V8h.5a.5.5 0 0 1 0 1h-2a.5.5 0 0 1 0-1zm0 3v-.5a.5.5 0 0 1 1 0v.5h.5a.5.5 0 0 1 0 1h-2a.5.5 0 0 1 0-1z"/>
                     </svg>
-                    <span class="ms-1 d-none d-md-inline">Contracts</span>
+                    <span class="d-none d-md-inline">Contracts</span>
                 </NavLink>
             </li>
-            <hr>
-            <li class="nav-item">
-                <NavLink href="home" class="nav-link link-dark">
-                    <svg class="bi me-2" width="16" height="16">
+            <li class="w-100">
+                <NavLink href="home" class="nav-link link-dark d-flex justify-content-start align-items-center">
+                    <svg class="me-3 bi" width="16" height="16">
                         <use xlink:href="#home"/>
                     </svg>
-                    <span class="ms-1 d-none d-md-inline">Home</span>
+                    <span class="d-none d-md-inline">Home</span>
                 </NavLink>
             </li>
-            <li>
-                <NavLink href="login" class="nav-link link-dark" @onclick="@Logout">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi me-2 bi-door-closed" viewBox="0 0 16 16">
+            <li class="w-100">
+                <NavLink href="login" class="nav-link link-dark d-flex justify-content-start align-items-center" @onclick="@Logout">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="me-3 bi bi-door-closed" viewBox="0 0 16 16">
                         <path d="M3 2a1 1 0 0 1 1-1h8a1 1 0 0 1 1 1v13h1.5a.5.5 0 0 1 0 1h-13a.5.5 0 0 1 0-1H3zm1 13h8V2H4z"/>
                         <path d="M9 9a1 1 0 1 0 2 0 1 1 0 0 0-2 0"/>
                     </svg>
-                    <i class="fs-5 bi-grid"></i><span class="ms-1 d-none d-md-inline">Logout</span>
+                    <i class="fs-5 bi-grid"></i><span class="d-none d-md-inline">Logout</span>
                 </NavLink>
             </li>
         </ul>
