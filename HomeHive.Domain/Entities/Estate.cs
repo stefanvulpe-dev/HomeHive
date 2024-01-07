@@ -26,11 +26,11 @@ public sealed class Estate : BaseEntity
     public IReadOnlyList<Contract>? Contracts => _contracts;
     public IReadOnlyList<EstatePhoto>? EstatePhotos => _estatePhotos;
 
-    public static Result<Estate> Create(Guid ownerId, List<Utility> utilities, CreateEstateData createEstateData)
+    public static Result<Estate> Create(Guid ownerId, List<Utility> utilities, EstateData estateData)
     {
         var (estateType, estateCategory, name,
             location, price, totalArea, utilitiesNames, 
-            rooms , description, image) = createEstateData;
+            rooms , description, image) = estateData;
 
         if (ownerId == Guid.Empty) return Result<Estate>.Failure("OwnerId is required.");
 
@@ -85,27 +85,30 @@ public sealed class Estate : BaseEntity
         });
     }
 
-    public void Update(List<Utility> utilities, List<EstateRoom> rooms, CreateEstateData createEstateData)
+    public void Update(List<Utility> utilities, List<EstateRoom> rooms, UpdateEstateData estateData)
     {
-        if (createEstateData.EstateType != null) EstateType = Enum.Parse<EstateType>(createEstateData.EstateType);
+        if (estateData.EstateType != null) EstateType = Enum.Parse<EstateType>(estateData.EstateType);
 
-        if (createEstateData.EstateCategory != null) EstateCategory = Enum.Parse<EstateCategory>(createEstateData.EstateCategory);
+        if (estateData.EstateCategory != null) EstateCategory = Enum.Parse<EstateCategory>(estateData.EstateCategory);
 
-        if (createEstateData.Name != null) Name = createEstateData.Name;
+        if (estateData.Name != null) Name = estateData.Name;
 
-        if (createEstateData.Location != null) Location = createEstateData.Location;
+        if (estateData.Location != null) Location = estateData.Location;
 
-        if (createEstateData.Price != null) Price = createEstateData.Price;
+        if (estateData.Price != null) Price = estateData.Price;
 
-        if (createEstateData.TotalArea != null) TotalArea = createEstateData.TotalArea;
+        if (estateData.TotalArea != null) TotalArea = estateData.TotalArea;
         
-        if (createEstateData.Utilities != null) Utilities = utilities;
+        if (estateData.Utilities != null) Utilities = utilities;
         
-        if (createEstateData.Rooms != null) EstateRooms = rooms;
+        if (estateData.Rooms != null) EstateRooms = rooms;
 
-        if (createEstateData.Description != null) Description = createEstateData.Description;
-
-        if (createEstateData.EstateAvatar != null) EstateAvatar = createEstateData.EstateAvatar;
+        if (estateData.Description != null) Description = estateData.Description;
+    }
+    
+    public void UpdateEstateAvatar(string estateAvatar)
+    {
+        EstateAvatar = estateAvatar;
     }
     
     public void AddEstateRooms(List<EstateRoom> estateRooms)

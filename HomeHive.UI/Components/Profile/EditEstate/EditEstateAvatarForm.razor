@@ -23,6 +23,19 @@
     </div>
 </EditForm>
 
+@if (_isSuccess)
+{
+    <div class="alert alert-success mt-2" role="alert">
+        Avatar updated successfully!
+    </div>
+}
+@if (_isError)
+{
+    <div class="alert alert-danger mt-2" role="alert">
+        An error occurred while updating the avatar.
+    </div>
+
+}
 
 @code {
     [SupplyParameterFromForm] private EditEstateAvatarModel? EditEstateAvatarModel { get; set; }
@@ -32,9 +45,16 @@
     [Parameter]
     public string? EstateAvatar { get; set; }
     
+    [Parameter]
+    public string? EstateId { get; set; }
+    
     private string? _imgSrc;
     
     private bool _isSubmitting;
+    
+    private bool _isSuccess;
+    
+    private bool _isError;
 
     protected override void OnInitialized()
     {
@@ -64,21 +84,22 @@
             
             content.Add(fileContent);
             
-            // var result = await EstateService.UpdateAvatar(content, EditEstateAvatarModel.EstateId);
-            //
-            // if (result != null)
-            // {
-            //     if (result.IsSuccess)
-            //     {
-            //         Logger.LogInformation(result.Message);
-            //     }
-            //     else
-            //     {
-            //         Logger.LogError(result.Message);
-            //         if (result.ValidationsErrors != null)
-            //             _customValidation?.DisplayErrors(result.ValidationsErrors);
-            //     }
-            // }
+            var result= await EstateService.UpdateAvatar(content, EstateId!);
+            
+            if (result != null)
+            {
+                if (result.IsSuccess)
+                {
+                    Logger.LogInformation(result.Message);
+                    _isSuccess = true;
+                    StateHasChanged();
+                }
+                else
+                {
+                    Logger.LogError(result.Message);
+                    _isError = true;
+                }
+            }
         }
         catch (Exception)
         {
@@ -87,6 +108,7 @@
         finally
         {
             _isSubmitting = false;
+            StateHasChanged();
         }
     }
     

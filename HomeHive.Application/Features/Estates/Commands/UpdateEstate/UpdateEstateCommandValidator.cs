@@ -21,8 +21,8 @@ public class UpdateEstateCommandValidator : AbstractValidator<UpdateEstateComman
         RuleFor(v => v.EstateId)
             .NotEmpty().WithMessage("EstateId is required.")
             .MustAsync(EstateExist).WithMessage("Estate does not exist.");
-        RuleFor(p => p.CreateEstateData)
-            .NotNull().WithMessage("CreateEstateData is required.")
+        RuleFor(p => p.EstateData)
+            .NotNull().WithMessage("EstateData is required.")
             .Custom((estateData, context) =>
             {
                 if (string.IsNullOrWhiteSpace(estateData.EstateType) &&
@@ -33,16 +33,15 @@ public class UpdateEstateCommandValidator : AbstractValidator<UpdateEstateComman
                     string.IsNullOrWhiteSpace(estateData.TotalArea) &&
                     (estateData.Utilities == null || estateData.Utilities.Count == 0) &&
                     (estateData.Rooms == null || estateData.Rooms.Count == 0) &&
-                    string.IsNullOrWhiteSpace(estateData.Description) &&
-                    string.IsNullOrWhiteSpace(estateData.EstateAvatar))
-                    context.AddFailure("At least one field in CreateEstateData must be provided.");
+                    string.IsNullOrWhiteSpace(estateData.Description))
+                    context.AddFailure("At least one field in EstateData must be provided.");
             });
-        RuleFor(v => v.CreateEstateData.Utilities)
+        RuleFor(v => v.EstateData.Utilities)
             .MustAsync(ValidateUtilitiesExistence).WithMessage("Utility does not exist.")
-            .When(v => v.CreateEstateData.Utilities != null && v.CreateEstateData.Utilities.Count > 0);
-        RuleFor(v => v.CreateEstateData.Rooms)
+            .When(v => v.EstateData.Utilities != null && v.EstateData.Utilities.Count > 0);
+        RuleFor(v => v.EstateData.Rooms)
             .MustAsync(ValidateRooms).WithMessage("Room does not exist.")
-            .When(v => v.CreateEstateData.Rooms != null && v.CreateEstateData.Rooms.Count > 0);
+            .When(v => v.EstateData.Rooms != null && v.EstateData.Rooms.Count > 0);
     }
 
     private async Task<bool> EstateExist(Guid estateId, CancellationToken arg2)
