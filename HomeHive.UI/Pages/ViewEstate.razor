@@ -3,44 +3,89 @@
 <PageTitle>EstateName</PageTitle>
 
 <Navbar></Navbar>
-<section class="about-one min-vh-100 p-0 d-flex flex-column align-items-center ">
-    <div class="row justify-content-center align-items-center text-center mt-5">
-        <h5 class="fw-bold fs-1">Estate Name</h5>
-        <small>Posted by <span class="fw-bold">Jane Doe</span></small>
-        <div class="row">
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-geo-alt" viewBox="0 0 16 16">
-                <path d="M12.166 8.94c-.524 1.062-1.234 2.12-1.96 3.07A32 32 0 0 1 8 14.58a32 32 0 0 1-2.206-2.57c-.726-.95-1.436-2.008-1.96-3.07C3.304 7.867 3 6.862 3 6a5 5 0 0 1 10 0c0 .862-.305 1.867-.834 2.94M8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10"/>
-                <path d="M8 8a2 2 0 1 1 0-4 2 2 0 0 1 0 4m0 1a3 3 0 1 0 0-6 3 3 0 0 0 0 6"/>
-            </svg>
-            <span class="d-inline">Location</span>
-        </div>
-    </div>
-    <ViewEstateCarousel></ViewEstateCarousel>
-    <div class="row justify-content-center m-3 m-sm-0">
-        
-        <div class="card col-md-3 m-3">
-            <div class="card-body">
-                <p class="card-text">"Lorem ipsum dolor sit amet, consectetur adipiscing elit, 
-                    sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
-                    quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor
-                    in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. 
-                    Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."</p>
-                <div class="d-flex justify-content-center">
-                    <NavLink href="viewEstate" class="btn btn-primary">Contact</NavLink>
+<section class="min-vh-100 p-0 d-flex flex-column align-items-center ">
+    <div class="row mt-4 justify-content-center gx-0">
+        <div class="col-xl-4">
+            <div class="row justify-content-center align-items-center text-center m-3">
+                <div class="row mb-2">
+                    <h5 class="fw-bold fs-1">Estate Name</h5>
+                    <small>Posted by <span class="fw-bold">Jane Doe</span></small> 
+                    <span>For Rent</span>
+                </div>
+                    
+                <div class="card mt-3">
+                    <div class="card-body justify-content-center">
+                        <EstateGeneralInfo></EstateGeneralInfo>
+                        <hr/>
+                        <Utilities></Utilities>
+                        <Rooms></Rooms>
+                    </div>
                 </div>
             </div>
         </div>
-        <div class="card col-md-3 m-3">
-            <div class="card-body justify-content-center">
-                <EstateGeneralInfo></EstateGeneralInfo>
-                <hr/>
-                <Utilities></Utilities>
-                <Rooms></Rooms>
-                <div class="d-flex justify-content-center">
-                    <NavLink href="viewEstate" class="btn btn-primary">Rent/Buy</NavLink>
+        <div class="col-xl-8 mx-3 mx-lg-0">
+            <ViewEstateCarousel></ViewEstateCarousel>
+        </div>
+        
+        <div class="row justify-content-center align-items-center gx-0 mt-2">
+            <div class="col-xl-8">
+                <p>SOME FORM???</p>
+            </div>
+            <div class="col-xl-4">
+                <div class="card row justify-content-center align-items-center text-center m-3">
+                    <div class="card-body">
+                        <p class="card-text">"Lorem ipsum dolor sit amet, consectetur adipiscing elit,
+                            sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
+                            quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor
+                            in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.</p>
+                        <hr/>
+                        <small>Need more info? Contact now the owner.</small>
+                        <div class="d-flex justify-content-center">
+                            <NavLink href="viewEstate" class="btn btn-primary">Contact</NavLink>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 </section>
+@* <section class="about-one min-vh-100 p-0 d-flex flex-column align-items-center "> *@
+@*     <div class="row justify-content-center align-items-center text-center mt-5"> *@
+@*         <h5 class="fw-bold fs-1">Estate Name</h5> *@
+@*         <small>Posted by <span class="fw-bold">Jane Doe</span></small> *@
+@*         <div class="d-flex justify-content-center align-items-center me-1"> *@
+@*             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-geo-alt" viewBox="0 0 16 16"> *@
+@*                 <path d="M12.166 8.94c-.524 1.062-1.234 2.12-1.96 3.07A32 32 0 0 1 8 14.58a32 32 0 0 1-2.206-2.57c-.726-.95-1.436-2.008-1.96-3.07C3.304 7.867 3 6.862 3 6a5 5 0 0 1 10 0c0 .862-.305 1.867-.834 2.94M8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10"/> *@
+@*                 <path d="M8 8a2 2 0 1 1 0-4 2 2 0 0 1 0 4m0 1a3 3 0 1 0 0-6 3 3 0 0 0 0 6"/> *@
+@*             </svg> *@
+@*             <span class="d-inline">Location</span> *@
+@*         </div> *@
+@*     </div> *@
+@*     <ViewEstateCarousel></ViewEstateCarousel> *@
+@*     <div class="row justify-content-center m-3 m-sm-0"> *@
+@*         <div class="card col-md-3 m-3"> *@
+@*             <div class="card-body"> *@
+@*                 <p class="card-text">"Lorem ipsum dolor sit amet, consectetur adipiscing elit, *@
+@*                     sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, *@
+@*                     quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor *@
+@*                     in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. *@
+@*                     Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."</p> *@
+@*                 <div class="d-flex justify-content-center"> *@
+@*                     <NavLink href="viewEstate" class="btn btn-primary">Contact</NavLink> *@
+@*                 </div> *@
+@*             </div> *@
+@*         </div> *@
+@*         <div class="card col-md-3 m-3"> *@
+@*             <div class="card-body justify-content-center"> *@
+@*                 <EstateGeneralInfo></EstateGeneralInfo> *@
+@*                 <hr/> *@
+@*                 <Utilities></Utilities> *@
+@*                 <Rooms></Rooms> *@
+@*                 <div class="d-flex justify-content-center"> *@
+@*                     <NavLink href="viewEstate" class="btn btn-primary">Rent/Buy</NavLink> *@
+@*                 </div> *@
+@*             </div> *@
+@*         </div> *@
+@*     </div> *@
+@* </section> *@
 <Footer></Footer>
