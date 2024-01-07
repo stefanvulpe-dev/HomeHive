@@ -1,5 +1,6 @@
 @page "/viewEstate"
 @using HomeHive.UI.Components.General
+@using HomeHive.UI.Components.Estates
 <PageTitle>EstateName</PageTitle>
 
 <Navbar></Navbar>
@@ -27,11 +28,12 @@
             <ViewEstateCarousel></ViewEstateCarousel>
         </div>
         
-        <div class="row justify-content-center align-items-center gx-0 mt-2">
-            <div class="col-xl-8">
-                <p>SOME FORM???</p>
+        <div class="row justify-content-center align-items-center gx-0 mt-4">
+            <div class="col-xl-7">
+                @* <RentEstateForm></RentEstateForm> *@
+                <BuyEstateForm></BuyEstateForm>
             </div>
-            <div class="col-xl-4">
+            <div class="col-xl-5">
                 <div class="card row justify-content-center align-items-center text-center m-3">
                     <div class="card-body">
                         <p class="card-text">"Lorem ipsum dolor sit amet, consectetur adipiscing elit,
