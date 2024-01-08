@@ -26,7 +26,6 @@ public class ContractsControllerTests : BaseApplicationContextTexts
 
     private async Task InitIds()
     {
-        InitializeAsync().Wait();
         var createContract = $"{BaseUrl}";
         
         Client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", Token);

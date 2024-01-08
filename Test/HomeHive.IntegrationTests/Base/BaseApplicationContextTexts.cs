@@ -15,7 +15,7 @@ public abstract class BaseApplicationContextTexts : IAsyncDisposable
 {
     protected readonly WebApplicationFactory<Program> Application;
     protected readonly HttpClient Client;
-    protected string? Token;
+    protected  string? Token;
 
     protected BaseApplicationContextTexts(string databaseSuffix = "")
     {
@@ -60,25 +60,26 @@ public abstract class BaseApplicationContextTexts : IAsyncDisposable
         InitializeAsync().Wait();
     }
 
-    protected async Task InitializeAsync()
+    private async Task InitializeAsync()
     {
-        var authenticateEndpoint = "/api/v1/Authentication/login";
+            var authenticateEndpoint = "/api/v1/Authentication/login";
 
-        var fakeUser = new LoginModel
-        {
-            //Provide valid credentials of an existing user
-            UserName = "octav123",
-            Password = "!Scr00l33"
-        };
+            var fakeUser = new LoginModel
+            {
+                //Provide valid credentials of an existing user
+                UserName = "octav123",
+                Password = "!Scr00l33"
+            };
 
-        var loginResponse = await Client
-            .PostAsJsonAsync(authenticateEndpoint, fakeUser);
+            var loginResponse = await Client
+                .PostAsJsonAsync(authenticateEndpoint, fakeUser);
+            
+            loginResponse.EnsureSuccessStatusCode();
+            var stringResponse = await loginResponse.Content.ReadAsStringAsync();
+            var loginResult = JObject.Parse(stringResponse);
 
-        loginResponse.EnsureSuccessStatusCode();
-        var stringResponse = await loginResponse.Content.ReadAsStringAsync();
-        var loginResult = JObject.Parse(stringResponse);
-
-        Token = loginResult["value"]!["accessToken"]?.Value<string>()!;
+            Token = loginResult["value"]!["accessToken"]?.Value<string>()!;
+        
     }
 
     public async ValueTask DisposeAsync()
