@@ -48,7 +48,7 @@ public abstract class BaseApplicationContextTexts: IAsyncDisposable
                 {
                     var scopedServices = scope.ServiceProvider;
                     var db = scopedServices.GetRequiredService<HomeHiveContext>();
-
+                    db.Database.EnsureDeleted();
                     db.Database.EnsureCreated();
 
                     Seed.InitializeDbForTests(db);
