@@ -1,3 +1,4 @@
+using System.Text.RegularExpressions;
 using HomeHive.Application.Contracts.Commands;
 using HomeHive.Application.Persistence;
 using HomeHive.Domain.Entities;
@@ -16,7 +17,7 @@ public class CreateContractCommandHandler(IContractRepository contractRepository
         if (!validatorResult.IsValid)
         {
             var validationErrors = validatorResult.Errors
-                .GroupBy(x => x.PropertyName, x => x.ErrorMessage)
+                .GroupBy(x => Regex.Replace(x.PropertyName, ".*\\.", ""), x => x.ErrorMessage)
                 .ToDictionary(group => group.Key, group => group.ToList());
 
             return new CreateContractCommandResponse

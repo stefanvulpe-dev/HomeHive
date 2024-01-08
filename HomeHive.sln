@@ -30,6 +30,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HomeHive.UI", "HomeHive.UI\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HomeHive.Tests", "Test\HomeHive.Tests\HomeHive.Tests.csproj", "{325387FC-CADA-41B5-BD8A-0A755220A277}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HomeHive.IntegrationTests", "Test\HomeHive.IntegrationTests\HomeHive.IntegrationTests.csproj", "{969B172A-E7E8-409D-B934-A2EFDAA4CD66}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -50,6 +52,7 @@ Global
 		{5C28E943-926D-4C1C-87C8-A9FFDDA01A03} = {F44091BA-71CE-45B0-A39E-BE3078259613}
 		{E4630F7C-01E2-4196-8513-A3B73AAE808F} = {E4AA450B-DA3D-457B-B334-68F1F00EAD56}
 		{325387FC-CADA-41B5-BD8A-0A755220A277} = {92B2958A-00B0-4C83-AED8-1BE1FA351014}
+		{969B172A-E7E8-409D-B934-A2EFDAA4CD66} = {92B2958A-00B0-4C83-AED8-1BE1FA351014}
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{2E3C4300-5E1F-4E51-B142-9D8FB797B0DD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
@@ -84,5 +87,9 @@ Global
 		{325387FC-CADA-41B5-BD8A-0A755220A277}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{325387FC-CADA-41B5-BD8A-0A755220A277}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{325387FC-CADA-41B5-BD8A-0A755220A277}.Release|Any CPU.Build.0 = Release|Any CPU
+		{969B172A-E7E8-409D-B934-A2EFDAA4CD66}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{969B172A-E7E8-409D-B934-A2EFDAA4CD66}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{969B172A-E7E8-409D-B934-A2EFDAA4CD66}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{969B172A-E7E8-409D-B934-A2EFDAA4CD66}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

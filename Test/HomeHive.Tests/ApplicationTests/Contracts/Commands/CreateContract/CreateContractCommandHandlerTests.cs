@@ -53,7 +53,7 @@ public class CreateContractCommandHandlerTests
         // Assert
         Assert.False(result.IsSuccess);
         Assert.Equal("Failed to create contract.", result.Message);
-        Assert.Contains("Estate does not exist.", result.ValidationsErrors!["Data.EstateId"]);
+        Assert.Contains("Estate does not exist.", result.ValidationsErrors!["EstateId"]);
     }
 
     [Fact]
@@ -74,7 +74,7 @@ public class CreateContractCommandHandlerTests
         // Assert
         Assert.False(result.IsSuccess);
         Assert.Equal("Failed to create contract.", result.Message);
-        Assert.Contains("Data Estate Id is required.", result.ValidationsErrors!["Data.EstateId"]);
+        Assert.Contains("Data Estate Id is required.", result.ValidationsErrors!["EstateId"]);
     }
 
     [Fact]
@@ -99,7 +99,7 @@ public class CreateContractCommandHandlerTests
         // Assert
         Assert.False(result.IsSuccess);
         Assert.Equal("Failed to create contract.", result.Message);
-        Assert.Contains("Data Description is required.", result.ValidationsErrors!["Data.Description"]);
+        Assert.Contains("Data Description is required.", result.ValidationsErrors!["Description"]);
     }
 
     [Fact]
@@ -124,7 +124,7 @@ public class CreateContractCommandHandlerTests
         // Assert
         Assert.False(result.IsSuccess);
         Assert.Equal("Failed to create contract.", result.Message);
-        Assert.Contains("Data Description can't be null.", result.ValidationsErrors!["Data.Description"]);
+        Assert.Contains("Data Description can't be null.", result.ValidationsErrors!["Description"]);
     }
 
     [Fact]
@@ -152,7 +152,7 @@ public class CreateContractCommandHandlerTests
         Assert.False(result.IsSuccess);
         Assert.Equal("Failed to create contract.", result.Message);
         Assert.Contains("Data Description must not exceed 200 characters.",
-            result.ValidationsErrors!["Data.Description"]);
+            result.ValidationsErrors!["Description"]);
     }
 
     [Fact]
@@ -177,7 +177,7 @@ public class CreateContractCommandHandlerTests
         // Assert
         Assert.False(result.IsSuccess);
         Assert.Equal("Failed to create contract.", result.Message);
-        Assert.Contains("Data Start Date can't be null.", result.ValidationsErrors!["Data.StartDate"]);
+        Assert.Contains("Data Start Date can't be null.", result.ValidationsErrors!["StartDate"]);
     }
 
     [Fact]
@@ -202,7 +202,7 @@ public class CreateContractCommandHandlerTests
         // Assert
         Assert.False(result.IsSuccess);
         Assert.Equal("Failed to create contract.", result.Message);
-        Assert.Contains("Data End Date can't be null.", result.ValidationsErrors!["Data.EndDate"]);
+        Assert.Contains("Data End Date can't be null.", result.ValidationsErrors!["EndDate"]);
     }
 
     [Fact]
@@ -227,7 +227,7 @@ public class CreateContractCommandHandlerTests
         // Assert
         Assert.False(result.IsSuccess);
         Assert.Equal("Failed to create contract.", result.Message);
-        Assert.Contains("Data Contract Type is required.", result.ValidationsErrors!["Data.ContractType"]);
+        Assert.Contains("Data Contract Type is required.", result.ValidationsErrors!["ContractType"]);
     }
 
     [Fact]
@@ -252,7 +252,7 @@ public class CreateContractCommandHandlerTests
         // Assert
         Assert.False(result.IsSuccess);
         Assert.Equal("Failed to create contract.", result.Message);
-        Assert.Contains("Data Contract Type can't be null.", result.ValidationsErrors!["Data.ContractType"]);
+        Assert.Contains("Data Contract Type can't be null.", result.ValidationsErrors!["ContractType"]);
     }
 
     [Fact]

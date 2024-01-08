@@ -1,4 +1,5 @@
-﻿using FluentValidation.Results;
+﻿using System.Text.RegularExpressions;
+using FluentValidation.Results;
 using HomeHive.Application.Contracts.Commands;
 using HomeHive.Application.Features.Users.Commands.ResetPasswordCommand;
 using HomeHive.Domain.Models;
@@ -18,7 +19,7 @@ public class ResetPasswordCommandHandler(UserManager<User> userManager)
         if (!validationResult.IsValid)
         {
             var errors = validationResult.Errors
-                .GroupBy(x => x.PropertyName, x => x.ErrorMessage)
+                .GroupBy(x => Regex.Replace(x.PropertyName, ".*\\.", ""), x => x.ErrorMessage)
                 .ToDictionary(group => group.Key, group => group.ToList());
             return new ResetPasswordCommandResponse
             {

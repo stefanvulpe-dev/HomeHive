@@ -56,6 +56,6 @@ public sealed class Contract : BaseEntity
 
         if (data.EndDate != null) EndDate = data.EndDate;
 
-        if (data.ContractType != null) ContractType = Enum.Parse<ContractType>(data.ContractType);
+        if (!string.IsNullOrWhiteSpace(data.ContractType)) ContractType = Enum.Parse<ContractType>(data.ContractType);
     }
 }

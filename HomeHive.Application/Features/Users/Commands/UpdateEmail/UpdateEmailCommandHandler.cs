@@ -1,4 +1,5 @@
-﻿using HomeHive.Application.Contracts.Commands;
+﻿using System.Text.RegularExpressions;
+using HomeHive.Application.Contracts.Commands;
 using HomeHive.Domain.Models;
 using Microsoft.AspNetCore.Identity;
 
@@ -14,7 +15,7 @@ public class UpdateEmailCommandHandler(UserManager<User> userManager) : ICommand
         if (!validatorResult.IsValid)
         {
             var validationErrors = validatorResult.Errors
-                .GroupBy(x => x.PropertyName, x => x.ErrorMessage)
+                .GroupBy(x => Regex.Replace(x.PropertyName, ".*\\.", ""), x => x.ErrorMessage)
                 .ToDictionary(group => group.Key, group => group.ToList());
             return new UpdateEmailCommandResponse
             {
