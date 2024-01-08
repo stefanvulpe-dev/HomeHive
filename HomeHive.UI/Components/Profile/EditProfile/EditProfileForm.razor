@@ -36,9 +36,23 @@
 
     private bool _isSuccess;
 
-    protected override void OnInitialized()
+    protected override async void OnInitialized()
     {
         User ??= new UserModel();
+        
+        var result = await UserDataService.GetUserInfo();
+        
+        if (result is { IsSuccess:true })
+        {
+            User.FirstName = result.User!.FirstName;
+            User.LastName = result.User.LastName;
+            StateHasChanged();
+        }
+        else
+        {
+            Logger.LogError(result!.Message);
+        }
+        
     }
 
     private async void HandleValidSubmit()
