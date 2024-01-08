@@ -3,7 +3,6 @@ using System.Net.Http.Json;
 using HomeHive.Application.Features.Rooms.Commands.CreateRoom;
 using HomeHive.Application.Features.Rooms.Queries.GetAllRooms;
 using HomeHive.Application.Features.Rooms.Queries.GetRoomById;
-using HomeHive.Domain.Common.EntitiesUtils.Rooms;
 using IntegrationTests.Base;
 using Newtonsoft.Json;
 
@@ -13,13 +12,16 @@ public class RoomsControllerTests: BaseApplicationContextTexts
 {
     private const string BaseUrl = "/api/v1/Rooms";
     
+    public RoomsControllerTests(): base("RoomsControllerTests")
+    {
+    }
     [Fact]
     public async Task CreateRoom_WhenCalled_ReturnsOkResult()
     {
         // Arrange
         const string roomName = "Balcony";
         
-        Client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _token);
+        Client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", Token);
         
         var response = await Client.PostAsJsonAsync(BaseUrl, roomName);
         // Act
@@ -36,7 +38,7 @@ public class RoomsControllerTests: BaseApplicationContextTexts
         // Arrange
         const string roomName = "Bedroom";
         
-        Client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _token);
+        Client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", Token);
         
         var response = await Client.PostAsJsonAsync(BaseUrl, roomName);
         // Act
@@ -48,7 +50,7 @@ public class RoomsControllerTests: BaseApplicationContextTexts
     public async Task GetAllRooms_WhenCalled_ReturnsOkResult()
     {
         // Arrange
-        Client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _token);
+        Client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", Token);
         
         var response = await Client.GetAsync(BaseUrl);
         // Act
@@ -66,7 +68,7 @@ public class RoomsControllerTests: BaseApplicationContextTexts
         // Arrange 
         const string roomName = "Balcony";
         
-        Client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _token);
+        Client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", Token);
         
         var response = await Client.PostAsJsonAsync(BaseUrl, roomName);
         response.EnsureSuccessStatusCode();

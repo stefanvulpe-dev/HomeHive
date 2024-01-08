@@ -20,11 +20,11 @@ public class Seed
 
         var estates = new List<Estate>
         {
-            Estate.Create(userId, new List<Utility>(), new EstateData("House", "ForRent", "Name1", "Location1", 20, "40m2", new List<string>{"AAA"}, new Dictionary<string, int>{{"Key1", 2}}, "Description1", "asodjaosjfoajso")).Value,
-            Estate.Create(userId, new List<Utility>(), new EstateData("House", "ForSale", "Name2", "Location2", 20, "40m2", new List<string>{"AAA"}, new Dictionary<string, int>{{"Key1", 2}}, "Description2", "asodjaosjfoajso")).Value,
-            Estate.Create(userId, new List<Utility>(), new EstateData("House", "ForRent", "Name3", "Location3", 20, "40m2", new List<string>{"AAA"}, new Dictionary<string, int>{{"Key1", 2}}, "Description3", "asodjaosjfoajso")).Value,
+            Estate.Create(userId, new List<Utility>(), new EstateData("House", "ForRent", "Name1", "Location1", 20, "40m2", new List<string>{"Water"}, new Dictionary<string, int>{{"Kitchen", 2}}, "Description1", "Image")).Value,
+            Estate.Create(userId, new List<Utility>(), new EstateData("House", "ForSale", "Name2", "Location2", 20, "40m2", new List<string>{"Water"}, new Dictionary<string, int>{{"Kitchen", 2}}, "Description2", "Image")).Value,
+            Estate.Create(userId, new List<Utility>(), new EstateData("House", "ForRent", "Name3", "Location3", 20, "40m2", new List<string>{"Water"}, new Dictionary<string, int>{{"Kitchen", 2}}, "Description3", "Image")).Value,
         };
-        
+
         var utilities = new List<Utility>()
         {
             Utility.Create("Water").Value,
@@ -47,8 +47,11 @@ public class Seed
         };
         
         context.Utilities?.AddRange(utilities);
+        context.SaveChanges();
         context.Rooms?.AddRange(rooms);
+        context.SaveChanges();
         context.Contracts?.AddRange(contracts);
+        context.SaveChanges();
         context.Estates?.AddRange(estates);
         context.SaveChanges();
     }

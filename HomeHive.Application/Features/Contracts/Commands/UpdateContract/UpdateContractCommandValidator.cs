@@ -19,7 +19,7 @@ public class UpdateContractCommandValidator : AbstractValidator<UpdateContractCo
             .Custom((contractData, context) =>
             {
                 if (contractData != null
-                    && contractData.ContractType != null
+                    && !string.IsNullOrWhiteSpace(contractData.ContractType)
                     && !Enum.IsDefined(typeof(ContractType), contractData.ContractType))
                     context.AddFailure("ContractType is not valid.");
             });
@@ -29,7 +29,7 @@ public class UpdateContractCommandValidator : AbstractValidator<UpdateContractCo
             {
                 if (contractData != null
                     && contractData.EstateId == Guid.Empty
-                    && contractData.ContractType == null
+                    && string.IsNullOrWhiteSpace(contractData.ContractType)
                     && contractData.StartDate == null
                     && contractData.EndDate == null
                     && string.IsNullOrWhiteSpace(contractData.Description))

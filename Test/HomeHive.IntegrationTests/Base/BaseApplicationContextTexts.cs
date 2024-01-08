@@ -11,13 +11,13 @@ using Newtonsoft.Json.Linq;
 
 namespace IntegrationTests.Base;
 
-public abstract class BaseApplicationContextTexts: IAsyncDisposable
+public abstract class BaseApplicationContextTexts : IAsyncDisposable
 {
     protected readonly WebApplicationFactory<Program> Application;
     protected readonly HttpClient Client;
-    protected string? _token;
+    protected string? Token;
 
-    protected BaseApplicationContextTexts()
+    protected BaseApplicationContextTexts(string databaseSuffix = "")
     {
         Application = new WebApplicationFactory<Program>();
         Application = Application.WithWebHostBuilder(builder =>
@@ -27,9 +27,9 @@ public abstract class BaseApplicationContextTexts: IAsyncDisposable
                 services.RemoveAll(typeof(DbContextOptions<HomeHiveContext>));
                 services.AddDbContext<HomeHiveContext>(options =>
                 {
-                    options.UseInMemoryDatabase("HomeHiveDbForTesting");
+                    options.UseInMemoryDatabase($"HomeHiveDbForTesting_{databaseSuffix}");
                 });
-                                        
+
                 services.Configure<JwtBearerOptions>(
                     JwtBearerDefaults.AuthenticationScheme,
                     options =>
@@ -48,6 +48,7 @@ public abstract class BaseApplicationContextTexts: IAsyncDisposable
                 {
                     var scopedServices = scope.ServiceProvider;
                     var db = scopedServices.GetRequiredService<HomeHiveContext>();
+
                     db.Database.EnsureDeleted();
                     db.Database.EnsureCreated();
 
@@ -58,16 +59,16 @@ public abstract class BaseApplicationContextTexts: IAsyncDisposable
         Client = Application.CreateClient();
         InitializeAsync().Wait();
     }
-    
-    private async Task InitializeAsync()
+
+    protected async Task InitializeAsync()
     {
         var authenticateEndpoint = "/api/v1/Authentication/login";
 
         var fakeUser = new LoginModel
         {
             //Provide valid credentials of an existing user
-            UserName = "Rare2003",
-            Password = "ParolaMea2002!"
+            UserName = "octav123",
+            Password = "!Scr00l33"
         };
 
         var loginResponse = await Client
@@ -77,13 +78,12 @@ public abstract class BaseApplicationContextTexts: IAsyncDisposable
         var stringResponse = await loginResponse.Content.ReadAsStringAsync();
         var loginResult = JObject.Parse(stringResponse);
 
-        _token = loginResult["value"]!["accessToken"]?.Value<string>()!;
+        Token = loginResult["value"]!["accessToken"]?.Value<string>()!;
     }
-    
+
     public async ValueTask DisposeAsync()
     {
         GC.SuppressFinalize(this);
         await Application.DisposeAsync();
     }
-    
 }
