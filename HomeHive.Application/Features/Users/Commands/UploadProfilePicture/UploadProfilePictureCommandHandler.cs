@@ -1,4 +1,5 @@
-﻿using HomeHive.Application.Contracts.Commands;
+﻿using System.Text.RegularExpressions;
+using HomeHive.Application.Contracts.Commands;
 using HomeHive.Application.Contracts.Interfaces;
 using HomeHive.Application.Persistence;
 
@@ -19,7 +20,7 @@ public class
         if (!validationResult.IsValid)
         {
             var validationErrors = validationResult.Errors
-                .GroupBy(x => x.PropertyName, x => x.ErrorMessage)
+                .GroupBy(x => Regex.Replace(x.PropertyName, ".*\\.", ""), x => x.ErrorMessage)
                 .ToDictionary(group => group.Key, group => group.ToList());
             return new UploadProfilePictureCommandResponse
             {

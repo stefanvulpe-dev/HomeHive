@@ -1,4 +1,5 @@
-﻿using HomeHive.Application.Contracts.Commands;
+﻿using System.Text.RegularExpressions;
+using HomeHive.Application.Contracts.Commands;
 using HomeHive.Application.Persistence;
 using HomeHive.Domain.Entities;
 
@@ -15,7 +16,7 @@ public class CreateUtilityCommandHandler(IUtilityRepository utilityRepository)
         if (!validationResult.IsValid)
         {
             var validationErrors = validationResult.Errors
-                .GroupBy(x => x.PropertyName, x => x.ErrorMessage)
+                .GroupBy(x => Regex.Replace(x.PropertyName, ".*\\.", ""), x => x.ErrorMessage)
                 .ToDictionary(group => group.Key, group => group.ToList());
 
             return new CreateUtilityCommandResponse

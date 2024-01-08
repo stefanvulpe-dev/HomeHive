@@ -1,4 +1,5 @@
-﻿using HomeHive.Application.Contracts.Commands;
+﻿using System.Text.RegularExpressions;
+using HomeHive.Application.Contracts.Commands;
 using HomeHive.Application.Persistence;
 using HomeHive.Domain.Entities;
 
@@ -17,7 +18,7 @@ public class CreateEstateCommandHandler(IEstateRepository repository, IUtilityRe
         if (!validatorResult.IsValid)
         {
             var validationErrors = validatorResult.Errors
-                .GroupBy(x => x.PropertyName, x => x.ErrorMessage)
+                .GroupBy(x => Regex.Replace(x.PropertyName, ".*\\.", ""), x => x.ErrorMessage)
                 .ToDictionary(group => group.Key, group => group.ToList());
 
             return new CreateEstateCommandResponse
@@ -29,8 +30,6 @@ public class CreateEstateCommandHandler(IEstateRepository repository, IUtilityRe
         }
 
         var result = Estate.Create(command.OwnerId, validator.Utilities!, command.EstateData);
-        var estate = result.Value;
-        await repository.AddAsync(estate);
         
         if (!result.IsSuccess)
             return new CreateEstateCommandResponse
@@ -38,6 +37,9 @@ public class CreateEstateCommandHandler(IEstateRepository repository, IUtilityRe
                 IsSuccess = false,
                 ValidationsErrors = new Dictionary<string, List<string>> { { "Estate", [result.Message] } }
             };
+        
+        var estate = result.Value;
+        await repository.AddAsync(estate);
         
         var estateRooms = new List<EstateRoom>();
         
