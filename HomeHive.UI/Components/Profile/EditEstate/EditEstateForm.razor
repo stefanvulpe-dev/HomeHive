@@ -97,6 +97,14 @@
         <div class="mt-2 mb-3 d-flex justify-content-center">
             <button type="submit" class="btn btn-primary" disabled="@_isSubmitting">Edit Estate</button>
         </div>
+        
+        @if (_isSuccess)
+        {
+            <div class="alert alert-success mt-2" role="alert">
+                Estate successfully edited!
+            </div>
+        }
+        
         <hr/>
     </div>
 </EditForm>
@@ -109,7 +117,9 @@
     private CustomValidation? _customValidation;
 
     private bool _isSubmitting;
-
+    
+    private bool _isSuccess;
+    
     protected override void OnInitialized()
     {
         EstateModel ??= new EditEstateModel
@@ -134,14 +144,14 @@
         {
             _isSubmitting = true;
             
-            var result = await EstateService.UpdateById(Guid.Parse(Estate!.Id!), EstateModel!);
+            var result = await EstateService.UpdateById(Estate!.Id, EstateModel!);
 
             if (result != null)
             {
                 if (result.IsSuccess)
                 {
                     Logger.LogInformation(result.Message);
-                    NavigationManager.NavigateTo("/listed-estates");
+                    _isSuccess = true;
                 }
                 else
                 {
@@ -158,6 +168,7 @@
         finally
         {
             _isSubmitting = false;
+            StateHasChanged();
         }
     }
 

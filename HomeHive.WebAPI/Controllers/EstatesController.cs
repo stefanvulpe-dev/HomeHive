@@ -5,8 +5,10 @@ using HomeHive.Application.Features.Estates.Commands.CreateEstate;
 using HomeHive.Application.Features.Estates.Commands.DeleteEstateById;
 using HomeHive.Application.Features.Estates.Commands.UpdateEstate;
 using HomeHive.Application.Features.Estates.Commands.UpdateEstateAvatar;
+using HomeHive.Application.Features.Estates.Commands.UpdateEstatePhotos;
 using HomeHive.Application.Features.Estates.Queries.GetAllEstates;
 using HomeHive.Application.Features.Estates.Queries.GetEstateById;
+using HomeHive.Application.Features.Estates.Queries.GetEstatePhotos;
 using HomeHive.Domain.Common.EntitiesUtils.Estates;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -78,13 +80,13 @@ public class EstatesController(
     }
     
     [Authorize(Roles = "User, Admin")]
-    [HttpPut("{estateId}/Avatar", Name = "UpdateAvatar")]
+    [HttpPut("{estateId}/Avatar")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<IActionResult> UpdateAvatar([FromRoute] Guid estateId, [FromForm] IFormFile estateAvatar)
     {
         var isTokenRevoked = await tokenCacheService.IsTokenRevokedAsync();
         if (isTokenRevoked) return Unauthorized(new { message = "Token is revoked" });
-
+  
         var result = await Mediator.Send(new UpdateEstateAvatarCommand(estateId, estateAvatar));
         if (!result.IsSuccess)
         {
@@ -97,6 +99,26 @@ public class EstatesController(
         return Ok(result);
     }
 
+    [Authorize(Roles = "User, Admin")]
+    [HttpPut("{estateId}/Photos")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    public async Task<IActionResult> UpdatePhotos([FromRoute] Guid estateId, [FromForm] List<IFormFile> estatePhotos)
+    {
+        var isTokenRevoked = await tokenCacheService.IsTokenRevokedAsync();
+        if (isTokenRevoked) return Unauthorized(new { message = "Token is revoked" });
+  
+        var result = await Mediator.Send(new UpdateEstatePhotosCommand(estateId, estatePhotos));
+        if (!result.IsSuccess)
+        {
+            if (result.ValidationsErrors != null)
+                foreach (var (field, error) in result.ValidationsErrors)
+                    logger.LogError($"Field: {field}, Message: {error}");
+            return BadRequest(result);
+        }
+
+        return Ok(result);
+    }
+    
     [Authorize(Roles = "User, Admin")]
     [HttpDelete("{estateId}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
@@ -161,4 +183,28 @@ public class EstatesController(
 
         return Ok(result);
     }
+    
+    [Authorize(Roles = "User, Admin")]
+    [HttpGet("{estateId}/Photos")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> GetPhotos([FromRoute] Guid estateId)
+    {
+        var isTokenRevoked = await tokenCacheService.IsTokenRevokedAsync();
+        if (isTokenRevoked) return Unauthorized(new { message = "Token is revoked" });
+
+        var result = await Mediator.Send(new GetEstatePhotosQuery(estateId));
+
+        if (!result.IsSuccess)
+        {
+            if (result.ValidationsErrors != null)
+                foreach (var (field, error) in result.ValidationsErrors)
+                    logger.LogError($"Field: {field}, Message: {error}");
+
+            return BadRequest(result);
+        }
+
+        return Ok(result);
+    }
+    
 }

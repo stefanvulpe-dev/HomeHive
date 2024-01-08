@@ -2,7 +2,7 @@
 
 public class EstateViewModel
 {
-    public string? Id { get; set; }
+    public Guid? Id { get; set; }
     
     public string? OwnerId { get; set; }
     
@@ -25,4 +25,6 @@ public class EstateViewModel
     public string? Description { get; set; }
 
     public string? EstateAvatar { get; set; }
+    
+    public List<string>? EstatePhotos { get; set; }
 }

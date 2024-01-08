@@ -4,7 +4,7 @@ using HomeHive.Application.Persistence;
 
 namespace HomeHive.Application.Features.Estates.Commands.UpdateEstateAvatar;
 
-public class UpdateEstateAvatarcommandHandler(
+public class UpdateEstateAvatarCommandHandler(
     IEstateRepository estateRepository,
     IBlobStorageService blobStorageService)
     : ICommandHandler<UpdateEstateAvatarCommand, UpdateEstateAvatarCommandResponse>
@@ -79,7 +79,6 @@ public class UpdateEstateAvatarcommandHandler(
         return new UpdateEstateAvatarCommandResponse
         {
             IsSuccess = true,
-            EstateAvatar = imgSrc,
             Message = $"Estate avatar {request.EstateAvatar.FileName} updated successfully."
         };
     }

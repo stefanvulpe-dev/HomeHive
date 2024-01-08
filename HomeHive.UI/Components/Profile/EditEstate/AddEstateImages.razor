@@ -1,0 +1,15 @@
+﻿@if (EstatePhotos?.Count == 0)
+{
+    <p>There are no images for this estate.</p>
+}
+else
+{
+    <Carousel EstatePhotos="@EstatePhotos" />
+}
+
+<AddEstateImagesForm EstateId="@EstateId" />
+
+@code {
+    [Parameter] public List<string>? EstatePhotos { get; set; }
+    [Parameter] public Guid? EstateId { get; set; }
+}

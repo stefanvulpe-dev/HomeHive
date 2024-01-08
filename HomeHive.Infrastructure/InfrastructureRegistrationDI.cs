@@ -30,7 +30,7 @@ public static class InfrastructureRegistrationDI
         services.AddScoped<IEstateRepository, EstateRepository>();
         services.AddScoped<IUtilityRepository, UtilityRepository>();
         services.AddScoped<IRoomRepository, RoomRepository>();
-        services.AddScoped<IEstatePhotoRepository, EstatePhotoRepository>();
+        services.AddScoped<IEstatePhotosRepository, EstatePhotosRepository>();
         services.AddScoped<IEstateRoomRepository, EstateRoomRepository>();
         services.AddSingleton(x => new BlobServiceClient(configuration["AzureBlobStorage:ConnectionString"]));
         services.Configure<BlobStorageOptions>(configuration.GetSection("AzureBlobStorage"));
