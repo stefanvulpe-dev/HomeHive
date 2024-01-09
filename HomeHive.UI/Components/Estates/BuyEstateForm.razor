@@ -1,19 +1,42 @@
+@using HomeHive.UI.ViewModels.Estates
+@inject ILogger<BuyEstateForm> Logger
+
 <div class="card m-3">
     <div class="row card-body justify-content-center text-center">
-        <h3 class="fw-bold mb-4">Buy your dream <span class="fst-italic">nest</span> now.</h3>
+        <h3 class="fw-bold mb-4">Buy / rent your dream <span class="fst-italic">nest</span> now.</h3>
         <div class="col-6 justify-content-center">
-            <EditForm Model="@buyModel" OnValidSubmit="@HandleValidSubmit" FormName="buyForm">
+            <EditForm Model="@_buyModel" OnValidSubmit="@HandleValidSubmit" FormName="buyForm">
                 <DataAnnotationsValidator/>
             
-                <div class="form-outline mb-2">
-                    <label class="form-label" for="buy-description">Tell something to the owner</label>
-                    <InputTextArea id="buy-description" class="form-control" @bind-Value="@buyModel.Description"/>
+                <div class="d-flex flex-row flex-wrap justify-content-start form-outline mb-3">
+                    <label class="form-label" for="contract-type">Contract Type</label>
+                    <InputSelect TValue="string" class="form-select" id="contract-type" @bind-Value="@_buyModel.ContractType">
+                        <option value="Rent" selected="">Rent</option>
+                        <option value="Sale">Sale</option>
+                    </InputSelect>
                 </div>
-            
-                <div class="form-outline mb-2">
-                    <label class="form-label" for="buy-price">Your Price</label>
-                    @* min should be starting price *@
-                    <InputNumber min="0" id="buy-price" class="form-control" @bind-Value="@buyModel.Price"/>
+                
+                <div class="d-flex flex-row flex-wrap justify-content-start form-outline mb-3">
+                    <label class="form-label" for="buy-price">Your Price <strong>$</strong></label>
+                    <InputNumber min="0" id="buy-price" class="form-control" @bind-Value="@_buyModel.Price"/>
+                </div>
+                
+                <div class="d-flex flex-row flex-wrap justify-content-start form-outline mb-3">
+                    <label class="form-label" for="buy-price">Start date</label>
+                    <InputDate min="@DateTime.Today.ToString("yyyy-MM-dd")" id="start-date" class="form-control" @bind-Value="@_buyModel.StartDate"/>
+                </div>
+                
+                @if (_buyModel.ContractType == "Rent")
+                {
+                    <div class="d-flex flex-row flex-wrap justify-content-start form-outline mb-3">
+                        <label class="form-label" for="buy-price">End date</label>
+                        <InputDate min="@DateTime.Today.ToString("yyyy-MM-dd")" id="end-date" class="form-control" @bind-Value="@_buyModel.EndDate"/>
+                    </div>
+                }
+
+                <div class="d-flex flex-row flex-wrap justify-content-start form-outline mb-3">
+                    <label class="form-label" for="buy-description">Tell something to the owner</label>
+                    <InputTextArea id="buy-description" class="form-control" @bind-Value="@_buyModel.Description"/>
                 </div>
             
             <div class="d-flex justify-content-center my-4">
@@ -28,16 +51,16 @@
 
 
 @code {
-    public class BuyModel
+    private EstateBuyModel _buyModel = new()
     {
-        public string Description { get; set; }
-        public decimal Price { get; set; }
-    }
-
-    BuyModel buyModel = new BuyModel();
-
+        ContractType = "Rent"
+    };
+    
+    private string? _contractType = "Rent";
+    
     private void HandleValidSubmit()
     {
-        // Handle form submission here
+        
     }
+
 }
