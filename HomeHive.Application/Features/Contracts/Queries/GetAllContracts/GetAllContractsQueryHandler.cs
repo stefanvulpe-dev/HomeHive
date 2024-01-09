@@ -21,9 +21,12 @@ public class GetAllContractsQueryHandler(IContractRepository repository)
         IReadOnlyList<ContractDto> contracts = contractsResult.Value.Select(contract =>
             new ContractDto
             {
+                Id = contract.Id,
                 UserId = contract.UserId,
                 EstateId = contract.EstateId,
-                ContractType = contract.ContractType!.GetType().Name,
+                ContractType = contract.ContractType.ToString(),
+                Status = contract.Status.ToString(),
+                Price = contract.Price,
                 StartDate = contract.StartDate,
                 EndDate = contract.EndDate,
                 Description = contract.Description

@@ -17,10 +17,11 @@ public sealed class Contract : BaseEntity
     public DateTime? EndDate { get; private set; }
     public string? Description { get; private set; }
     public ContractStatus? Status { get; private set; }
+    public decimal? Price { get; private set; }
 
     public static Result<Contract> Create(Guid userId, ContractData contractData)
     {
-        var (estateId, contractType, startDate, endDate, description) = contractData;
+        var (estateId, contractType, contractStatus, price, startDate, endDate, description) = contractData;
 
         if (estateId == Guid.Empty) return Result<Contract>.Failure("EstateId is required.");
 
@@ -29,22 +30,27 @@ public sealed class Contract : BaseEntity
         if (string.IsNullOrWhiteSpace(contractType) || !Enum.TryParse(contractType, out ContractType typeEnum))
             return Result<Contract>.Failure("Type is not valid.");
 
+        if (string.IsNullOrWhiteSpace(contractStatus) ||
+            !Enum.TryParse(contractStatus, out ContractStatus statusEnum))
+            return Result<Contract>.Failure("Status is not valid.");
+        
         if (startDate == default) return Result<Contract>.Failure("Start date should not be default!");
-
-        if (endDate == default) return Result<Contract>.Failure("End date should not be default!");
-
+        
         if (string.IsNullOrWhiteSpace(description)) return Result<Contract>.Failure("Description is not valid!");
-
+        
+        if (price == default) return Result<Contract>.Failure("Price should not be default!");
+        
         return Result<Contract>.Success(new Contract
         {
             Estate = null,
             UserId = userId,
             EstateId = estateId,
             ContractType = Enum.Parse<ContractType>(contractType),
+            Status = Enum.Parse<ContractStatus>(contractStatus),
+            Price = price,
             StartDate = startDate,
             EndDate = endDate,
-            Description = description,
-            Status = ContractStatus.Pending
+            Description = description
         });
     }
 
@@ -58,11 +64,10 @@ public sealed class Contract : BaseEntity
 
         if (data.EndDate != null) EndDate = data.EndDate;
 
+        if (data.Price != null) Price = data.Price;
+        
         if (data.ContractType != null) ContractType = Enum.Parse<ContractType>(data.ContractType);
-    }
-    
-    public void UpdateStatus(ContractStatus status)
-    {
-        Status = status;
+        
+        if (data.Status != null) Status = Enum.Parse<ContractStatus>(data.Status);
     }
 }

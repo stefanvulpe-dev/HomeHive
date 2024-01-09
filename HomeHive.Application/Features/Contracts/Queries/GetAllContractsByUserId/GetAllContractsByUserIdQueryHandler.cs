@@ -20,10 +20,13 @@ public class GetAllContractsByUserIdQueryHandler(IContractRepository repository)
         return new GetAllContractsByUserIdResponse
         {
             IsSuccess = true,
-            Contracts = result.Value.Select(c => new UserContractDto
+            Contracts = result.Value.Select(c => new ContractDto
             {
+                Id = c.Id,
                 EstateId = c.EstateId,
-                ContractType = c.ContractType!.Value.ToString(),
+                ContractType = c.ContractType.ToString(),
+                Status = c.Status.ToString(),
+                Price = c.Price,
                 StartDate = c.StartDate,
                 EndDate = c.EndDate,
                 Description = c.Description
