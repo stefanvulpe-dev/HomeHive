@@ -21,11 +21,16 @@ public class CreateContractCommandValidator : AbstractValidator<CreateContractCo
             .MaximumLength(200).WithMessage("{PropertyName} must not exceed 200 characters.");
         RuleFor(p => p.Data.StartDate)
             .NotNull().WithMessage("{PropertyName} can't be null.");
-        RuleFor(p => p.Data.EndDate)
-            .NotNull().WithMessage("{PropertyName} can't be null.");
         RuleFor(p => p.Data.ContractType)
             .NotEmpty().WithMessage("{PropertyName} is required.")
             .NotNull().WithMessage("{PropertyName} can't be null.");
+        RuleFor(p => p.Data.Status)
+            .NotEmpty().WithMessage("{PropertyName} is required.")
+            .NotNull().WithMessage("{PropertyName} can't be null.");
+        RuleFor(p => p.Data.Price)
+            .NotEmpty().WithMessage("{PropertyName} is required.")
+            .NotNull().WithMessage("{PropertyName} can't be null.")
+            .GreaterThan(0).WithMessage("{PropertyName} must be greater than 0.");
     }
 
     private async Task<bool> ValidateEstateExistence(Guid estateId, CancellationToken cancellationToken)

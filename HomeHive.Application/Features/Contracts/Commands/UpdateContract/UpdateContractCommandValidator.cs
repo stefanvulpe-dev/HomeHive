@@ -30,8 +30,10 @@ public class UpdateContractCommandValidator : AbstractValidator<UpdateContractCo
                 if (contractData != null
                     && contractData.EstateId == Guid.Empty
                     && contractData.ContractType == null
+                    && contractData.Status == null
                     && contractData.StartDate == null
                     && contractData.EndDate == null
+                    && contractData.Price == null
                     && string.IsNullOrWhiteSpace(contractData.Description))
                     context.AddFailure("At least one property of ContractData must be filled.");
             });

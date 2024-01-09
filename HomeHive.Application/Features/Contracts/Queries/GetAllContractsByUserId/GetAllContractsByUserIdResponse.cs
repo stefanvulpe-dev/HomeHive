@@ -4,5 +4,5 @@ namespace HomeHive.Application.Features.Contracts.Queries.GetAllContractsByUserI
 
 public class GetAllContractsByUserIdResponse : BaseResponse
 {
-    public IReadOnlyList<UserContractDto>? Contracts { get; set; }
+    public IReadOnlyList<ContractDto>? Contracts { get; set; }
 }

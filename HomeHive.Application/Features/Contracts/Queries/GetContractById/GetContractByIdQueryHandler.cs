@@ -22,9 +22,12 @@ public class GetContractByIdQueryHandler(IContractRepository repository)
             IsSuccess = true,
             Contract = new ContractDto
             {
+                Id = contractResult.Value.Id,
                 UserId = contractResult.Value.UserId,
                 EstateId = contractResult.Value.EstateId,
-                ContractType = contractResult.Value.ContractType!.GetType().Name,
+                ContractType = contractResult.Value.ContractType.ToString(),
+                Status = contractResult.Value.Status.ToString(),
+                Price = contractResult.Value.Price,
                 StartDate = contractResult.Value.StartDate,
                 EndDate = contractResult.Value.EndDate,
                 Description = contractResult.Value.Description

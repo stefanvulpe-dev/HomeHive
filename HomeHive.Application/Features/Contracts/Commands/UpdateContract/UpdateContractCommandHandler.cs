@@ -1,5 +1,6 @@
 using HomeHive.Application.Contracts.Commands;
 using HomeHive.Application.Features.Contracts.Commands.CreateContract;
+using HomeHive.Application.Features.Contracts.Queries;
 using HomeHive.Application.Persistence;
 
 namespace HomeHive.Application.Features.Contracts.Commands.UpdateContract;
@@ -42,11 +43,14 @@ public class UpdateContractCommandHandler(IContractRepository contractRepository
         return new UpdateContractCommandResponse
         {
             IsSuccess = true,
-            Contract = new CreateContractDto
+            Contract = new ContractDto
             {
+                Id = newContract.Id,
                 EstateId = newContract.EstateId,
                 UserId = newContract.UserId,
-                ContractType = newContract.ContractType,
+                ContractType = newContract.ContractType.ToString(),
+                Status = newContract.Status.ToString(),
+                Price = newContract.Price,
                 StartDate = newContract.StartDate,
                 EndDate = newContract.EndDate,
                 Description = newContract.Description
