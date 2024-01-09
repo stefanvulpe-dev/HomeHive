@@ -60,6 +60,11 @@ public class HomeHiveContext(
                 v => v.ToString(),
                 v => (ContractType)Enum.Parse(typeof(ContractType), v!));
         
+        modelBuilder.Entity<Contract>().Property(r => r.Status)
+            .HasConversion(
+                v => v.ToString(),
+                v => (ContractStatus)Enum.Parse(typeof(ContractStatus), v!));
+        
         modelBuilder.Entity<Room>().Property(r => r.RoomType)
             .HasConversion(
                 v => v.ToString(),
