@@ -1,55 +1,76 @@
-@page "/viewEstate"
+@page "/ViewEstate/{EstateId:guid}"
+@using HomeHive.UI.ViewModels.Estates
+@using HomeHive.UI.Interfaces
 @using HomeHive.UI.Components.General
 @using HomeHive.UI.Components.Estates
+@inject IEstateDataService EstateDataService
+@inject ILogger<ViewEstate> Logger
+
 <PageTitle>EstateName</PageTitle>
 
 <Navbar></Navbar>
-<section class="min-vh-100 p-0 d-flex flex-column align-items-center ">
-    <div class="row mt-4 justify-content-center gx-0">
-        <div class="col-xl-4">
-            <div class="row justify-content-center align-items-center text-center m-3">
-                <div class="row mb-2">
-                    <h5 class="fw-bold fs-1">Estate Name</h5>
-                    <small>Posted by <span class="fw-bold">Jane Doe</span></small> 
-                    <span>For Rent</span>
-                </div>
-                    
-                <div class="card mt-3">
-                    <div class="card-body justify-content-center">
-                        <EstateGeneralInfo></EstateGeneralInfo>
-                        <hr/>
-                        <Utilities></Utilities>
-                        <Rooms></Rooms>
+
+@if (_isLoading)
+{
+    <div class="min-vh-100 d-flex justify-content-center align-items-center">
+        <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+    </div>
+}
+else
+{
+    <section class="min-vh-100 p-0 d-flex flex-column align-items-center ">
+        <div class="row mt-4 justify-content-center gx-0">
+            <div class="col-xl-4">
+                <div class="row justify-content-center align-items-center text-center m-3">
+                    <div class="row mb-2">
+                        <h5 class="fw-bold fs-1">Estate Name</h5>
+                        <small>Posted by <span class="fw-bold">Jane Doe</span></small>
+                        <span>For Rent</span>
+                    </div>
+
+                    <div class="card mt-3">
+                        <div class="card-body justify-content-center">
+                            <EstateGeneralInfo></EstateGeneralInfo>
+                            <hr/>
+                            <Utilities></Utilities>
+                            <Rooms></Rooms>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-        <div class="col-xl-8 mx-3 mx-lg-0">
-            <ViewEstateCarousel></ViewEstateCarousel>
-        </div>
-        
-        <div class="row justify-content-center align-items-center gx-0 mt-4">
-            <div class="col-xl-7">
-                <BuyEstateForm></BuyEstateForm>
+            <div class="col-xl-8 mx-3 mx-lg-0">
+                <ViewEstateCarousel></ViewEstateCarousel>
             </div>
-            <div class="col-xl-5">
-                <div class="card row justify-content-center align-items-center text-center m-3">
-                    <div class="card-body">
-                        <p class="card-text">"Lorem ipsum dolor sit amet, consectetur adipiscing elit,
-                            sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
-                            quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor
-                            in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.</p>
-                        <hr/>
-                        <small>Need more info? Contact now the owner.</small>
-                        <div class="d-flex justify-content-center">
-                            <NavLink href="mailto:" class="btn btn-primary">Contact</NavLink>
+
+            <div class="row justify-content-center align-items-center gx-0 mt-4">
+                <div class="col-xl-7">
+                    <BuyEstateForm Estate="@EstateViewModel"></BuyEstateForm>
+                </div>
+                <div class="col-xl-5">
+                    <div class="card row justify-content-center align-items-center text-center m-3">
+                        <div class="card-body">
+                            <p class="card-text">
+                                "Lorem ipsum dolor sit amet, consectetur adipiscing elit,
+                                sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
+                                quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor
+                                in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.
+                            </p>
+                            <hr/>
+                            <small>Need more info? Contact now the owner.</small>
+                            <div class="d-flex justify-content-center">
+                                <NavLink href="mailto:" class="btn btn-primary">Contact</NavLink>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
-</section>
+    </section>
+}
+
+
 @* <section class="about-one min-vh-100 p-0 d-flex flex-column align-items-center "> *@
 @*     <div class="row justify-content-center align-items-center text-center mt-5"> *@
 @*         <h5 class="fw-bold fs-1">Estate Name</h5> *@
@@ -90,3 +111,34 @@
 @*     </div> *@
 @* </section> *@
 <Footer></Footer>
+
+@code {
+    [Parameter] public Guid EstateId { get; set; }
+
+    private EstateViewModel? EstateViewModel { get; set; }
+
+    private bool _isLoading;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+        _isLoading = true;
+        var result = await EstateDataService.GetById(EstateId);
+
+        if (result is { IsSuccess: true })
+        {
+            EstateViewModel = new EstateViewModel
+            {
+                Id = result.Estate!.Id,
+                OwnerId = result.Estate.OwnerId
+            };
+        }
+        else
+        {
+            Logger.LogError("Error while getting estate by id");
+        }
+
+        _isLoading = false;
+    }
+
+}

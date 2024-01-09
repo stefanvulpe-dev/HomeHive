@@ -54,7 +54,7 @@
                 Estates = result.Estates.Select(e => new EstateViewModel
                 {
                     Id = e.Id,
-                    OwnerId = e.OwnerId.ToString(),
+                    OwnerId = e.OwnerId,
                     EstateCategory = e.EstateCategory,
                     EstateType = e.EstateType,
                     Name = e.Name,

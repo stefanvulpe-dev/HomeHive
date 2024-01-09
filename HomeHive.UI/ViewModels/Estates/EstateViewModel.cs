@@ -4,7 +4,7 @@ public class EstateViewModel
 {
     public Guid? Id { get; set; }
     
-    public string? OwnerId { get; set; }
+    public Guid? OwnerId { get; set; }
     
     public string? EstateType { get; set; }
 

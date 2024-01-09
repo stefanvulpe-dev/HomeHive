@@ -14,7 +14,7 @@ using TLoginResponse = Dictionary<string, string>;
 public class AuthService(IHttpClientFactory httpClientFactory, ILocalStorageService localStorageService) : IAuthService
 {
     private readonly HttpClient _httpClient = httpClientFactory.CreateClient("HomeHive.API");
-
+    
     public async Task<ApiResponse?> Register(RegistrationModel registrationModel)
     {
         var result = await _httpClient.PostAsJsonAsync("api/v1/Authentication/register", registrationModel);
@@ -111,14 +111,21 @@ public class AuthService(IHttpClientFactory httpClientFactory, ILocalStorageServ
 
         var claimsIdentity = new ClaimsIdentity(new List<Claim>
         {
-            new(ClaimTypes.NameIdentifier, userId!),
-            new(ClaimTypes.Name, userName!),
-            new(JwtRegisteredClaimNames.Jti, tokenId!)
+            new(ClaimTypes.NameIdentifier, userId),
+            new(ClaimTypes.Name, userName),
+            new(JwtRegisteredClaimNames.Jti, tokenId)
         }, "Bearer");
 
         claimsIdentity.AddClaims(userRoles.Select(role => new Claim(ClaimTypes.Role, role)));
 
         return new ClaimsPrincipal(claimsIdentity);
+    }
+    
+    public async Task<Guid> GetUserId()
+    {
+        var claims = ParseClaimsFromJwt(await GetAccessTokenFromBrowserStorage());
+        var userId = claims?.FirstOrDefault(x => x.Type.Equals("nameid"))?.Value;
+        return Guid.Parse(userId ?? Guid.Empty.ToString());
     }
 }
 

@@ -28,7 +28,7 @@
             </div>
             <div class="mt-2 d-flex justify-content-center gap-1">
                 <button class="btn btn-primary" @onclick="EditEstate">Edit estate</button>
-                <NavLink href="viewEstate" class="btn btn-primary">View estate</NavLink>
+                <NavLink href="@_estateUrl" class="btn btn-primary">View estate</NavLink>
             </div>
         </div>
     </div>
@@ -38,6 +38,14 @@
 @code {
     [Parameter] public EstateViewModel? Estate { get; set; }
     
+    private string? _estateUrl;
+
+    protected override void OnParametersSet()
+    {
+        base.OnParametersSet();
+        _estateUrl = $"ViewEstate/{Estate!.Id}";
+    }
+
     private void EditEstate()
     {
         NavigationManager.NavigateTo($"/edit-estate/{Estate!.Id}");

@@ -1,49 +1,74 @@
 @using HomeHive.UI.ViewModels.Estates
+@using HomeHive.UI.Utils
+@using HomeHive.UI.Interfaces
 @inject ILogger<BuyEstateForm> Logger
+@inject IContractDataService ContractDataService
+@inject IAuthService AuthService
 
 <div class="card m-3">
     <div class="row card-body justify-content-center text-center">
-        <h3 class="fw-bold mb-4">Buy / rent your dream <span class="fst-italic">nest</span> now.</h3>
+        <h3 class="fw-bold mb-4">Buy/Rent your dream <span class="fst-italic">nest</span> now.</h3>
         <div class="col-6 justify-content-center">
-            <EditForm Model="@_buyModel" OnValidSubmit="@HandleValidSubmit" FormName="buyForm">
+            <EditForm Model="@BuyModel" OnValidSubmit="@HandleValidSubmit" FormName="buyForm">
                 <DataAnnotationsValidator/>
-            
+                <CustomValidation @ref="@_customValidation"/>
+
                 <div class="d-flex flex-row flex-wrap justify-content-start form-outline mb-3">
                     <label class="form-label" for="contract-type">Contract Type</label>
-                    <InputSelect TValue="string" class="form-select" id="contract-type" @bind-Value="@_buyModel.ContractType">
+                    <InputSelect TValue="string" class="form-select" id="contract-type" @bind-Value="@BuyModel!.ContractType">
                         <option value="Rent" selected="">Rent</option>
                         <option value="Sale">Sale</option>
                     </InputSelect>
+                    <ValidationMessage For="@(() => BuyModel.ContractType)" />
                 </div>
-                
+
                 <div class="d-flex flex-row flex-wrap justify-content-start form-outline mb-3">
                     <label class="form-label" for="buy-price">Your Price <strong>$</strong></label>
-                    <InputNumber min="0" id="buy-price" class="form-control" @bind-Value="@_buyModel.Price"/>
+                    <InputNumber min="0" id="buy-price" class="form-control" @bind-Value="@BuyModel.Price"/>
+                    <ValidationMessage For="@(() => BuyModel.Price)" />
                 </div>
-                
+
                 <div class="d-flex flex-row flex-wrap justify-content-start form-outline mb-3">
                     <label class="form-label" for="buy-price">Start date</label>
-                    <InputDate min="@DateTime.Today.ToString("yyyy-MM-dd")" id="start-date" class="form-control" @bind-Value="@_buyModel.StartDate"/>
+                    <InputDate min="@DateTime.Today.ToString("yyyy-MM-dd")" id="start-date" class="form-control" @bind-Value="@BuyModel.StartDate"/>
+                    <ValidationMessage For="@(() => BuyModel.StartDate)" />
                 </div>
-                
-                @if (_buyModel.ContractType == "Rent")
+
+                @if (BuyModel.ContractType == "Rent")
                 {
                     <div class="d-flex flex-row flex-wrap justify-content-start form-outline mb-3">
                         <label class="form-label" for="buy-price">End date</label>
-                        <InputDate min="@DateTime.Today.ToString("yyyy-MM-dd")" id="end-date" class="form-control" @bind-Value="@_buyModel.EndDate"/>
+                        <InputDate min="@DateTime.Today.ToString("yyyy-MM-dd")" id="end-date" class="form-control" @bind-Value="@BuyModel.EndDate"/>
+                        <ValidationMessage For="@(() => BuyModel.EndDate)" />
                     </div>
                 }
 
                 <div class="d-flex flex-row flex-wrap justify-content-start form-outline mb-3">
                     <label class="form-label" for="buy-description">Tell something to the owner</label>
-                    <InputTextArea id="buy-description" class="form-control" @bind-Value="@_buyModel.Description"/>
+                    <InputTextArea id="buy-description" class="form-control" @bind-Value="@BuyModel.Description"/>
+                    <ValidationMessage For="@(() => BuyModel.Description)" />
                 </div>
-            
-            <div class="d-flex justify-content-center my-4">
-                <button type="submit" class="btn btn-primary btn-lg">
-                    Make Offer
-                </button>
-            </div>
+
+                @if (_owner)
+                {
+                    <div class="alert alert-danger">
+                        <strong>Warning!</strong> You are the owner of this estate.
+                    </div>
+                }
+                else
+                {
+                    <div class="d-flex justify-content-center my-4">
+                        <button type="submit" class="btn btn-primary btn-lg" disabled="@_isSubmitting">
+                            Make Offer
+                        </button>
+                    </div>
+                    @if (_success)
+                    {
+                        <div class="alert alert-success">
+                            <strong>Success!</strong> Your offer has been submitted.
+                        </div>
+                    }
+                }
             </EditForm>
         </div>
     </div>
@@ -51,16 +76,73 @@
 
 
 @code {
-    private EstateBuyModel _buyModel = new()
-    {
-        ContractType = "Rent"
-    };
-    
+    [Parameter] public Guid EstateId { get; set; }
+
+    [Parameter] public EstateViewModel? Estate { get; set; }
+
+    [SupplyParameterFromForm] private EstateBuyModel? BuyModel { get; set; }
+
+    private CustomValidation? _customValidation;
+
     private string? _contractType = "Rent";
+
+    private bool _owner;
+
+    private bool _isSubmitting;
     
-    private void HandleValidSubmit()
+    private bool _success;
+
+    protected override async Task OnInitializedAsync()
     {
-        
+        await base.OnInitializedAsync();
+        BuyModel ??= new EstateBuyModel
+        {
+            EstateId = EstateId,
+            ContractType = _contractType
+        };
+        var userId = await AuthService.GetUserId();
+        _owner = userId == Estate?.OwnerId;
+    }
+
+    private async void HandleValidSubmit()
+    {
+        _customValidation?.ClearErrors();
+        try
+        {
+            _isSubmitting = true;
+
+            if (BuyModel?.ContractType == "Sale")
+            {
+                BuyModel.EndDate = BuyModel.StartDate;
+            }
+
+            var result = await ContractDataService.Add(BuyModel!);
+
+            if (result is { IsSuccess: true })
+            {
+                Logger.LogInformation("Buy form submitted successfully");
+                _success = true;
+                StateHasChanged();
+            }
+            else
+            {
+                Logger.LogError($"Error while submitting buy form: {result!.Message}");
+                if (result.ValidationsErrors is not null)
+                {
+                    _customValidation?.DisplayErrors(result.ValidationsErrors);
+                }
+                _success = false;
+            }
+        }
+        catch (Exception e)
+        {
+            Logger.LogError(e, "Error while submitting buy form");
+        }
+        finally
+        {
+            _isSubmitting = false;
+            StateHasChanged();
+        }
     }
 
 }

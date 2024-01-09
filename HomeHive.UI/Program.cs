@@ -19,6 +19,7 @@ builder.Services.AddScoped<AuthenticationStateProvider>(
     s => s.GetRequiredService<HomeHiveAuthStateProvider>());
 builder.Services.AddScoped<IEstateDataService, EstatesDataService>();
 builder.Services.AddScoped<IUserDataService, UserDataService>();
+builder.Services.AddScoped<IContractDataService, ContractDataService>();
 builder.Services.AddHttpClient("HomeHive.API",
         client =>
         {
