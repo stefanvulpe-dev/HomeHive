@@ -16,6 +16,7 @@ public sealed class Contract : BaseEntity
     public DateTime? StartDate { get; private set; }
     public DateTime? EndDate { get; private set; }
     public string? Description { get; private set; }
+    public ContractStatus? Status { get; private set; }
 
     public static Result<Contract> Create(Guid userId, ContractData contractData)
     {
@@ -42,7 +43,8 @@ public sealed class Contract : BaseEntity
             ContractType = Enum.Parse<ContractType>(contractType),
             StartDate = startDate,
             EndDate = endDate,
-            Description = description
+            Description = description,
+            Status = ContractStatus.Pending
         });
     }
 
@@ -57,5 +59,10 @@ public sealed class Contract : BaseEntity
         if (data.EndDate != null) EndDate = data.EndDate;
 
         if (data.ContractType != null) ContractType = Enum.Parse<ContractType>(data.ContractType);
+    }
+    
+    public void UpdateStatus(ContractStatus status)
+    {
+        Status = status;
     }
 }
