@@ -4,6 +4,7 @@ public record EstateDto
 {
     public Guid Id { get; init; }
     public Guid OwnerId { get; init; }
+    public string? OwnerName { get; init; }
     public string? EstateType { get; init; }
     public string? EstateCategory { get; init; }
     public string? Name { get; init; }

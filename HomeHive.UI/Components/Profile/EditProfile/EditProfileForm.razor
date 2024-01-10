@@ -44,8 +44,8 @@
         
         if (result is { IsSuccess:true })
         {
-            User.FirstName = result.User!.FirstName;
-            User.LastName = result.User.LastName;
+            User.FirstName = result.User?.FirstName;
+            User.LastName = result.User?.LastName;
             StateHasChanged();
         }
         else

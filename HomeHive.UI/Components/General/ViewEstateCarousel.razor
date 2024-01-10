@@ -1,6 +1,13 @@
 @inject IJSRuntime JsRuntime
 
-<div class="">
+@if (EstatePhotos?.Count == 0)
+{
+    <div class="alert alert-warning" role="alert">
+        No photos available
+    </div>
+}
+else
+{
     <div id="@CarouselName" class="carousel slide" data-bs-ride="carousel" data-bs-wrap="true" data-bs-interval="20000" data-bs-pause="false">
         <div class="carousel-indicators">
             <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
@@ -8,15 +15,12 @@
             <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="2" aria-label="Slide 3"></button>
         </div>
         <div class="carousel-inner">
-            <div class="carousel-item active">
-                <img src="https://picsum.photos/id/196/1920/1080" class="d-block w-100 rounded" alt="..." height="600px">
-            </div>
-            <div class="carousel-item">
-                <img src="https://picsum.photos/id/1057/1920/1080" class="d-block w-100 rounded" alt="..." height="600px">
-            </div>
-            <div class="carousel-item">
-                <img src="https://picsum.photos/id/1067/1920/1080" class="d-block w-100 rounded" alt="..." height="600px">
-            </div>
+            @foreach(var item in _carouselItems)
+            {
+                <div class="carousel-item @(item == _carouselItems[0] ? "active" : "")">
+                    <img src="@item" class="d-block w-100 rounded" alt="estate-image" height="600px">
+                </div>
+            }
         </div>
         <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
             <span class="carousel-control-prev-icon" aria-hidden="true"></span>
@@ -27,10 +31,13 @@
             <span class="visually-hidden">Next</span>
         </button>
     </div> 
-</div>
-
+}
 
 @code {
+    
+    [Parameter] public IReadOnlyList<byte[]>? EstatePhotos { get; set; }
+
+    private readonly List<string> _carouselItems = new();
     
 	const string CarouselName = "carouselExampleIndicators"; 
 
@@ -39,4 +46,16 @@
 		object[] args = { CarouselName };
 		await JsRuntime.InvokeVoidAsync("startCarousel", args); 
 	}
+
+    protected override async Task OnInitializedAsync()
+    {
+        foreach (var bytePhoto in EstatePhotos!)
+        {
+            var base64 = Convert.ToBase64String(bytePhoto);
+            var imgSrc = $"data:image/gif;base64,{base64}";
+            _carouselItems.Add(imgSrc);
+        }
+        await base.OnInitializedAsync();
+    }
+
 }

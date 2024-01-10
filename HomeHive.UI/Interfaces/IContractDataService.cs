@@ -5,5 +5,5 @@ namespace HomeHive.UI.Interfaces;
 
 public interface IContractDataService
 {
-    Task<CreateContractCommandResponse?> Add(EstateBuyModel estateBuyModel);
+    Task<CreateContractCommandResponse?> Add(EstateBuyModel? estateBuyModel);
 }

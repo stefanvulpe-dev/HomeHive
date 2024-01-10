@@ -9,8 +9,13 @@ public class ContractDataService(IHttpClientFactory httpClientFactory) : IContra
 {
     private readonly HttpClient _httpClient = httpClientFactory.CreateClient("HomeHive.API");
     
-    public async Task<CreateContractCommandResponse?> Add(EstateBuyModel estateBuyModel)
+    public async Task<CreateContractCommandResponse?> Add(EstateBuyModel? estateBuyModel)
     {
+        if (estateBuyModel != null)
+        {
+            estateBuyModel.StartDate = estateBuyModel.StartDate?.ToUniversalTime();
+            estateBuyModel.EndDate = estateBuyModel.EndDate?.ToUniversalTime();
+        }
         var response = await _httpClient.PostAsJsonAsync("/api/v1/Contracts", estateBuyModel);
         return await response.Content.ReadFromJsonAsync<CreateContractCommandResponse>();
     }

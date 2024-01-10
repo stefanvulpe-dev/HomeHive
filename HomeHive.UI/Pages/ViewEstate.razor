@@ -25,23 +25,23 @@ else
             <div class="col-xl-4">
                 <div class="row justify-content-center align-items-center text-center m-3">
                     <div class="row mb-2">
-                        <h5 class="fw-bold fs-1">Estate Name</h5>
-                        <small>Posted by <span class="fw-bold">Jane Doe</span></small>
-                        <span>For Rent</span>
+                        <h5 class="fw-bold fs-1">@EstateViewModel?.Name</h5>
+                        <small>Posted by <span class="fw-bold">@EstateViewModel?.OwnerName</span></small>
+                        <span>@EstateViewModel?.EstateType</span>
                     </div>
 
                     <div class="card mt-3">
                         <div class="card-body justify-content-center">
-                            <EstateGeneralInfo></EstateGeneralInfo>
+                            <EstateGeneralInfo Estate="@EstateViewModel"></EstateGeneralInfo>
                             <hr/>
-                            <Utilities></Utilities>
-                            <Rooms></Rooms>
+                            <Utilities EstateUtilities="@EstateViewModel?.Utilities"></Utilities>
+                            <Rooms EstateRooms="@EstateViewModel?.Rooms"></Rooms>
                         </div>
                     </div>
                 </div>
             </div>
             <div class="col-xl-8 mx-3 mx-lg-0">
-                <ViewEstateCarousel></ViewEstateCarousel>
+                <ViewEstateCarousel EstatePhotos="@EstatePhotos"></ViewEstateCarousel>
             </div>
 
             <div class="row justify-content-center align-items-center gx-0 mt-4">
@@ -113,15 +113,16 @@ else
 <Footer></Footer>
 
 @code {
-    [Parameter] public Guid EstateId { get; set; }
+    [Parameter] public Guid? EstateId { get; set; }
 
     private EstateViewModel? EstateViewModel { get; set; }
-
+    
     private bool _isLoading;
 
+    private IReadOnlyList<byte[]>? EstatePhotos { get; set; }
+    
     protected override async Task OnInitializedAsync()
     {
-        await base.OnInitializedAsync();
         _isLoading = true;
         var result = await EstateDataService.GetById(EstateId);
 
@@ -129,8 +130,17 @@ else
         {
             EstateViewModel = new EstateViewModel
             {
-                Id = result.Estate!.Id,
-                OwnerId = result.Estate.OwnerId
+                Id = result.Estate?.Id,
+                OwnerId = result.Estate?.OwnerId,
+                OwnerName = result.Estate?.OwnerName,
+                Name = result.Estate?.Name,
+                Description = result.Estate?.Description,
+                EstateType = result.Estate?.EstateType,
+                Utilities = result.Estate?.Utilities,
+                Rooms = result.Estate?.EstateRooms,
+                Price = result.Estate?.Price,
+                TotalArea = result.Estate?.TotalArea,
+                Location = result.Estate?.Location
             };
         }
         else
@@ -138,7 +148,20 @@ else
             Logger.LogError("Error while getting estate by id");
         }
 
+        
+        var estatePhotosResult = await EstateDataService.GetEstatePhotos(EstateId);
+        
+        if (estatePhotosResult is { IsSuccess: true })
+        {
+            EstatePhotos = estatePhotosResult.EstatePhotos;
+        }
+        else
+        {
+            Logger.LogError("Error while getting estate photos");
+        }
+        
         _isLoading = false;
+        await base.OnInitializedAsync();
     }
 
 }

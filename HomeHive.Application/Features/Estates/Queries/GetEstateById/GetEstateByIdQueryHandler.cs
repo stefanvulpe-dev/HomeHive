@@ -4,7 +4,7 @@ using HomeHive.Application.Persistence;
 
 namespace HomeHive.Application.Features.Estates.Queries.GetEstateById;
 
-public class GetEstateByIdQueryHandler(IEstateRepository repository, IRoomRepository roomRepository, IBlobStorageService blobStorageService)
+public class GetEstateByIdQueryHandler(IEstateRepository repository, IRoomRepository roomRepository, IBlobStorageService blobStorageService, IUserRepository userRepository)
     : IQueryHandler<GetEstateByIdQuery, GetEstateByIdResponse>
 {
     public async Task<GetEstateByIdResponse> Handle(GetEstateByIdQuery request, CancellationToken cancellationToken)
@@ -21,7 +21,16 @@ public class GetEstateByIdQueryHandler(IEstateRepository repository, IRoomReposi
         var estateAvatarResult = await blobStorageService.GetBlobAsync(estateResult.Value.EstateAvatar!, cancellationToken);
             
         var estateAvatarStream = estateAvatarResult.Value;
-            
+        
+        var ownerResult = await userRepository.FindByIdAsync(estateResult.Value.OwnerId);
+        
+        if (!ownerResult.IsSuccess)
+            return new GetEstateByIdResponse
+            {
+                IsSuccess = false,
+                Message = "Owner not found."
+            };
+        
         using var memoryStream = new MemoryStream();
             
         await estateAvatarStream.CopyToAsync(memoryStream, cancellationToken);
@@ -36,6 +45,7 @@ public class GetEstateByIdQueryHandler(IEstateRepository repository, IRoomReposi
         {
             Id = estateResult.Value.Id,
             OwnerId = estateResult.Value.OwnerId,
+            OwnerName = ownerResult.Value.FirstName + " " + ownerResult.Value.LastName,
             EstateType = estateResult.Value.EstateType.ToString(),
             EstateCategory = estateResult.Value.EstateCategory.ToString(),
             Name = estateResult.Value.Name,

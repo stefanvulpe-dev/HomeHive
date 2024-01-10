@@ -76,8 +76,6 @@
 
 
 @code {
-    [Parameter] public Guid EstateId { get; set; }
-
     [Parameter] public EstateViewModel? Estate { get; set; }
 
     [SupplyParameterFromForm] private EstateBuyModel? BuyModel { get; set; }
@@ -92,14 +90,17 @@
     
     private bool _success;
 
-    protected override async Task OnInitializedAsync()
+    protected override void OnInitialized()
     {
-        await base.OnInitializedAsync();
         BuyModel ??= new EstateBuyModel
         {
-            EstateId = EstateId,
+            EstateId = Estate?.Id,
             ContractType = _contractType
         };
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
         var userId = await AuthService.GetUserId();
         _owner = userId == Estate?.OwnerId;
     }
@@ -110,13 +111,8 @@
         try
         {
             _isSubmitting = true;
-
-            if (BuyModel?.ContractType == "Sale")
-            {
-                BuyModel.EndDate = BuyModel.StartDate;
-            }
-
-            var result = await ContractDataService.Add(BuyModel!);
+            
+            var result = await ContractDataService.Add(BuyModel);
 
             if (result is { IsSuccess: true })
             {

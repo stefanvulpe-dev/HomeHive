@@ -6,6 +6,8 @@ public class EstateViewModel
     
     public Guid? OwnerId { get; set; }
     
+    public string? OwnerName { get; set; }
+    
     public string? EstateType { get; set; }
 
     public string? EstateCategory { get; set; }
