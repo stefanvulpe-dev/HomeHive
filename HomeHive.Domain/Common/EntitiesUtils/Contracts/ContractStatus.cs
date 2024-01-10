@@ -4,4 +4,5 @@ public enum ContractStatus
 {
     Pending,
     Done,
+    Rejected
 }
