@@ -1,6 +1,7 @@
 @using HomeHive.UI.ViewModels.Estates
 @using HomeHive.UI.Utils
 @using HomeHive.UI.Interfaces
+@using HomeHive.UI.ViewModels
 @inject ILogger<BuyEstateForm> Logger
 @inject IContractDataService ContractDataService
 @inject IAuthService AuthService
@@ -78,7 +79,7 @@
 @code {
     [Parameter] public EstateViewModel? Estate { get; set; }
 
-    [SupplyParameterFromForm] private EstateBuyModel? BuyModel { get; set; }
+    [SupplyParameterFromForm] private ContractViewModel? BuyModel { get; set; }
 
     private CustomValidation? _customValidation;
 
@@ -92,7 +93,7 @@
 
     protected override void OnInitialized()
     {
-        BuyModel ??= new EstateBuyModel
+        BuyModel ??= new ContractViewModel
         {
             EstateId = Estate?.Id,
             ContractType = _contractType

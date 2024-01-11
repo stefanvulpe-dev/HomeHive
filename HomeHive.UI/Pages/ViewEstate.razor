@@ -40,8 +40,8 @@ else
                     </div>
                 </div>
             </div>
-            <div class="col-xl-8 mx-3 mx-lg-0">
-                <ViewEstateCarousel EstatePhotos="@EstatePhotos"></ViewEstateCarousel>
+            <div class="col-xl-8 mx-3 mx-lg-0 position-relative">
+                <ViewEstateCarousel EstateId="@EstateId"></ViewEstateCarousel>
             </div>
 
             <div class="row justify-content-center align-items-center gx-0 mt-4">
@@ -118,8 +118,6 @@ else
     private EstateViewModel? EstateViewModel { get; set; }
     
     private bool _isLoading;
-
-    private IReadOnlyList<byte[]>? EstatePhotos { get; set; }
     
     protected override async Task OnInitializedAsync()
     {
@@ -146,18 +144,6 @@ else
         else
         {
             Logger.LogError("Error while getting estate by id");
-        }
-
-        
-        var estatePhotosResult = await EstateDataService.GetEstatePhotos(EstateId);
-        
-        if (estatePhotosResult is { IsSuccess: true })
-        {
-            EstatePhotos = estatePhotosResult.EstatePhotos;
-        }
-        else
-        {
-            Logger.LogError("Error while getting estate photos");
         }
         
         _isLoading = false;

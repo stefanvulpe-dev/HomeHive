@@ -1,12 +1,32 @@
+@using HomeHive.UI.ViewModels
 <div class="card col-md-3 m-md-3 mb-sm-3">
     <div class="card-body">
-        <h5 class="card-title">Contract #</h5>
-        <p class="card-text">Sold Estate</p>
-        <p class="card-text">12.12.12</p>
-        <div class="d-flex justify-content-center gap-1">
-            <button href="#" class="btn btn-primary">Edit contract</button>
-            <button href="#" class="btn btn-primary">Download contract</button>
-        </div>
+        <h5 class="card-title">
+            @Contract?.ContractType
+        </h5>
+        <p class="card-text">
+            <span>Status: </span> @Contract?.Status
+        </p>
+        <p class="card-text">
+            <span>Date: </span> @Contract?.StartDate
+        </p>
+        <p class="card-text">
+            <span>Price: </span> @Contract?.Price $
+        </p>
+        <NavLink href="@_estateUrl" class="btn btn-primary">Review estate</NavLink>
     </div>
 </div>
 
+
+@code {
+    [Parameter] public ContractViewModel? Contract { get; set; }
+
+    private string? _estateUrl;
+    
+    protected override void OnInitialized()
+    {
+        _estateUrl = $"/ViewEstate/{Contract?.EstateId}";
+        base.OnInitialized();
+    }
+
+}

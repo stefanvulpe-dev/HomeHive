@@ -1,40 +1,60 @@
-@page "/contracts"
+@page "/Contracts"
 @using HomeHive.UI.ViewModels
 @using HomeHive.UI.Components.Profile.Contracts
+@using HomeHive.UI.Interfaces
 @using Microsoft.AspNetCore.Authorization
 @layout ProfileLayout
 @attribute [Authorize(Roles = "User, Admin")]
+@inject IContractDataService ContractDataService
+@inject ILogger<Contracts> Logger
 
 <div class="profile-card col d-flex flex-column h-sm-100 min-vh-100">
     <div class="card-body">
         <p class="fs-3">Contracts</p>
         <hr />
         <div class="row">
-            @* @if (ContractsList != null) *@
-            @* { *@
-            @*     @foreach (var estate in ContractsList) *@
-            @*     { *@
-            @*     } *@
-            @* } *@
-            @* else *@
-            @* { *@
-            @*     <div class="col-12"> *@
-            @*         <p class="text-center">You have no signed contracts.</p> *@
-            @*     </div> *@
-            @* } *@
-            <ContractCard></ContractCard>
-            <ContractCard></ContractCard>
-            <ContractCard></ContractCard>
-            <ContractCard></ContractCard>
+            @if (ContractsList?.Count > 0)
+            {
+                @foreach (var contract in ContractsList)
+                {
+                    <ContractCard Contract="@contract"></ContractCard>
+                }
+            }
+            else
+            {
+                <div class="col-12">
+                    <p class="text-center">You have no signed contracts.</p>
+                </div>
+            }
         </div>
     </div>
 </div>
 
 @code {
-    private List<ContractViewModel>? ContractsList { get; set; }
+    private IReadOnlyList<ContractViewModel>? ContractsList { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
+        var result = await ContractDataService.GetAllContractsByUserId();
+
+        if (result is { IsSuccess: true })
+        {
+            Logger.LogInformation("Contracts retrieved successfully.");
+            ContractsList = result.Contracts?.Select(c => new ContractViewModel
+            {
+                EstateId = c.EstateId,
+                ContractType = c.ContractType?.ToString(),
+                Status = c.Status?.ToString(),
+                Price = c.Price,
+                StartDate = c.StartDate,
+                EndDate = c.EndDate,
+                Description = c.Description
+            }).ToList();
+        }
+        else
+        {
+            Logger.LogError("Failed to retrieve contracts.");
+        }
     }
 
 }
