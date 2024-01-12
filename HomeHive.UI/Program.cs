@@ -4,6 +4,7 @@ using HomeHive.UI.Interfaces;
 using HomeHive.UI.Services.Api;
 using HomeHive.UI.Services.Authentication;
 using HomeHive.UI.Utils;
+using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
@@ -28,7 +29,8 @@ builder.Services.AddHttpClient("HomeHive.API",
     .ConfigurePrimaryHttpMessageHandler(services =>
     {
         var tokenService = services.GetRequiredService<ILocalStorageService>();
-        return new CustomHttpClientHandler(tokenService);
+        var navigationManager = services.GetRequiredService<NavigationManager>();
+        return new CustomHttpClientHandler(tokenService, navigationManager);
     });
 
 builder.Services.AddOptions();
