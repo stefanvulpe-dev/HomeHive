@@ -1,4 +1,4 @@
-@page "/AllEstates"
+@page "/BuyEstates"
 @using HomeHive.UI.Components.General
 @using HomeHive.UI.ViewModels.Estates
 @using HomeHive.UI.Interfaces
@@ -13,7 +13,7 @@
     <div class="row justify-content-center m-3 m-md-0">
          @if (_isLoading)
                     {
-                        <div class="fw-bold" style="display:flex; gap:10px; justify-content:center; align-items:center">
+                        <div class="mt-4 fw-bold" style="display:flex; gap:10px; justify-content:center; align-items:center">
                             <div class="spinner-border" role="status"></div>
                             Loading...
                         </div>
@@ -29,8 +29,8 @@
                         }
                         else
                         {
-                            <div class="col-12">
-                                <p class="text-center">There are no properties available.</p>
+                            <div class="mt-4 col-12">
+                                <p class="text-center">There are no properties for sale.</p>
                             </div>
                         }
                     }
@@ -43,6 +43,7 @@
     private List<EstateViewModel>? EstatesList { get; set; }
     
     private bool _isLoading = true;
+    private string SelectedCategory { get; set; } = "ForSale";
 
     protected override async Task OnInitializedAsync()
     {
@@ -51,20 +52,22 @@
         if (result is { IsSuccess: true })
         {
             if (result.Estates != null)
-                EstatesList = result.Estates.Select(e => new EstateViewModel
-                {
-                    Id = e.Id,
-                    OwnerId = e.OwnerId,
-                    EstateCategory = e.EstateCategory,
-                    EstateType = e.EstateType,
-                    Name = e.Name,
-                    Location = e.Location,
-                    Price = e.Price,
-                    TotalArea = e.TotalArea,
-                    Utilities = e.Utilities!,
-                    Description = e.Description,
-                    EstateAvatar = e.EstateAvatar
-                }).ToList();
+                EstatesList = result.Estates
+                    .Where(e => e.EstateCategory == SelectedCategory) 
+                    .Select(e => new EstateViewModel
+                    {
+                        Id = e.Id,
+                        OwnerId = e.OwnerId,
+                        EstateCategory = e.EstateCategory,
+                        EstateType = e.EstateType,
+                        Name = e.Name,
+                        Location = e.Location,
+                        Price = e.Price,
+                        TotalArea = e.TotalArea,
+                        Utilities = e.Utilities!,
+                        Description = e.Description,
+                        EstateAvatar = e.EstateAvatar
+                    }).ToList();
         }
         else
         {
@@ -72,5 +75,6 @@
         }
         _isLoading = false;
     }
+
 
 }
