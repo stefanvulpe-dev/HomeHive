@@ -34,7 +34,12 @@
 
     private bool _success;
 
-    private string _imgSrc = "background1.jpg";
+    private string _imgSrc = "background4.jpg";
+    
+    protected override async Task OnInitializedAsync()
+    {
+        _imgSrc = await UserDataService.GetProfilePicture();
+    }
 
     void OnInputFileChange(InputFileChangeEventArgs e)
     {
