@@ -9,7 +9,7 @@
 
 <Navbar></Navbar>
 <section class="about-one min-vh-100 p-0">
-    <SearchBar></SearchBar>
+    <SearchBar OnSearch="(searchModel) => HandleSearch((SearchModel)searchModel)"></SearchBar>
     <div class="row justify-content-center m-3 m-md-0">
          @if (_isLoading)
                     {
@@ -41,8 +41,61 @@
 
 @code {
     private List<EstateViewModel>? EstatesList { get; set; }
-    
     private bool _isLoading = true;
+
+    private async Task HandleSearch(SearchModel searchModel)
+    {
+        _isLoading = true;
+
+        var result = await EstateService.GetAll();
+        if (result is { IsSuccess: true })
+        {
+            if (result.Estates != null)
+                EstatesList = result.Estates.Select(e => new EstateViewModel
+                {
+                    Id = e.Id,
+                    OwnerId = e.OwnerId,
+                    EstateCategory = e.EstateCategory,
+                    EstateType = e.EstateType,
+                    Name = e.Name,
+                    Location = e.Location,
+                    Price = e.Price,
+                    TotalArea = e.TotalArea,
+                    Utilities = e.Utilities!,
+                    Description = e.Description,
+                    EstateAvatar = e.EstateAvatar
+                }).ToList();
+        }
+        else
+        {
+            Logger.LogError($"Error getting estates: {result?.Message}");
+        }
+        
+        
+        if(!string.IsNullOrEmpty(searchModel.Name) && EstatesList != null)
+        {
+            EstatesList = EstatesList.Where(e => e.Name!.ToLower().Contains(searchModel.Name.ToLower())).ToList();
+        }
+        
+        if(!string.IsNullOrEmpty(searchModel.Location) && EstatesList != null)
+        {
+            EstatesList = EstatesList.Where(e => e.Location!.ToLower().Contains(searchModel.Location.ToLower())).ToList();
+        }
+        
+        if(searchModel.NumberOfPeople > 0 && EstatesList != null)
+        {
+            EstatesList = EstatesList.Where(e => int.TryParse(e.TotalArea, out int totalArea) && totalArea > searchModel.NumberOfPeople * 10).ToList();
+        }
+        
+        if(!string.IsNullOrEmpty(searchModel.EstateCategory) && EstatesList != null)
+        {
+            Console.WriteLine("Entered estate");
+            Console.WriteLine(searchModel.EstateCategory);
+            EstatesList = EstatesList.Where(e => e.EstateCategory == searchModel.EstateCategory).ToList();
+        }
+
+        _isLoading = false;
+    }
 
     protected override async Task OnInitializedAsync()
     {
