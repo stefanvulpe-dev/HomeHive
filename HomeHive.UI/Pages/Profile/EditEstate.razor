@@ -40,23 +40,17 @@
                     </div>
                     <hr/>
                     <div class="row justify-content-center align-items-start gap-4 gap-lg-0">
-                        <div class="col-lg-6">
-                            <EditEstateAvatarForm EstateAvatar="@Estate!.EstateAvatar" EstateId="@Estate.Id"></EditEstateAvatarForm>
-                        </div>
-                        <div class="col-lg-6">
-                            <div class="max-w-md mx-auto">
-                                <div class="d-flex gap-2 flex-column">
-                                    <p class="fs-5 fw-bold text-center text-lg-start">Remove your estate from HomeHive</p>
-                                    <p class="text-center text-lg-start">Deleting your estate is irreversible. We will remove your estate from the website and it will
-                                        no longer be visible to other users.</p>
-                                    <button class="btn btn-danger align-self-center align-self-lg-start" @onclick="DeleteEstate">Delete estate</button>
-                                </div>
-                            </div>
-                        </div>
+                        <EditEstateAvatarForm EstateAvatar="@Estate!.EstateAvatar" EstateId="@Estate.Id"></EditEstateAvatarForm>
                     </div>
                     <hr/>
                     <AddEstateImages EstateId="@Estate.Id" EstatePhotos="@Estate.EstatePhotos" />
                     <EditEstateForm Estate="@Estate"></EditEstateForm>
+                    <div class="d-flex gap-2 flex-column">
+                        <p class="fs-5 fw-bold text-center text-lg-start">Remove your estate from HomeHive</p>
+                        <p class="text-center text-lg-start">Deleting your estate is irreversible. We will remove your estate from the website and it will
+                            no longer be visible to other users.</p>
+                        <button class="btn btn-danger align-self-center align-self-lg-start" @onclick="DeleteEstate">Delete estate</button>
+                    </div>
                 }
             </div>
         </div>
