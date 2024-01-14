@@ -5,6 +5,7 @@
 @using HomeHive.Domain.Common.EntitiesUtils.Estates
 @using HomeHive.Domain.Common.EntitiesUtils.Rooms
 @using HomeHive.Domain.Common.EntitiesUtils.Utility
+@using HomeHive.Domain.Common.EntitiesUtils.Contracts
 @inject NavigationManager NavigationManager
 @inject ILogger<LoginForm> Logger
 @inject IEstateDataService EstateService
@@ -43,7 +44,7 @@
             <div class="mb-3">
                 <label class="form-label">Location</label>
                 <div class="d-flex">
-                    <InputSelect class="form-control me-2" id="country" @bind-Value="@EstateModel.Country">
+                    <InputSelect class="form-control me-2" id="country" @oninput="@UpdateSelectedCity" @bind-Value="@EstateModel.Country">
                         <option value="" disabled selected>Select a country</option>
                         @foreach (var country in _countries)
                         {
@@ -158,8 +159,8 @@
             EstateCategory = Estate!.EstateCategory,
             EstateType = Estate.EstateType,
             Name = Estate.Name,
-            Country = Estate.Location!.Split(", ")[1],
-            City = Estate.Location.Split(", ")[0],
+            Country = Estate.Location!.Split(", ")[0],
+            City = Estate.Location.Split(", ")[1],
             Price = Estate.Price,
             TotalAreaInt = Int32.Parse(Estate.TotalArea!),
             Rooms = Estate.Rooms!,
@@ -217,6 +218,17 @@
         if (EstateModel!.Rooms![option] > 0)
         {
             EstateModel!.Rooms![option]--;
+        }
+    }
+    
+    private void UpdateSelectedCity(ChangeEventArgs args)
+    {
+        var selectedCountry = args.Value?.ToString();
+
+        if (!string.IsNullOrEmpty(selectedCountry) && _allCities.ContainsKey(selectedCountry))
+        {
+            EstateModel!.City = _allCities[selectedCountry][0];
+            StateHasChanged();
         }
     }
 
