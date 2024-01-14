@@ -12,6 +12,7 @@
 
     <ItemGroup>
         <PackageReference Include="Blazored.LocalStorage" Version="4.4.0"/>
+        <PackageReference Include="iTextSharp" Version="5.5.13.3" />
         <PackageReference Include="Microsoft.AspNetCore.Components.Authorization" Version="8.0.0"/>
         <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="8.0.0"/>
         <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="8.0.0" PrivateAssets="all"/>

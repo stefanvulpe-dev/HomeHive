@@ -1,4 +1,7 @@
 @using HomeHive.UI.ViewModels
+@using iTextSharp.text
+@using iTextSharp.text.pdf
+@inject IJSRuntime JSRuntime
 
 <div class="card col-md-3 m-md-3 mb-sm-3">
     <div class="card-body">
@@ -72,20 +75,93 @@
             </div>
         </div>
         <div class="mt-4 d-flex justify-content-center gap-1">
-             <NavLink href="@_estateUrl" class="btn btn-primary">Download contract</NavLink>
+             <button @onclick="DownloadContract" class="btn btn-primary">Download contract</button>
         </div>
     </div>
 </div>
 
 @code {
-    [Parameter] public ContractViewModel? Contract { get; set; }
+
+    [Parameter]
+    public ContractViewModel? Contract { get; set; }
 
     private string? _estateUrl;
-    
+
     protected override void OnInitialized()
     {
         _estateUrl = $"/ViewEstate/{Contract?.EstateId}";
         base.OnInitialized();
     }
 
+    private async Task DownloadContract()
+    {
+        var pdfDoc = new Document();
+
+        using var memoryStream = new MemoryStream();
+        var writer = PdfWriter.GetInstance(pdfDoc, memoryStream);
+        pdfDoc.Open();
+
+        pdfDoc.NewPage();
+
+        var title = new Paragraph("Real Estate Agreement")
+        {
+            Alignment = Element.ALIGN_CENTER
+        };
+        pdfDoc.Add(title);
+
+        pdfDoc.Add(new Paragraph("\n\n"));
+
+        pdfDoc.Add(new Paragraph($"This agreement is made on this date between the parties:"));
+        pdfDoc.Add(new Paragraph($"Seller: "));
+        pdfDoc.Add(new Paragraph($"Buyer: "));
+        pdfDoc.Add(new Paragraph($"Property: "));
+        pdfDoc.Add(new Paragraph($"Address: "));
+            
+        if (Contract?.EndDate != null)
+        {
+            pdfDoc.Add(new Paragraph("The parties agree to the following terms regarding the rental of the property:"));
+            pdfDoc.Add(new Paragraph($"Rent: ${Contract?.Price}"));
+            pdfDoc.Add(new Paragraph($"Lease Start Date: {Contract?.StartDate}"));
+            pdfDoc.Add(new Paragraph($"Lease End Date: {Contract?.EndDate}"));
+            pdfDoc.Add(new Paragraph("This agreement covers the rental of the property for the specified period."));
+        }
+        else
+        {
+            pdfDoc.Add(new Paragraph("The parties agree to the following terms regarding the purchase of the property:"));
+            pdfDoc.Add(new Paragraph($"Purchase Price: ${Contract?.Price}"));
+            pdfDoc.Add(new Paragraph("This amount represents the agreed-upon purchase price for the property."));
+            pdfDoc.Add(new Paragraph($"Closing Date: {Contract?.StartDate}"));
+            pdfDoc.Add(new Paragraph("The closing date is the date on which the ownership of the property is officially transferred from the seller to the buyer."));
+        }
+
+        pdfDoc.Add(new Paragraph("\n\n"));
+            
+        pdfDoc.Add(new Paragraph("The parties hereby agree as follows:"));
+
+        pdfDoc.Add(new Paragraph($"1. The subject matter of this contract is {(Contract?.EndDate != null ? "the rental" : "the sale")} of the property mentioned above, along with all related utilities."));
+        pdfDoc.Add(new Paragraph($"2. The property will be {(Contract?.EndDate != null ? "leased" : "delivered to the buyer")} on the {(Contract?.EndDate != null ? "lease end date" : "closing date")} mentioned above."));
+        pdfDoc.Add(new Paragraph($"3. The {(Contract?.EndDate != null ? "landlord" : "seller")} warrants that they are the legal owner of the property and that it is free from any liens or encumbrances."));
+        pdfDoc.Add(new Paragraph("\n\n"));
+            
+        var signatureLine = new Paragraph("______________________      ______________________ ")
+        {
+            Alignment = Element.ALIGN_CENTER
+        };
+        pdfDoc.Add(signatureLine);
+            
+        var signatureDescription = new Paragraph("    (Seller/Landlord)                           (Buyer/Tenant)")
+        {
+            Alignment = Element.ALIGN_CENTER
+        };
+        pdfDoc.Add(signatureDescription);
+
+        pdfDoc.Close();
+
+        var pdfData = memoryStream.ToArray();
+
+        var blobData = new { Type = "application/pdf", Data = pdfData };
+
+        var blob = await JSRuntime.InvokeAsync<string>("createBlob", blobData);
+        await JSRuntime.InvokeVoidAsync("saveAsFile", "contract.pdf", blob);
+    }
 }
