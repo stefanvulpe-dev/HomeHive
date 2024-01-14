@@ -22,8 +22,6 @@ public class CreateEstateModel
     [Required(ErrorMessage = "Estate location is required")]
     public string? Location => !string.IsNullOrWhiteSpace(Country) && !string.IsNullOrWhiteSpace(City) ? $"{Country}, {City}" : null;
     
-    public string PriceString { get; set; } = string.Empty;
-    
     [Required(ErrorMessage = "Estate price is required")]
     [Range(0.0d, 1_000_000d, ErrorMessage = "Estate price must be greater than 0 and less than 1_000_000")]
     public decimal? Price { get; set; } 

@@ -41,21 +41,48 @@
                 <ValidationMessage For="@(() => EstateModel.Name)"></ValidationMessage>
             </div>
             <div class="mb-3">
-                <label for="location" class="form-label">Location</label>
-                <InputText class="form-control" id="location" @bind-Value="EstateModel.Location"/>
+                <label class="form-label">Location</label>
+                <div class="d-flex">
+                    <InputSelect class="form-control me-2" id="country" @bind-Value="@EstateModel.Country">
+                        <option value="" disabled selected>Select a country</option>
+                        @foreach (var country in _countries)
+                        {
+                            <option value="@country">@country</option>
+                        }
+                    </InputSelect>
+                    <InputSelect class="form-control" id="city" @bind-Value="@EstateModel.City">
+                        <option value="" disabled selected>Select a city</option>
+                        @if (!string.IsNullOrEmpty(EstateModel.Country))
+                        {
+                            foreach (var city in _allCities[EstateModel.Country])
+                            {
+                                <option value="@city">@city</option>
+                            }
+                        }
+                    </InputSelect>
+                </div>
                 <ValidationMessage For="@(() => EstateModel.Location)"></ValidationMessage>
             </div>
             <div class="mb-3">
-                <label for="price" class="form-label">Price</label>
-                <InputText class="form-control" id="price" @bind-Value="@EstateModel.PriceString"/>
+                <label for="price" class="form-label">
+                    @if (EstateModel.EstateCategory == EstateCategory.ForRent.ToString())
+                    {
+                        <text>Price ($/month)</text>
+                    }
+                    else
+                    {
+                        <text>Price</text>
+                    }
+                </label>
+                <InputNumber class="form-control" id="price" min="0" max="1_000_000d" @bind-Value="@EstateModel.Price"/>
                 <ValidationMessage For="@(() => EstateModel.Price)"></ValidationMessage>
             </div>
 
         </div>
         <div class="col-md-6">
             <div class="mb-3">
-                <label for="totalArea" class="form-label">Total Area</label>
-                <InputText class="form-control" id="totalArea" @bind-Value="EstateModel.TotalArea"/>
+                <label for="totalArea" class="form-label">Total Area (Square Meters)</label>
+                <InputNumber class="form-control" id="totalArea" min="0" max="1_000_000d" @bind-Value="@EstateModel.TotalAreaInt"/>
                 <ValidationMessage For="@(() => EstateModel.TotalArea)"></ValidationMessage>
             </div>
             <div class="mb-3">
@@ -97,14 +124,14 @@
         <div class="mt-2 mb-3 d-flex justify-content-center">
             <button type="submit" class="btn btn-primary" disabled="@_isSubmitting">Edit Estate</button>
         </div>
-        
+
         @if (_isSuccess)
         {
             <div class="alert alert-success mt-2" role="alert">
                 Estate successfully edited!
             </div>
         }
-        
+
         <hr/>
     </div>
 </EditForm>
@@ -117,9 +144,13 @@
     private CustomValidation? _customValidation;
 
     private bool _isSubmitting;
-    
+
     private bool _isSuccess;
-    
+
+    private string[] _countries = Array.Empty<string>();
+
+    private Dictionary<string, string[]> _allCities = new Dictionary<string, string[]>();
+
     protected override void OnInitialized()
     {
         EstateModel ??= new EditEstateModel
@@ -127,14 +158,18 @@
             EstateCategory = Estate!.EstateCategory,
             EstateType = Estate.EstateType,
             Name = Estate.Name,
-            Location = Estate.Location,
-            PriceString = Estate.Price.ToString()!,
-            TotalArea = Estate.TotalArea,
+            Country = Estate.Location!.Split(", ")[1],
+            City = Estate.Location.Split(", ")[0],
+            Price = Estate.Price,
+            TotalAreaInt = Int32.Parse(Estate.TotalArea!),
             Rooms = Estate.Rooms!,
             Description = Estate.Description,
             EstateUtilities = Estate.Utilities!.ToArray()!,
             EstateRoomsKeys = Estate.Rooms!.Keys.ToArray()
         };
+
+        _countries = GetPredefinedCountries();
+        _allCities = GetPredefinedCities();
     }
 
     private async void HandleValidSubmit()
@@ -143,7 +178,7 @@
         try
         {
             _isSubmitting = true;
-            
+
             var result = await EstateService.UpdateById(Estate!.Id, EstateModel!);
 
             if (result != null)
@@ -183,6 +218,32 @@
         {
             EstateModel!.Rooms![option]--;
         }
+    }
+
+    private string[] GetPredefinedCountries()
+    {
+        return new string[]
+        {
+            "Romania", "United States", "Germany", "France", "Japan",
+            "Italy", "Spain", "Canada", "United Kingdom", "Australia"
+        };
+    }
+
+    private Dictionary<string, string[]> GetPredefinedCities()
+    {
+        return new Dictionary<string, string[]>
+        {
+            { "Romania", new string[] { "Bucharest", "Cluj-Napoca", "Timisoara", "Iasi", "Constanta" } },
+            { "United States", new string[] { "New York", "Los Angeles", "Chicago", "Miami", "San Francisco" } },
+            { "Germany", new string[] { "Berlin", "Munich", "Hamburg", "Frankfurt", "Cologne" } },
+            { "France", new string[] { "Paris", "Marseille", "Lyon", "Toulouse", "Nice" } },
+            { "Japan", new string[] { "Tokyo", "Osaka", "Kyoto", "Yokohama", "Sapporo" } },
+            { "Italy", new string[] { "Rome", "Milan", "Naples", "Turin", "Florence" } },
+            { "Spain", new string[] { "Madrid", "Barcelona", "Valencia", "Seville", "Zaragoza" } },
+            { "Canada", new string[] { "Toronto", "Vancouver", "Montreal", "Calgary", "Ottawa" } },
+            { "United Kingdom", new string[] { "London", "Manchester", "Birmingham", "Glasgow", "Edinburgh" } },
+            { "Australia", new string[] { "Sydney", "Melbourne", "Brisbane", "Perth", "Adelaide" } }
+        };
     }
 
 }
