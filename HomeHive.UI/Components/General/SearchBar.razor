@@ -1,14 +1,33 @@
-<div class="container mt-4">
-   <form class="row justify-content-center mx-auto text-center">
-       <div class="input-group">
-           <input class="form-control form-control-lg me-2 rounded-3 py-2" type="search" placeholder="Search for the perfect nest" aria-label="Search">
-           <div class="input-group-append">
-               <button class="btn btn-outline-success btn-lg" type="submit">Search <i class="fas fa-search" aria-hidden="true"></i></button>
-           </div>
-       </div>
-   </form> 
+@using HomeHive.UI.ViewModels.Estates
+<div class="container about-one p-0" id="search-form">
+    <form @onsubmit="() => OnSearch.InvokeAsync(SearchModel)" class="d-flex flex-column flex-md-row align-items-center mt-3 justify-content-center single-about-items">
+        <div class="form-group">
+            <input @bind="SearchModel.Name" type="text" class="form-control" id="search" placeholder="What are you looking for?">
+        </div>
+        <div class="form-group">
+            <input @bind="SearchModel.Location" type="text" class="form-control" id="city" placeholder="City">
+        </div>
+        <div class="form-group">
+            <input @bind="SearchModel.NumberOfPeople" type="number" min="1" class="form-control" id="people" placeholder="Number of People">
+        </div>
+        <div class="form-group">
+            <select @bind="SearchModel.EstateCategory" class="form-control">
+                <option value="ForRent">For Rent</option>
+                <option value="ForSale">For Sale</option>
+            </select>
+        </div>
+        <button type="submit" class="btn btn-primary">Search</button>
+    </form>
 </div>
 
-
-
-
+@code
+{
+    [Parameter]
+    public EventCallback OnSearch { get; set; }
+    public SearchModel SearchModel { get; set; } = new SearchModel {NumberOfPeople = 1, EstateCategory = "ForRent"};
+    
+    private async Task Search()
+    {
+        await OnSearch.InvokeAsync(SearchModel);
+    }
+}

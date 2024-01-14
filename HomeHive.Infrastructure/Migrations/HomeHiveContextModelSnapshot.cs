@@ -34,7 +34,7 @@ namespace HomeHive.Infrastructure.Migrations
 
                     b.HasIndex("UtilitiesId");
 
-                    b.ToTable("EstateUtility");
+                    b.ToTable("EstateUtility", (string)null);
                 });
 
             modelBuilder.Entity("HomeHive.Domain.Entities.Contract", b =>
@@ -67,9 +67,6 @@ namespace HomeHive.Infrastructure.Migrations
                     b.Property<DateTime>("LastModifiedDate")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<decimal?>("Price")
-                        .HasColumnType("numeric");
-
                     b.Property<DateTime?>("StartDate")
                         .HasColumnType("timestamp with time zone");
 
@@ -83,7 +80,7 @@ namespace HomeHive.Infrastructure.Migrations
 
                     b.HasIndex("EstateId");
 
-                    b.ToTable("Contracts");
+                    b.ToTable("Contracts", (string)null);
                 });
 
             modelBuilder.Entity("HomeHive.Domain.Entities.Estate", b =>
@@ -133,7 +130,7 @@ namespace HomeHive.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Estates");
+                    b.ToTable("Estates", (string)null);
                 });
 
             modelBuilder.Entity("HomeHive.Domain.Entities.EstatePhoto", b =>
@@ -164,7 +161,7 @@ namespace HomeHive.Infrastructure.Migrations
 
                     b.HasIndex("EstateId");
 
-                    b.ToTable("EstatePhotos");
+                    b.ToTable("EstatePhotos", (string)null);
                 });
 
             modelBuilder.Entity("HomeHive.Domain.Entities.EstateRoom", b =>
@@ -200,7 +197,7 @@ namespace HomeHive.Infrastructure.Migrations
 
                     b.HasIndex("RoomId");
 
-                    b.ToTable("EstateRoom");
+                    b.ToTable("EstateRoom", (string)null);
                 });
 
             modelBuilder.Entity("HomeHive.Domain.Entities.Room", b =>
@@ -226,7 +223,7 @@ namespace HomeHive.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Rooms");
+                    b.ToTable("Rooms", (string)null);
                 });
 
             modelBuilder.Entity("HomeHive.Domain.Entities.Utility", b =>
@@ -253,7 +250,7 @@ namespace HomeHive.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Utilities");
+                    b.ToTable("Utilities", (string)null);
                 });
 
             modelBuilder.Entity("EstateUtility", b =>
