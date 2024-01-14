@@ -20,11 +20,12 @@ public class UpdateContractCommandHandlerTests
     public async Task Handle_ShouldReturnFailureResponse_WhenContractIdIsEmpty()
     {
         // Arrange
-        var contractData = new ContractData(
-            Guid.NewGuid(),
+        var contractData = new ContractData(Guid.NewGuid(),
             ContractType.Rent.ToString(),
+            ContractStatus.Done.ToString(),
+            200000,
             DateTime.Now,
-            DateTime.Now.AddDays(30),
+            DateTime.Now,
             "Test");
 
         var command = new UpdateContractCommand(Guid.Empty, contractData);
@@ -59,8 +60,13 @@ public class UpdateContractCommandHandlerTests
     public async Task Handle_ShouldReturnFailureResponse_WhenContractDataHasNoValues()
     {
         // Arrange
-        var contractData = new ContractData(
-            Guid.Empty, null, null, null, null);
+        var contractData = new ContractData(Guid.Empty,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null);
 
         var command = new UpdateContractCommand(Guid.NewGuid(), contractData);
         var handler = new UpdateContractCommandHandler(_contractRepositoryMock);
@@ -78,11 +84,12 @@ public class UpdateContractCommandHandlerTests
     public async Task Handle_ShouldReturnFailureResponse_WhenContractDataHasInvalidContractType()
     {
         // Arrange
-        var contractData = new ContractData(
-            Guid.NewGuid(),
-            "InvalidContractType",
+        var contractData = new ContractData(Guid.NewGuid(),
+            "Test",
+            ContractStatus.Done.ToString(),
+            200000,
             DateTime.Now,
-            DateTime.Now.AddDays(30),
+            DateTime.Now,
             "Test");
 
         var command = new UpdateContractCommand(Guid.NewGuid(), contractData);
@@ -101,11 +108,12 @@ public class UpdateContractCommandHandlerTests
     public async Task Handle_ShouldReturnFailureResponse_WhenContractDoesNotExist()
     {
         // Arrange
-        var contractData = new ContractData(
-            Guid.NewGuid(),
+        var contractData = new ContractData(Guid.NewGuid(),
             ContractType.Rent.ToString(),
+            ContractStatus.Done.ToString(),
+            200000,
             DateTime.Now,
-            DateTime.Now.AddDays(30),
+            DateTime.Now,
             "Test");
         var contractId = Guid.NewGuid();
 
@@ -126,11 +134,12 @@ public class UpdateContractCommandHandlerTests
     public async Task Handle_ShouldReturnSuccessResponse_WhenContractIdIsValidAndContractDataIsValid()
     {
         // Arrange
-        var contractData = new ContractData(
-            Guid.NewGuid(),
+        var contractData = new ContractData(Guid.NewGuid(),
             ContractType.Rent.ToString(),
+            ContractStatus.Done.ToString(),
+            200000,
             DateTime.Now,
-            DateTime.Now.AddDays(30),
+            DateTime.Now,
             "Test");
 
         var contractResult = Contract.Create(Guid.NewGuid(), contractData);
@@ -150,7 +159,7 @@ public class UpdateContractCommandHandlerTests
         Assert.True(result.IsSuccess);
         Assert.Equal(result.Contract!.EstateId, contractData.EstateId);
         Assert.Equal(result.Contract!.UserId, contractResult.Value.UserId);
-        Assert.Equal(result.Contract!.ContractType.ToString(), contractData.ContractType);
+        Assert.Equal(result.Contract!.ContractType, contractData.ContractType);
         Assert.Equal(result.Contract!.StartDate, contractData.StartDate);
         Assert.Equal(result.Contract!.EndDate, contractData.EndDate);
         Assert.Equal(result.Contract!.Description, contractData.Description);

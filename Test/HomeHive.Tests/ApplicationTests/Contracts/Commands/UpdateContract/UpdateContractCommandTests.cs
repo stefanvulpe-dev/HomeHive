@@ -14,8 +14,13 @@ public class UpdateContractCommandTests
     {
         // Arrange
         var contractId = Guid.NewGuid();
-        var contractData = new ContractData(Guid.NewGuid(), "Rent", DateTime.Now, DateTime.Now.AddMonths(6),
-            "Updated Description");
+        var contractData = new ContractData(Guid.NewGuid(),
+            ContractType.Rent.ToString(),
+            ContractStatus.Done.ToString(),
+            200000,
+            DateTime.Now,
+            DateTime.Now,
+            "Test");
         var updateCommand = new UpdateContractCommand(contractId, contractData);
 
         var contractRepositoryMock = Substitute.For<IContractRepository>();
@@ -39,8 +44,13 @@ public class UpdateContractCommandTests
     {
         // Arrange
         var contractId = Guid.NewGuid();
-        var contractData = new ContractData(Guid.NewGuid(), "Rent", DateTime.Now, DateTime.Now.AddMonths(6),
-            "Updated Description");
+        var contractData = new ContractData(Guid.NewGuid(),
+            ContractType.Rent.ToString(),
+            ContractStatus.Done.ToString(),
+            200000,
+            DateTime.Now,
+            DateTime.Now,
+            "Test");
         var updateCommand = new UpdateContractCommand(contractId, contractData);
 
         var contractRepositoryMock = Substitute.For<IContractRepository>();
@@ -63,8 +73,13 @@ public class UpdateContractCommandTests
     {
         // Arrange
         var originalCommand = new UpdateContractCommand(Guid.NewGuid(),
-            new ContractData(Guid.NewGuid(), ContractType.Rent.ToString(), DateTime.Now, DateTime.Now.AddMonths(6),
-                "description"));
+            new ContractData(Guid.NewGuid(),
+                ContractType.Rent.ToString(),
+                ContractStatus.Done.ToString(),
+                200000,
+                DateTime.Now,
+                DateTime.Now,
+                "Test"));
 
         // Act
         var modifiedCommand = originalCommand with

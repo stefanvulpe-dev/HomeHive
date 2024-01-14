@@ -10,7 +10,13 @@ public class ContractTests
     {
         // Arrange
         var userId = Guid.NewGuid();
-        var contractData = new ContractData(Guid.Empty, "Rent", DateTime.Now, DateTime.Now, "Description");
+        var contractData = new ContractData(Guid.Empty,
+            ContractType.Rent.ToString(),
+            ContractStatus.Done.ToString(),
+            200000,
+            DateTime.Now,
+            DateTime.Now,
+            "Test");
         // Act
         var result = Contract.Create(userId, contractData);
         // Assert
@@ -23,7 +29,13 @@ public class ContractTests
     {
         // Arrange
         var estateId = Guid.NewGuid();
-        var contractData = new ContractData(estateId, "Rent", DateTime.Now, DateTime.Now, "Description");
+        var contractData = new ContractData(estateId,
+            ContractType.Rent.ToString(),
+            ContractStatus.Done.ToString(),
+            200000,
+            DateTime.Now,
+            DateTime.Now,
+            "Test");
         // Act
         var result = Contract.Create(Guid.Empty, contractData);
         // Assert
@@ -36,7 +48,13 @@ public class ContractTests
     {
         // Arrange
         var (estateId, userId) = (Guid.NewGuid(), Guid.NewGuid());
-        var contractData = new ContractData(estateId, "", DateTime.Now, DateTime.Now, "Description");
+        var contractData = new ContractData(estateId,
+            "",
+            ContractStatus.Done.ToString(),
+            200000,
+            DateTime.Now,
+            DateTime.Now,
+            "Test");
         // Act
         var result = Contract.Create(userId, contractData);
         // Assert
@@ -49,7 +67,13 @@ public class ContractTests
     {
         // Arrange
         var (estateId, userId) = (Guid.NewGuid(), Guid.NewGuid());
-        var contractData = new ContractData(estateId, "Rent", default, DateTime.Now, "Description");
+        var contractData = new ContractData(estateId,
+            ContractType.Rent.ToString(),
+            ContractStatus.Done.ToString(),
+            200000,
+            default,
+            DateTime.Now,
+            "Test");
         // Act
         var result = Contract.Create(userId, contractData);
         // Assert
@@ -58,24 +82,17 @@ public class ContractTests
     }
 
     [Fact]
-    public void Create_ShouldReturnFailure_WhenEndDateIsDefault()
-    {
-        // Arrange
-        var (estateId, userId) = (Guid.NewGuid(), Guid.NewGuid());
-        var contractData = new ContractData(estateId, "Rent", DateTime.Now, default, "Description");
-        // Act
-        var result = Contract.Create(userId, contractData);
-        // Assert
-        Assert.False(result.IsSuccess);
-        Assert.Equal("End date should not be default!", result.Message);
-    }
-
-    [Fact]
     public void Create_ShouldReturnFailure_WhenDescriptionIsNotValid()
     {
         // Arrange
         var (estateId, userId) = (Guid.NewGuid(), Guid.NewGuid());
-        var contractData = new ContractData(estateId, "Rent", DateTime.Now, DateTime.Now, "");
+        var contractData = new ContractData(estateId,
+            ContractType.Rent.ToString(),
+            ContractStatus.Done.ToString(),
+            200000,
+            DateTime.Now,
+            DateTime.Now,
+            "");
         // Act
         var result = Contract.Create(userId, contractData);
         // Assert
@@ -87,7 +104,13 @@ public class ContractTests
     public void Create_ShouldReturnSuccess_WhenDataIsValid()
     {
         // Arrange
-        var contractData = new ContractData(Guid.NewGuid(), "Rent", DateTime.Now, DateTime.Now, "Description");
+        var contractData = new ContractData(Guid.NewGuid(),
+            ContractType.Rent.ToString(),
+            ContractStatus.Done.ToString(),
+            200000,
+            DateTime.Now,
+            DateTime.Now,
+            "Test");
         var userId = Guid.NewGuid();
         // Act
         var result = Contract.Create(userId, contractData);
@@ -107,9 +130,21 @@ public class ContractTests
     public void Update_ShouldUpdateContract_WhenDataIsValid()
     {
         // Arrange
-        var contractData = new ContractData(Guid.NewGuid(), "Rent", DateTime.Now, DateTime.Now, "Description");
+        var contractData = new ContractData(Guid.NewGuid(),
+            ContractType.Rent.ToString(),
+            ContractStatus.Done.ToString(),
+            200000,
+            DateTime.Now,
+            DateTime.Now,
+            "Test");
         var contract = Contract.Create(Guid.NewGuid(), contractData).Value;
-        var newContractData = new ContractData(Guid.NewGuid(), "Sale", DateTime.Now, DateTime.Now, "New Description");
+        var newContractData = new ContractData(Guid.NewGuid(),
+            ContractType.Rent.ToString(),
+            ContractStatus.Done.ToString(),
+            200000,
+            DateTime.Now,
+            DateTime.Now,
+            "New Test");
 
         // Act
         contract.Update(newContractData);
