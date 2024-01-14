@@ -3,6 +3,7 @@
 @using HomeHive.UI.Interfaces
 @using HomeHive.UI.Components.Profile.ListedEstates
 @inject IEstateDataService EstateService
+@inject IAuthService AuthService
 @inject ILogger<ListedEstates> Logger
 @layout ProfileLayout
 
@@ -46,25 +47,29 @@
 
     protected override async Task OnInitializedAsync()
     {
+        var userId = await AuthService.GetUserId();
         var result = await EstateService.GetAll();
 
         if (result is { IsSuccess: true })
         {
             if (result.Estates != null)
-                Estates = result.Estates.Select(e => new EstateViewModel
-                {
-                    Id = e.Id,
-                    OwnerId = e.OwnerId,
-                    EstateCategory = e.EstateCategory,
-                    EstateType = e.EstateType,
-                    Name = e.Name,
-                    Location = e.Location,
-                    Price = e.Price,
-                    TotalArea = e.TotalArea,
-                    Utilities = e.Utilities!,
-                    Description = e.Description,
-                    EstateAvatar = e.EstateAvatar
-                }).ToList();
+                Estates = result.Estates
+                    .Where(e => e.OwnerId == userId)
+                    .Select(e => new EstateViewModel
+                    {
+                        Id = e.Id,
+                        OwnerId = e.OwnerId,
+                        EstateCategory = e.EstateCategory,
+                        EstateType = e.EstateType,
+                        Name = e.Name,
+                        Location = e.Location,
+                        Price = e.Price,
+                        TotalArea = e.TotalArea,
+                        Utilities = e.Utilities!,
+                        Description = e.Description,
+                        EstateAvatar = e.EstateAvatar
+                    })
+                    .ToList();
         }
         else
         {
