@@ -76,23 +76,6 @@
         {
             EstatesList = EstatesList.Where(e => e.Name!.ToLower().Contains(searchModel.Name.ToLower())).ToList();
         }
-        
-        if(!string.IsNullOrEmpty(searchModel.Location) && EstatesList != null)
-        {
-            EstatesList = EstatesList.Where(e => e.Location!.ToLower().Contains(searchModel.Location.ToLower())).ToList();
-        }
-        
-        if(searchModel.NumberOfPeople > 0 && EstatesList != null)
-        {
-            EstatesList = EstatesList.Where(e => int.TryParse(e.TotalArea, out int totalArea) && totalArea > searchModel.NumberOfPeople * 10).ToList();
-        }
-        
-        if(!string.IsNullOrEmpty(searchModel.EstateCategory) && EstatesList != null)
-        {
-            Console.WriteLine("Entered estate");
-            Console.WriteLine(searchModel.EstateCategory);
-            EstatesList = EstatesList.Where(e => e.EstateCategory == searchModel.EstateCategory).ToList();
-        }
 
         _isLoading = false;
     }
