@@ -15,7 +15,7 @@
     {
         @foreach (var contract in ContractsList)
         {
-            <ContractCard Contract="@contract"></ContractCard>
+            <AcceptedContractCard Contract="@contract"></AcceptedContractCard>
         }
     }
     else
@@ -37,7 +37,7 @@
         {
             Logger.LogInformation("Contracts retrieved successfully.");
             ContractsList = result.Contracts?
-                .Where(c => c.ContractType == "Signed") 
+                .Where(c => c.ContractType == "Signed")
                 .Select(c => new ContractViewModel
                 {
                     EstateId = c.EstateId,
@@ -54,5 +54,4 @@
             Logger.LogError("Failed to retrieve contracts.");
         }
     }
-
 }
