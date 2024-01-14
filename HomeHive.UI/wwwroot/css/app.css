@@ -221,3 +221,9 @@ h1:focus {
 .effect:hover {
     font-weight: bold;
 }
+
+.carousel-inner img {
+    object-fit: contain; 
+    height: 600px;
+    width: 100%;
+}

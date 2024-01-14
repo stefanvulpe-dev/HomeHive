@@ -73,6 +73,7 @@ else
                 Id = result.Estate?.Id,
                 OwnerId = result.Estate?.OwnerId,
                 OwnerName = result.Estate?.OwnerName,
+                EstateCategory = result.Estate?.EstateCategory,
                 Name = result.Estate?.Name,
                 Description = result.Estate?.Description,
                 EstateType = result.Estate?.EstateType,
@@ -87,7 +88,6 @@ else
         {
             Logger.LogError("Error while getting estate by id");
         }
-        
         _isLoading = false;
         await base.OnInitializedAsync();
     }

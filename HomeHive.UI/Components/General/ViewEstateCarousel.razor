@@ -14,39 +14,30 @@
 }
 else
 {
-    @if (_estatePhotos?.Count == 0)
-    {
-        <div class="alert alert-warning w-100 h-100 text-center" role="alert">
-            No photos available
+    <div id="@CarouselName" class="carousel slide" data-bs-ride="carousel" data-bs-wrap="true" data-bs-interval="20000" data-bs-pause="false">
+        <div class="carousel-indicators">
+            <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+            <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="1" aria-label="Slide 2"></button>
+            <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="2" aria-label="Slide 3"></button>
         </div>
-    }
-    else
-    {
-        <div id="@CarouselName" class="carousel slide" data-bs-ride="carousel" data-bs-wrap="true" data-bs-interval="20000" data-bs-pause="false">
-            <div class="carousel-indicators">
-                <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
-                <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="1" aria-label="Slide 2"></button>
-                <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="2" aria-label="Slide 3"></button>
-            </div>
-            <div class="carousel-inner">
-                @foreach (var item in _carouselItems)
-                {
-                    <div class="carousel-item @(item == _carouselItems[0] ? "active" : "")">
-                        <img src="@item" class="d-block w-100 rounded" alt="estate-image" height="600px">
-                    </div>
-                }
-            </div>
-            <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
-                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                <span class="visually-hidden">Previous</span>
-            </button>
-            <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="next">
-                <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                <span class="visually-hidden">Next</span>
-            </button>
+        <div class="carousel-inner">
+            @foreach (var item in _carouselItems)
+            {
+                <div class="carousel-item @(item == _carouselItems[0] ? "active" : "")">
+                    <img src="@item" class="d-block w-100 rounded" alt="estate-image" height="600px">
+                </div>
+            }
         </div>
-    }
-}
+        <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Previous</span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Next</span>
+        </button>
+    </div>
+}    
 
 @code {
     const string CarouselName = "carouselExampleIndicators";
@@ -71,6 +62,11 @@ else
         _isLoading = true;
         var estatePhotosResult = await EstateDataService.GetEstatePhotos(EstateId);
 
+        var estateAvatarResult = await EstateDataService.GetById(EstateId);
+
+        var avatar = estateAvatarResult?.Estate?.EstateAvatar;
+        if (avatar != null) _carouselItems.Add(avatar);
+
         if (estatePhotosResult is { IsSuccess: true })
         {
             _estatePhotos = estatePhotosResult.EstatePhotos;
@@ -83,7 +79,6 @@ else
         {
             Logger.LogError("Error while getting estate photos");
         }
-
         _isLoading = false;
         await base.OnInitializedAsync();
     }
