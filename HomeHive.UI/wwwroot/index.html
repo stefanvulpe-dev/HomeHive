@@ -10,29 +10,8 @@
     <link href="css/app.css" rel="stylesheet"/>
     <link href="HomeHive.png" rel="icon" type="image/png"/>
     <script src="https://kit.fontawesome.com/1bd0d22201.js" crossorigin="anonymous"></script>
-    <script type="text/javascript">
-        function startCarousel(carouselId) { // NOTE: this JavaScript function added
-            var myCarousel = document.getElementById(carouselId);
-            var carousel = new bootstrap.Carousel(myCarousel);
-            carousel.cycle(); // NOTE: this will cause the carousel to start immediately
-        }
-
-        window.createBlob = (data) => {
-            const bytes = new Uint8Array(data.data);
-            return URL.createObjectURL(new Blob([bytes], { type: data.type }));
-        }
-
-        window.saveAsFile = (filename, content) => {
-            const link = document.createElement('a');
-            link.href = content;
-            link.download = filename;
-            link.click();
-            URL.revokeObjectURL(content);
-        }
-
-    </script>
-    <!--    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'><path d='M7.293 1.5a1 1 0 0 1 1.414 0L11 3.793V2.5a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v3.293l2.354 2.353a.5.5 0 0 1-.708.707L8 2.207 1.354 8.853a.5.5 0 1 1-.708-.707z'/><path d='m14 9.293-6-6-6 6V13.5A1.5 1.5 0 0 0 3.5 15h9a1.5 1.5 0 0 0 1.5-1.5zm-6-.811c1.664-1.673 5.825 1.254 0 5.018-5.825-3.764-1.664-6.691 0-5.018'/></svg>" />-->
-</head>
+    <script src="general.js"></script>
+   </head>
 
 <body>
 <div id="app">
