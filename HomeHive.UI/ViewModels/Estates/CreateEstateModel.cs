@@ -14,19 +14,24 @@ public class CreateEstateModel
     [Required(ErrorMessage = "Estate name is required")]
     [MaxLength(50, ErrorMessage = "Estate name must not exceed 50 characters")]
     public string? Name { get; set; }
-
+    
+    public string? Country { get; set; }
+    
+    public string? City { get; set; }
+    
     [Required(ErrorMessage = "Estate location is required")]
-    public string? Location { get; set; }
+    public string? Location => !string.IsNullOrWhiteSpace(Country) && !string.IsNullOrWhiteSpace(City) ? $"{Country}, {City}" : null;
     
     public string PriceString { get; set; } = string.Empty;
     
     [Required(ErrorMessage = "Estate price is required")]
-    [Range(0.0d, 1_000_000d, ErrorMessage = "Estate price must be greater than 0")]
-    public decimal? Price => decimal.TryParse(PriceString, out var price) ? price : null;
-
+    [Range(0.0d, 1_000_000d, ErrorMessage = "Estate price must be greater than 0 and less than 1_000_000")]
+    public decimal? Price { get; set; } 
+    
+    public int? TotalAreaInt { get; set; }
+    
     [Required(ErrorMessage = "Estate total area is required")]
-    [Range(0.0d, 100_000d, ErrorMessage = "Estate price must be greater than 0")]
-    public string? TotalArea { get; set; }
+    public string? TotalArea => TotalAreaInt == null ? null : $"{TotalAreaInt}";
 
     public string[] EstateUtilities { get; set; } = Array.Empty<string>();
     

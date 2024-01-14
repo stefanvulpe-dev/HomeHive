@@ -9,6 +9,7 @@
 @using MediaTypeHeaderValue = System.Net.Http.Headers.MediaTypeHeaderValue
 @using System.Text.Json.Serialization
 @using System.Text.Json
+@using Newtonsoft.Json.Linq
 @inject NavigationManager NavigationManager
 @inject ILogger<LoginForm> Logger
 @inject IEstateDataService EstateService
@@ -53,18 +54,45 @@
                 <ValidationMessage For="@(() => EstateModel.Name)"></ValidationMessage>
             </div>
             <div class="mb-3">
-                <label for="location" class="form-label">Location</label>
-                <InputText class="form-control" id="location" @bind-Value="EstateModel.Location"/>
+                <label class="form-label">Location</label>
+                <div class="d-flex">
+                    <InputSelect class="form-control me-2" id="country" @bind-Value="@EstateModel.Country">
+                        <option value="" disabled selected>Select a country</option>
+                        @foreach (var country in _countries)
+                        {
+                            <option value="@country">@country</option>
+                        }
+                    </InputSelect>
+                    <InputSelect class="form-control" id="city" @bind-Value="@EstateModel.City">
+                        <option value="" disabled selected>Select a city</option>
+                        @if (!string.IsNullOrEmpty(EstateModel.Country))
+                        {
+                            foreach (var city in _allCities[EstateModel.Country])
+                            {
+                                <option value="@city">@city</option>
+                            }
+                        }
+                    </InputSelect>
+                </div>
                 <ValidationMessage For="@(() => EstateModel.Location)"></ValidationMessage>
             </div>
             <div class="mb-3">
-                <label for="price" class="form-label">Price</label>
-                <InputText class="form-control" id="price" @bind-Value="@EstateModel.PriceString"/>
+                <label for="price" class="form-label">
+                    @if (EstateModel.EstateCategory == EstateCategory.ForRent.ToString())
+                    {
+                        <text>Price ($/month)</text>
+                    }
+                    else
+                    {
+                        <text>Price</text>
+                    }
+                </label>
+                <InputNumber class="form-control" id="price" min="0" max="1_000_000d" @bind-Value="@EstateModel.Price"/>
                 <ValidationMessage For="@(() => EstateModel.Price)"></ValidationMessage>
             </div>
             <div class="mb-3">
-                <label for="totalArea" class="form-label">Total Area</label>
-                <InputText class="form-control" id="totalArea" @bind-Value="EstateModel.TotalArea"/>
+                <label for="totalArea" class="form-label">Total Area (Square Meters)</label>
+                <InputNumber class="form-control" id="totalArea" min="0" max="1_000_000d" @bind-Value="@EstateModel.TotalAreaInt"/>
                 <ValidationMessage For="@(() => EstateModel.TotalArea)"></ValidationMessage>
             </div>
         </div>
@@ -89,7 +117,7 @@
                 </InputSelect>
                 <ValidationMessage For="@(() => EstateModel.EstateRoomsKeys)"></ValidationMessage>
                 <ValidationMessage For="@(() => EstateModel.Rooms)"></ValidationMessage>
-                
+
                 @foreach (var selectedOption in EstateModel.EstateRoomsKeys)
                 {
                     <div class="w-100 mt-2 d-flex justify-content-between align-items-center bg-white p-2 rounded">
@@ -118,15 +146,23 @@
     [SupplyParameterFromForm] private CreateEstateModel? EstateModel { get; set; }
 
     private CustomValidation? _customValidation;
-    
+
     private bool _isSubmitting;
-    
+
     private string _imgSrc = "background1.jpg";
+
+    private string[] _countries = Array.Empty<string>();
     
+    private Dictionary<string, string[]> _allCities = new Dictionary<string, string[]>();
+
     protected override void OnInitialized()
     {
         EstateModel ??= new CreateEstateModel();
+        EstateModel.EstateCategory ??= EstateCategory.ForRent.ToString();
+        EstateModel.EstateType ??= EstateType.House.ToString();
         EstateModel.Rooms = Enum.GetValues<RoomType>().ToDictionary(x => x.ToString(), x => 0);
+        _countries = GetPredefinedCountries();
+        _allCities = GetPredefinedCities();
     }
 
     private async void HandleValidSubmit()
@@ -135,11 +171,11 @@
         try
         {
             _isSubmitting = true;
-            
+
             var content = new MultipartFormDataContent();
-        
+
             const int maxFileSize = 1024 * 1024 * 2; // 2 MB
-            
+
             var fileContent = new StreamContent(EstateModel!.EstateAvatar?.OpenReadStream(maxAllowedSize: maxFileSize)!);
 
             fileContent.Headers.ContentDisposition = new ContentDispositionHeaderValue("form-data")
@@ -148,9 +184,11 @@
                 FileName = EstateModel!.EstateAvatar!.Name
             };
             fileContent.Headers.ContentType = new MediaTypeHeaderValue(EstateModel.EstateAvatar.ContentType);
-            
+
             EstateModel.Rooms = EstateModel.Rooms!.Where(x => x.Value > 0).ToDictionary(x => x.Key, x => x.Value);
             
+            Console.WriteLine(JsonSerializer.Serialize(EstateModel));
+
             content.Add(fileContent);
             content.Add(new StringContent(EstateModel.EstateType!), "estateType");
             content.Add(new StringContent(EstateModel.EstateCategory!), "estateCategory");
@@ -161,7 +199,7 @@
             content.Add(new StringContent(JsonSerializer.Serialize(EstateModel.Utilities)), "utilities");
             content.Add(new StringContent(JsonSerializer.Serialize(EstateModel.Rooms)), "rooms");
             content.Add(new StringContent(EstateModel.Description!), "description");
-            
+
             var result = await EstateService.Add(content);
 
             if (result != null)
@@ -189,7 +227,7 @@
             StateHasChanged();
         }
     }
-    
+
     private void IncreaseQuantity(string option)
     {
         EstateModel!.Rooms![option]++;
@@ -216,6 +254,7 @@
             EstateModel!.EstateAvatar = null;
             return;
         }
+
         EstateModel!.EstateAvatar = obj.File;
         ShowImagePreview(EstateModel.EstateAvatar!);
     }
@@ -230,5 +269,31 @@
         var imageBase64 = Convert.ToBase64String(buffer);
         _imgSrc = $"data:{file.ContentType};base64,{imageBase64}";
         StateHasChanged();
+    }
+
+    private string[] GetPredefinedCountries()
+    {
+        return new string[]
+        {
+            "Romania", "United States", "Germany", "France", "Japan",
+            "Italy", "Spain", "Canada", "United Kingdom", "Australia"
+        };
+    }
+
+    private Dictionary<string, string[]> GetPredefinedCities()
+    {
+        return new Dictionary<string, string[]>
+        {
+            { "Romania", new string[] { "Bucharest", "Cluj-Napoca", "Timisoara", "Iasi", "Constanta" } },
+            { "United States", new string[] { "New York", "Los Angeles", "Chicago", "Miami", "San Francisco" } },
+            { "Germany", new string[] { "Berlin", "Munich", "Hamburg", "Frankfurt", "Cologne" } },
+            { "France", new string[] { "Paris", "Marseille", "Lyon", "Toulouse", "Nice" } },
+            { "Japan", new string[] { "Tokyo", "Osaka", "Kyoto", "Yokohama", "Sapporo" } },
+            { "Italy", new string[] { "Rome", "Milan", "Naples", "Turin", "Florence" } },
+            { "Spain", new string[] { "Madrid", "Barcelona", "Valencia", "Seville", "Zaragoza" } },
+            { "Canada", new string[] { "Toronto", "Vancouver", "Montreal", "Calgary", "Ottawa" } },
+            { "United Kingdom", new string[] { "London", "Manchester", "Birmingham", "Glasgow", "Edinburgh" } },
+            { "Australia", new string[] { "Sydney", "Melbourne", "Brisbane", "Perth", "Adelaide" } }
+        };
     }
 }
