@@ -2,6 +2,8 @@
 @using HomeHive.UI.Utils
 @using HomeHive.UI.Interfaces
 @using HomeHive.UI.ViewModels
+@using HomeHive.Domain.Common.EntitiesUtils.Estates
+@using HomeHive.Domain.Entities
 @inject ILogger<BuyEstateForm> Logger
 @inject IContractDataService ContractDataService
 @inject IAuthService AuthService
@@ -86,14 +88,25 @@
     private bool _isSubmitting;
     
     private bool _success;
-
+    
     protected override void OnInitialized()
     {
         BuyModel ??= new ContractViewModel
         {
             EstateId = Estate?.Id,
-            ContractType = Estate?.EstateCategory
+            ContractType = GetContractType(Estate?.EstateCategory)
         };
+        Console.WriteLine("ContractType: " + BuyModel.ContractType);
+    }
+    
+    private string? GetContractType(string estateCategory)
+    {
+        return estateCategory switch
+        {
+            "ForSale" => "Sale",
+            "ForRent" => "Rent",
+            _ => null
+            };
     }
 
     protected override async Task OnInitializedAsync()
