@@ -5,6 +5,9 @@
 @using HomeHive.UI.Components.Estates
 @inject IEstateDataService EstateDataService
 @inject ILogger<ViewEstate> Logger
+@inject IConfiguration Configuration
+@using OpenAI.API
+@using OpenAI.API.Completions
 
 <PageTitle>EstateName</PageTitle>
 
@@ -36,6 +39,11 @@ else
                             <hr/>
                             <Utilities EstateUtilities="@EstateViewModel?.Utilities"></Utilities>
                             <Rooms EstateRooms="@EstateViewModel?.Rooms"></Rooms>
+                            <hr/>
+                            <button class="ms-2 btn btn-primary" @onclick="GenerateText">Ask AI for a price</button>
+                            <div class="mt-2">
+                                @generatedText
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -60,6 +68,40 @@ else
     private EstateViewModel? EstateViewModel { get; set; }
     
     private bool _isLoading;
+    
+    private OpenAIAPI client;
+    private string generatedText;
+
+    private string apiKey;
+
+    protected override void OnInitialized()
+    {
+        apiKey = Configuration.GetValue<string>("OpenAI:ApiKey");
+        client = new OpenAIAPI(apiKey);
+    }
+    
+    private async Task GenerateText()
+    {
+        var roomsText = string.Join(", ", EstateViewModel.Rooms.Select(kv => $"{kv.Key}: {kv.Value}"));
+        
+        var utilitiesText = string.Join(", ", EstateViewModel.Utilities);
+        
+        var promptText = $"This estate is {EstateViewModel.EstateCategory} and it is a {EstateViewModel.EstateType} located in {EstateViewModel.Location} with the area of: {EstateViewModel.TotalArea}m2. Rooms: {roomsText}. It has these utilities: {utilitiesText}. It has the price of {EstateViewModel.Price} $. Tell me if the given price is too high or too low, and then tell me an estimate price taking into account only the given information.";
+
+        Console.WriteLine(promptText);
+        var parameters = new CompletionRequest
+        {
+            Model = "gpt-3.5-turbo-instruct",
+            Prompt = promptText,
+            Temperature = 0.1,
+            MaxTokens = 150
+        };
+
+        var response = await client.Completions.CreateCompletionAsync(parameters);
+
+        generatedText = response.Completions[0].Text;
+    }
+
     
     protected override async Task OnInitializedAsync()
     {
