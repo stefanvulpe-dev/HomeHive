@@ -13,13 +13,13 @@
     <div class="form-outline mb-2">
         <label class="form-label" for="login-username">Username</label>
         <InputText id="login-username" class="form-control" placeholder="john_doe123" @bind-Value="@LoginModel!.UserName"/>
-        <ValidationMessage For="@(() => LoginModel.UserName)"/>
+        <ValidationMessage For="@(() => LoginModel!.UserName)"/>
     </div>
 
     <div class="form-outline mb-4">
         <label class="form-label" for="login-password">Password</label>
-        <InputText type="password" id="login-password" class="form-control" placeholder="******" @bind-Value="@LoginModel.Password"/>
-        <ValidationMessage For="@(() => LoginModel.Password)"/>
+        <InputText type="password" id="login-password" class="form-control" placeholder="******" @bind-Value="@LoginModel!.Password"/>
+        <ValidationMessage For="@(() => LoginModel!.Password)"/>
     </div>
 
     <div class="d-flex justify-content-center mb-4">
@@ -29,11 +29,11 @@
     </div>
 
     <div class="text-center">
-        <NavLink href="/reset-link">Forgot your password?</NavLink>
+        <NavLink href="reset-link">Forgot your password?</NavLink>
     </div>
 
     <div class="text-center mt-4">
-        <NavLink href="">Don't have an account? Register here</NavLink>
+        <NavLink href="register">Don't have an account? Register here</NavLink>
     </div>
 </EditForm>
 
