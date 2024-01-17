@@ -10,6 +10,7 @@ public sealed class Contract : BaseEntity
     }
 
     public Guid UserId { get; private set; }
+    public Guid OwnerId { get; private set; }
     public Guid EstateId { get; private set; }
     public Estate? Estate { get; private set; }
     public ContractType? ContractType { get; private set; }
@@ -21,11 +22,14 @@ public sealed class Contract : BaseEntity
 
     public static Result<Contract> Create(Guid userId, ContractData contractData)
     {
-        var (estateId, contractType, contractStatus, price, startDate, endDate, description) = contractData;
+        var (estateId, ownerId, contractType, contractStatus, price, startDate, 
+            endDate, description) = contractData;
 
         if (estateId == Guid.Empty) return Result<Contract>.Failure("EstateId is required.");
 
         if (userId == Guid.Empty) return Result<Contract>.Failure("UserId is required.");
+        
+        if (ownerId == Guid.Empty) return Result<Contract>.Failure("OwnerId is required.");
 
         if (string.IsNullOrWhiteSpace(contractType) || !Enum.TryParse(contractType, out ContractType typeEnum))
             return Result<Contract>.Failure("Type is not valid.");
@@ -44,6 +48,7 @@ public sealed class Contract : BaseEntity
         {
             Estate = null,
             UserId = userId,
+            OwnerId = ownerId,
             EstateId = estateId,
             ContractType = Enum.Parse<ContractType>(contractType),
             Status = Enum.Parse<ContractStatus>(contractStatus),
@@ -57,6 +62,8 @@ public sealed class Contract : BaseEntity
     public void Update(ContractData data)
     {
         if (data.EstateId != Guid.Empty) EstateId = data.EstateId;
+        
+        if (data.OwnerId != Guid.Empty) OwnerId = data.OwnerId;
 
         if (data.Description != null) Description = data.Description;
 

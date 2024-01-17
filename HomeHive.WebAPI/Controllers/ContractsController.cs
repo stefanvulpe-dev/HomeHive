@@ -4,6 +4,7 @@ using HomeHive.Application.Features.Contracts.Commands.CreateContract;
 using HomeHive.Application.Features.Contracts.Commands.DeleteContractById;
 using HomeHive.Application.Features.Contracts.Commands.UpdateContract;
 using HomeHive.Application.Features.Contracts.Queries.GetAllContracts;
+using HomeHive.Application.Features.Contracts.Queries.GetAllContractsByOwnerId;
 using HomeHive.Application.Features.Contracts.Queries.GetAllContractsByUserId;
 using HomeHive.Application.Features.Contracts.Queries.GetContractById;
 using HomeHive.Domain.Common.EntitiesUtils.Contracts;
@@ -128,6 +129,28 @@ public class ContractsController(
         if (isTokenRevoked) return Unauthorized(new { message = "Token is revoked" });
 
         var result = await Mediator.Send(new GetAllContractsQuery());
+
+        if (!result.IsSuccess)
+        {
+            if (result.ValidationsErrors != null)
+                foreach (var (field, error) in result.ValidationsErrors)
+                    logger.LogError($"Field: {field}, Message: {error}");
+            return NotFound(result);
+        }
+
+        return Ok(result);
+    }
+    
+    [Authorize(Roles = "User, Admin")]
+    [HttpGet("All/{ownerId}")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> GetAllByOwnerId(Guid ownerId)
+    {
+        var isTokenRevoked = await tokenCacheService.IsTokenRevokedAsync();
+        if (isTokenRevoked) return Unauthorized(new { message = "Token is revoked" });
+
+        var result = await Mediator.Send(new GetAllContractsByOwnerIdQuery(ownerId));
 
         if (!result.IsSuccess)
         {

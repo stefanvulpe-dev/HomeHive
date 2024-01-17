@@ -9,7 +9,13 @@ public class ContractRepository(HomeHiveContext context) : BaseRepository<Contra
 {
     public async Task<Result<IReadOnlyList<Contract>>> GetContractsByUserId(Guid userId)
     {
-        var result = await Context.Set<Contract>().Where(c => c.UserId == userId).ToListAsync();
+        var result = await Context.Set<Contract>().Where(c => c.UserId == userId || c.OwnerId == userId).ToListAsync();
+        return Result<IReadOnlyList<Contract>>.Success(result);
+    }
+
+    public async Task<Result<IReadOnlyList<Contract>>> GetContractsByOwnerId(Guid requestOwnerId)
+    {
+        var result = await Context.Set<Contract>().Where(c => c.OwnerId == requestOwnerId).ToListAsync();
         return Result<IReadOnlyList<Contract>>.Success(result);
     }
 }

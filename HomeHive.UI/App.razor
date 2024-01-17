@@ -20,7 +20,14 @@
         <NotFound>
             <PageTitle>Not found</PageTitle>
             <LayoutView Layout="@typeof(MainLayout)">
-                <p role="alert">Sorry, there's nothing at this address.</p>
+                <div class="fw-bold d-flex justify-content-center align-items-center min-vh-100">
+                    <div class="column">
+                        <h1 class="display-1 fw-bold ls-tight" style="color: #F0A500">
+                            404 error!
+                        </h1>
+                        <span style="color: #1A1C20; font-size: 20px;">Sorry, there's nothing at this address.</span>
+                    </div>
+                </div>
             </LayoutView>
         </NotFound>
     </Router>

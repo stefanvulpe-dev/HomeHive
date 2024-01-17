@@ -4,14 +4,10 @@ using Microsoft.EntityFrameworkCore;
 
 namespace HomeHive.Infrastructure.Repositories;
 
-public class BaseRepository<T> : IAsyncRepository<T> where T : BaseEntity
+public class BaseRepository<T>(HomeHiveContext context) : IAsyncRepository<T>
+    where T : BaseEntity
 {
-    protected readonly HomeHiveContext Context;
-
-    public BaseRepository(HomeHiveContext context)
-    {
-        Context = context;
-    }
+    protected readonly HomeHiveContext Context = context;
 
     public virtual async Task<Result<T>> AddAsync(T entity)
     {

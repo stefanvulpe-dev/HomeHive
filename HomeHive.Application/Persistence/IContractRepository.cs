@@ -6,4 +6,5 @@ namespace HomeHive.Application.Persistence;
 public interface IContractRepository : IAsyncRepository<Contract>
 {
     Task<Result<IReadOnlyList<Contract>>> GetContractsByUserId(Guid userId);
+    Task<Result<IReadOnlyList<Contract>>> GetContractsByOwnerId(Guid requestOwnerId);
 }

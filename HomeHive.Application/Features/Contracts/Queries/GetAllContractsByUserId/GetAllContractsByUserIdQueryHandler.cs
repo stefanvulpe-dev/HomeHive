@@ -23,6 +23,8 @@ public class GetAllContractsByUserIdQueryHandler(IContractRepository repository)
             Contracts = result.Value.Select(c => new ContractDto
             {
                 Id = c.Id,
+                UserId = c.UserId,
+                OwnerId = c.OwnerId,
                 EstateId = c.EstateId,
                 ContractType = c.ContractType.ToString(),
                 Status = c.Status.ToString(),

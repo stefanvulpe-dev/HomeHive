@@ -1,0 +1,144 @@
+@using HomeHive.UI.ViewModels.Estates
+@using HomeHive.UI.Utils
+@using HomeHive.UI.Components.Authentication
+@using HomeHive.UI.Interfaces
+@using HomeHive.Domain.Common.EntitiesUtils.Rooms
+@using ContentDispositionHeaderValue = System.Net.Http.Headers.ContentDispositionHeaderValue
+@using MediaTypeHeaderValue = System.Net.Http.Headers.MediaTypeHeaderValue
+@inject ILogger<LoginForm> Logger
+@inject IEstateDataService EstateService
+
+
+<EditForm Model="@EditEstateAvatarModel" OnValidSubmit="@HandleValidSubmit" FormName="editEstateAvatar">
+    <DataAnnotationsValidator/>
+    <CustomValidation @ref="@_customValidation"/>
+    <div class="image-container mb-3">
+        <img src="@_imgSrc" alt="avatar image" class="rounded"/>
+        <small>This is the first image the clients we'll see when searching for this estate.</small>
+        <InputFile class="form-control" id="estateAvatar" OnChange="@OnInputFileChange" accept=".jpg,.jpeg,.png"/>
+        <ValidationMessage For="@(() => EditEstateAvatarModel!.EstateAvatar)"></ValidationMessage>
+    </div>
+    <div class="d-flex justify-content-center">
+        <button type="submit" class="btn btn-primary" disabled="@_isSubmitting">Update Avatar</button>
+    </div>
+</EditForm>
+
+@if (_isSuccess)
+{
+    <div class="alert alert-success mt-2" role="alert">
+        Avatar updated successfully!
+    </div>
+}
+@if (_isError)
+{
+    <div class="alert alert-danger mt-2" role="alert">
+        An error occurred while updating the avatar.
+    </div>
+
+}
+
+@code {
+    [SupplyParameterFromForm] private EditEstateAvatarModel? EditEstateAvatarModel { get; set; }
+    
+    private CustomValidation? _customValidation;
+    
+    [Parameter]
+    public string? EstateAvatar { get; set; }
+    
+    [Parameter]
+    public Guid? EstateId { get; set; }
+    
+    private string? _imgSrc;
+    
+    private bool _isSubmitting;
+    
+    private bool _isSuccess;
+    
+    private bool _isError;
+
+    protected override void OnInitialized()
+    {
+        EditEstateAvatarModel ??= new EditEstateAvatarModel();
+        _imgSrc = EstateAvatar;
+    }
+
+    private async void HandleValidSubmit()
+    {
+        _customValidation?.ClearErrors();
+        try
+        {
+            _isSubmitting = true;
+            
+            var content = new MultipartFormDataContent();
+        
+            const int maxFileSize = 1024 * 1024 * 2; // 2 MB
+            
+            var fileContent = new StreamContent(EditEstateAvatarModel!.EstateAvatar?.OpenReadStream(maxAllowedSize: maxFileSize)!);
+
+            fileContent.Headers.ContentDisposition = new ContentDispositionHeaderValue("form-data")
+            {
+                Name = "estateAvatar",
+                FileName = EditEstateAvatarModel!.EstateAvatar!.Name
+            };
+            fileContent.Headers.ContentType = new MediaTypeHeaderValue(EditEstateAvatarModel.EstateAvatar.ContentType);
+            
+            content.Add(fileContent);
+            
+            var result= await EstateService.UpdateAvatar(content, EstateId!);
+            
+            if (result != null)
+            {
+                if (result.IsSuccess)
+                {
+                    Logger.LogInformation(result.Message);
+                    _isSuccess = true;
+                    StateHasChanged();
+                }
+                else
+                {
+                    Logger.LogError(result.Message);
+                    _isError = true;
+                }
+            }
+        }
+        catch (Exception)
+        {
+            Logger.LogError("An error occurred while updating the avatar.");
+        }
+        finally
+        {
+            _isSubmitting = false;
+            StateHasChanged();
+        }
+    }
+    
+
+    private void OnInputFileChange(InputFileChangeEventArgs obj)
+    {
+        _customValidation?.ClearErrors();
+        const int maxAllowedSize = 2 * 1024 * 1024; // 2MB
+        if (obj.File.Size > maxAllowedSize)
+        {
+            _customValidation?.DisplayErrors(new Dictionary<string, string>
+            {
+                { "EstateAvatar", "File size exceeds 2MB limit" }
+            });
+            EditEstateAvatarModel!.EstateAvatar = null;
+            return;
+        }
+        EditEstateAvatarModel!.EstateAvatar = obj.File;
+        ShowImagePreview(EditEstateAvatarModel.EstateAvatar!);
+    }
+
+    private async void ShowImagePreview(IBrowserFile file)
+    {
+        var format = file.ContentType.Contains("png") ? "png" : "jpeg";
+        var resizedImageFile = await file.RequestImageFileAsync(format, 600, 600);
+        var buffer = new byte[resizedImageFile.Size];
+        const int maxAllowedSize = 2 * 1024 * 1024; // 2MB
+        var readAsync = await resizedImageFile.OpenReadStream(maxAllowedSize: maxAllowedSize).ReadAsync(buffer);
+        var imageBase64 = Convert.ToBase64String(buffer);
+        _imgSrc = $"data:{file.ContentType};base64,{imageBase64}";
+        StateHasChanged();
+    }
+}

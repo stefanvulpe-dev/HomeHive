@@ -1,0 +1,138 @@
+@page "/edit-estate/{EstateId:guid}"
+@using HomeHive.UI.ViewModels.Estates
+@using Microsoft.AspNetCore.Authorization
+@using HomeHive.UI.Interfaces
+@using HomeHive.UI.Components.Profile.EditEstate
+@inject NavigationManager NavigationManager
+@inject IEstateDataService EstateDataService
+@inject ILogger<EditEstate> Logger
+@inject IJSRuntime JsRuntime
+@layout ProfileLayout
+@attribute [Authorize(Roles = "User, Admin")]
+
+
+<div class="profile-card col d-flex flex-column h-sm-100 min-vh-100">
+    <div class="card-body">
+        <div class="row">
+            <div class="mb-3">
+                @if (_isLoading)
+                {
+                    <div class="row justify-content-between align-items-center">
+                        <div class="col-auto">
+                            <p class="fs-3 mb-0">Edit Estate</p>
+                        </div>
+                    </div>
+                    <hr/>
+                    <div class="fw-bold" style="display:flex; gap:10px; justify-content:center; align-items:center">
+                        <div class="spinner-border" role="status"></div>
+                        Loading...
+                    </div>
+                }
+                else
+                {
+                    <div class="row justify-content-between align-items-center">
+                        <div class="col-auto">
+                            <p class="fs-3 mb-0">Edit Estate</p>
+                        </div>
+                        <div class="col-auto">
+                            <button class="btn btn-primary" @onclick="Cancel">Cancel Edit</button>
+                        </div>
+                    </div>
+                    <hr/>
+                    <div class="row justify-content-center align-items-start gap-4 gap-lg-0">
+                        <EditEstateAvatarForm EstateAvatar="@Estate!.EstateAvatar" EstateId="@Estate.Id"></EditEstateAvatarForm>
+                    </div>
+                    <hr/>
+                    <AddEstateImages EstateId="@Estate.Id" EstatePhotos="@Estate.EstatePhotos" />
+                    <EditEstateForm Estate="@Estate"></EditEstateForm>
+                    <div class="d-flex gap-2 flex-column">
+                        <p class="fs-5 fw-bold text-center text-lg-start">Remove your estate from HomeHive</p>
+                        <p class="text-center text-lg-start">Deleting your estate is irreversible. We will remove your estate from the website and it will
+                            no longer be visible to other users.</p>
+                        <button class="btn btn-danger align-self-center align-self-lg-start" @onclick="DeleteEstate">Delete estate</button>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@code{
+    [Parameter] public Guid? EstateId { get; set; }
+
+    private EstateViewModel? Estate { get; set; }
+
+    private bool _isLoading = true;
+    
+    protected override async Task OnInitializedAsync()
+    {
+        var result = await EstateDataService.GetById(EstateId);
+
+        if (result is { IsSuccess: true })
+        {
+            var e = result.Estate!;
+
+            Estate = new EstateViewModel
+            {
+                Id = e.Id,
+                EstateType = e.EstateType,
+                EstateCategory = e.EstateCategory,
+                Name = e.Name,
+                Location = e.Location,
+                Price = e.Price,
+                TotalArea = e.TotalArea,
+                Utilities = e.Utilities!,
+                Rooms = e.EstateRooms,
+                Description = e.Description,
+                EstateAvatar = e.EstateAvatar
+            };
+            
+            var photosResult = await EstateDataService.GetEstatePhotos(EstateId);
+            
+            if (photosResult is { IsSuccess: true })
+            {
+                var photos = photosResult.EstatePhotos!.Select(Convert.ToBase64String).Select(base64 => $"data:image/png;base64,{base64}").ToList();
+                Estate.EstatePhotos = photos;
+            }
+            else
+            {
+                Logger.LogError("Failed to load estate photos");
+                Logger.LogError(photosResult!.Message);
+            }
+            
+            Logger.LogInformation("Estate loaded successfully");
+            _isLoading = false;
+        }
+    }
+
+    private void Cancel()
+    {
+        NavigationManager.NavigateTo("/listed-estates");
+    }
+    
+    private async void DeleteEstate()
+    {
+        var confirmed = await JsRuntime.InvokeAsync<bool>("confirm", "Are you sure you want to delete this estate?");
+        
+        if (!confirmed)
+        {
+            return;
+        }
+        
+        var deleteResult = await EstateDataService.DeleteById(EstateId!);
+        
+        if (deleteResult is { IsSuccess: true })
+        {
+            Logger.LogInformation("Estate deleted successfully");
+            await JsRuntime.InvokeVoidAsync("alert", "Estate deleted successfully");
+            NavigationManager.NavigateTo("/listed-estates");
+        }
+        else
+        {
+            Logger.LogError("Estate deletion failed");
+            Logger.LogError(deleteResult!.Message);
+        }
+    }
+    
+}

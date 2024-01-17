@@ -1,0 +1,49 @@
+@using HomeHive.UI.Interfaces
+@inject IUserDataService UserDataService
+
+<p class="fs-3">Token</p>
+<hr />
+
+<EditForm Model="@_model" OnSubmit="@HandleSubmit" FormName="tokenForm">
+    <div>
+        <small>
+            A unique confirmation token, a dynamically generated alphanumeric code, is prepared by the system.
+            This token serves as a personalized key to verify your identity and authorize specific actions on your account.
+            The token will be sent for secure retrieval. Please remember that you can only use the token once.
+        </small>
+        <br/>
+        @if (_showConfirmationMessage)
+                {
+                    <small class="text-success mb-5">
+                        An email will be sent to you in the next few minutes. Please check your inbox.
+                    </small>
+                }
+        <div class="d-flex justify-content-center mt-3 mb-3">
+            <button type="submit" class="btn btn-primary" @onclick="ShowConfirmationMessage">Send Token</button>
+        </div>
+    </div>
+</EditForm>
+
+@code {
+    
+    [Parameter]
+    public string? Purpose { get; set; }
+    
+    private bool _showConfirmationMessage;
+
+    private async void HandleSubmit()
+    {
+        var result = await UserDataService.GetResetToken(Purpose);
+        
+        _showConfirmationMessage = result!.IsSuccess;
+    }
+    
+    private void ShowConfirmationMessage()
+    {
+        _showConfirmationMessage = true;
+    }
+    
+    private class TokenFormModel;
+    
+    private TokenFormModel _model = new TokenFormModel();
+}

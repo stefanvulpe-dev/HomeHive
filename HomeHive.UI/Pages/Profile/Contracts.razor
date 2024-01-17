@@ -1,0 +1,13 @@
+@page "/Contracts"
+@using Microsoft.AspNetCore.Authorization
+@using  HomeHive.UI.Components.Profile.Contracts
+@layout ProfileLayout
+@attribute [Authorize(Roles = "User, Admin")]
+
+
+<div class="profile-card col d-flex flex-column h-sm-100 min-vh-100">
+    <div class="card-body">
+        <PendingOffers></PendingOffers>
+        <SignedContracts></SignedContracts>
+    </div>
+</div>

@@ -29,6 +29,7 @@ public class UpdateContractCommandValidator : AbstractValidator<UpdateContractCo
             {
                 if (contractData != null
                     && contractData.EstateId == Guid.Empty
+                    && contractData.OwnerId == Guid.Empty
                     && contractData.ContractType == null
                     && contractData.Status == null
                     && contractData.StartDate == null

@@ -1,0 +1,33 @@
+@page "/register"
+@using HomeHive.UI.Components.Authentication
+@using HomeHive.UI.Components.General
+
+<PageTitle>Register</PageTitle>
+
+<section class="d-flex align-items-center justify-content-center min-vh-100">
+    <div class="container px-4 py-5 px-md-5 text-center text-lg-start my-5">
+        <div class="row align-items-center">
+            <div class="col-lg-6 mb-lg-0" style="z-index: 10">
+                <h1 class="my-5 display-5 fw-bold ls-tight" style="color: #F0A500">
+                    HomeHive <br/>
+                    <span style="color: #1A1C20">for the perfect nest.</span>
+                </h1>
+                <p class="mb-4 opacity-70" style="color: #1A1C20">
+                    Discover a world where every corner tells a story,
+                    and every room is designed for comfort and style.
+                    At HomeHive, we believe in creating spaces that reflect your unique personality and make every moment special.
+                    Are you ready to find your perfect nest? Learn more about us <a href="/AboutUs">here</a>.
+                </p>
+            </div>
+
+            <div class="col-lg-6 mb-lg-0">
+                <div class="card">
+                    <div class="card-body px-4 py-5 px-md-5">
+                        <RegistrationForm/>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<Footer></Footer>

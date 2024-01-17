@@ -5,26 +5,17 @@ using HomeHive.Domain.Entities;
 
 namespace HomeHive.Application.Features.Estates.Commands.UpdateEstate;
 
-public class UpdateEstateCommandHandler : ICommandHandler<UpdateEstateCommand, UpdateEstateCommandResponse>
+public class UpdateEstateCommandHandler(
+    IEstateRepository estateRepository,
+    IUtilityRepository utilityRepository,
+    IRoomRepository roomRepository,
+    IEstateRoomRepository estateRoomRepository)
+    : ICommandHandler<UpdateEstateCommand, UpdateEstateCommandResponse>
 {
-    private readonly IEstateRepository _estateRepository;
-    private readonly IUtilityRepository _utilityRepository;
-    private readonly IRoomRepository _roomRepository;
-    private readonly IEstateRoomRepository _estateRoomRepository;
-
-    public UpdateEstateCommandHandler(IEstateRepository estateRepository, IUtilityRepository utilityRepository,
-        IRoomRepository roomRepository, IEstateRoomRepository estateRoomRepository)
-    {
-        _estateRepository = estateRepository;
-        _utilityRepository = utilityRepository;
-        _roomRepository = roomRepository;
-        _estateRoomRepository = estateRoomRepository;
-    }
-
     public async Task<UpdateEstateCommandResponse> Handle(UpdateEstateCommand command,
         CancellationToken cancellationToken)
     {
-        var validator = new UpdateEstateCommandValidator(_estateRepository, _utilityRepository, _roomRepository);
+        var validator = new UpdateEstateCommandValidator(estateRepository, utilityRepository, roomRepository);
         var validationResult = await validator.ValidateAsync(command, cancellationToken);
 
         if (!validationResult.IsValid)
@@ -41,7 +32,7 @@ public class UpdateEstateCommandHandler : ICommandHandler<UpdateEstateCommand, U
             };
         }
 
-        var estateResult = await _estateRepository.FindByIdAsync(command.EstateId);
+        var estateResult = await estateRepository.FindByIdAsync(command.EstateId);
         if (!estateResult.IsSuccess)
             return new UpdateEstateCommandResponse
             {
@@ -57,11 +48,11 @@ public class UpdateEstateCommandHandler : ICommandHandler<UpdateEstateCommand, U
         {
             foreach (var pair in validator.Rooms)
             {
-                var estateRoomResult = await _estateRoomRepository.FindBy(existingEstate.Id, pair.Key.Id);
+                var estateRoomResult = await estateRoomRepository.FindBy(existingEstate.Id, pair.Key.Id);
                 if (estateRoomResult.IsSuccess)
                 {
                     estateRoomResult.Value.Update(existingEstate.Id, pair.Key.Id, pair.Value);
-                    await _estateRoomRepository.UpdateAsync(estateRoomResult.Value);
+                    await estateRoomRepository.UpdateAsync(estateRoomResult.Value);
                     estateRooms.Add(estateRoomResult.Value);
                 }
                 else
@@ -74,7 +65,7 @@ public class UpdateEstateCommandHandler : ICommandHandler<UpdateEstateCommand, U
                             ValidationsErrors = new Dictionary<string, List<string>> { { "EstateRoom",  estateRoom.ValidationErrors!.Select(er => er.Value).ToList() } }
                         };
             
-                    await _estateRoomRepository.AddAsync(estateRoomResult.Value);
+                    await estateRoomRepository.AddAsync(estateRoomResult.Value);
                     estateRooms.Add(estateRoomResult.Value);
                 }
             }
@@ -82,7 +73,7 @@ public class UpdateEstateCommandHandler : ICommandHandler<UpdateEstateCommand, U
         
         existingEstate.Update(validator.Utilities!, estateRooms, command.EstateData);
 
-        await _estateRepository.UpdateAsync(existingEstate);
+        await estateRepository.UpdateAsync(existingEstate);
 
         return new UpdateEstateCommandResponse
         {

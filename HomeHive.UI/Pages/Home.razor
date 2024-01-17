@@ -1,20 +1,115 @@
-﻿@page "/home"
+﻿@page "/"
 @using HomeHive.UI.Components.General
+@using HomeHive.UI.ViewModels.Estates
+@using HomeHive.UI.Interfaces
+@using HomeHive.UI.Pages.Profile
+@inject IEstateDataService EstateService
+@inject ILogger<ListedEstates> Logger
+
 <PageTitle>Home</PageTitle>
 
 <Navbar></Navbar>
 <section class="about-one min-vh-100 p-0">
     <WelcomeCard></WelcomeCard>
     <HomeCards></HomeCards>
-    <SearchBar></SearchBar>
-    <div class="row justify-content-center m-3 m-sm-0">
-        <EstateCard></EstateCard>
-        <EstateCard></EstateCard>
-        <EstateCard></EstateCard>
-        <EstateCard></EstateCard>
-        <EstateCard></EstateCard>
-        <EstateCard></EstateCard>
+    <SearchBar OnSearch="(searchModel) => HandleSearch((SearchModel)searchModel)"></SearchBar>
+    <div class="row justify-content-center m-3 m-md-0">
+         @if (_isLoading)
+                    {
+                        <div class="mt-4 fw-bold" style="display:flex; gap:10px; justify-content:center; align-items:center">
+                            <div class="spinner-border" role="status"></div>
+                            Loading...
+                        </div>
+                    }
+                    else
+                    {
+                        @if (Estates != null && Estates.Any())
+                        {
+                            @foreach (var estate in Estates)
+                            {
+                                <EstateCard Estate="@estate"></EstateCard>
+                            }
+                        }
+                        else
+                        {
+                            <div class="col-12">
+                                <p class="text-center">There are no properties available.</p>
+                            </div>
+                        }
+                    }
     </div>
-
 </section>
 <Footer></Footer>
+
+@code {
+    private List<EstateViewModel>? Estates { get; set; }
+    
+    private bool _isLoading = true;
+    
+    private async Task HandleSearch(SearchModel searchModel)
+    {
+        _isLoading = true;
+
+        var result = await EstateService.GetAll();
+        if (result is { IsSuccess: true })
+        {
+            if (result.Estates != null)
+                Estates = result.Estates.Select(e => new EstateViewModel
+                {
+                    Id = e.Id,
+                    OwnerId = e.OwnerId,
+                    EstateCategory = e.EstateCategory,
+                    EstateType = e.EstateType,
+                    Name = e.Name,
+                    Location = e.Location,
+                    Price = e.Price,
+                    TotalArea = e.TotalArea,
+                    Utilities = e.Utilities!,
+                    Description = e.Description,
+                    EstateAvatar = e.EstateAvatar
+                }).ToList();
+        }
+        else
+        {
+            Logger.LogError($"Error getting estates: {result?.Message}");
+        }
+        
+        
+        if(!string.IsNullOrEmpty(searchModel.Name) && Estates != null)
+        {
+            Estates = Estates.Where(e => e.Name!.ToLower().Contains(searchModel.Name.ToLower())).ToList();
+        }
+
+        _isLoading = false;
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        var result = await EstateService.GetAll();
+
+        if (result is { IsSuccess: true })
+        {
+            if (result.Estates != null)
+                Estates = result.Estates.Select(e => new EstateViewModel
+                {
+                    Id = e.Id,
+                    OwnerId = e.OwnerId,
+                    EstateCategory = e.EstateCategory,
+                    EstateType = e.EstateType,
+                    Name = e.Name,
+                    Location = e.Location,
+                    Price = e.Price,
+                    TotalArea = e.TotalArea,
+                    Utilities = e.Utilities!,
+                    Description = e.Description,
+                    EstateAvatar = e.EstateAvatar
+                }).ToList();
+        }
+        else
+        {
+            Logger.LogError($"Error getting estates: {result?.Message}");
+        }
+        _isLoading = false;
+    }
+
+}

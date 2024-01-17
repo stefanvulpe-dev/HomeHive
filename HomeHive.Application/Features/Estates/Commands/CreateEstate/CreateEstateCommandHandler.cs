@@ -1,10 +1,12 @@
 ﻿using HomeHive.Application.Contracts.Commands;
+using HomeHive.Application.Contracts.Interfaces;
 using HomeHive.Application.Persistence;
+using HomeHive.Domain.Common.EntitiesUtils.Estates;
 using HomeHive.Domain.Entities;
 
 namespace HomeHive.Application.Features.Estates.Commands.CreateEstate;
 
-public class CreateEstateCommandHandler(IEstateRepository repository, IUtilityRepository utilityRepository,
+public class CreateEstateCommandHandler(IBlobStorageService blobStorageService, IEstateRepository repository, IUtilityRepository utilityRepository,
     IRoomRepository roomRepository, IEstateRoomRepository estateRoomRepository)
     : ICommandHandler<CreateEstateCommand, CreateEstateCommandResponse>
 {
@@ -27,28 +29,62 @@ public class CreateEstateCommandHandler(IEstateRepository repository, IUtilityRe
                 ValidationsErrors = validationErrors
             };
         }
-
-        var result = Estate.Create(command.OwnerId, validator.Utilities!, command.EstateData);
-        var estate = result.Value;
-        await repository.AddAsync(estate);
         
-        if (!result.IsSuccess)
+        var estateAvatarName = Guid.NewGuid().ToString();
+        
+        var estateAvatarFile = command.CreateEstateFormData.EstateAvatar!.OpenReadStream();
+        
+        var uploadResult = await blobStorageService.UploadBlobAsync(estateAvatarName, estateAvatarFile, cancellationToken);
+        
+        if (!uploadResult)
             return new CreateEstateCommandResponse
             {
                 IsSuccess = false,
-                ValidationsErrors = new Dictionary<string, List<string>> { { "Estate", [result.Message] } }
+                ValidationsErrors = new Dictionary<string, List<string>> { { "EstateAvatar",  new List<string> {"Failed to upload estate avatar."} } }
+            };
+
+        var createEstateData = new EstateData(
+            command.CreateEstateFormData.EstateType,
+            command.CreateEstateFormData.EstateCategory,
+            command.CreateEstateFormData.Name,
+            command.CreateEstateFormData.Location,
+            command.CreateEstateFormData.Price,
+            command.CreateEstateFormData.TotalArea,
+            command.CreateEstateFormData.Utilities,
+            command.CreateEstateFormData.Rooms,
+            command.CreateEstateFormData.Description,
+            estateAvatarName
+        );
+        
+        var createResult = Estate.Create(command.OwnerId, validator.Utilities!, createEstateData);
+        
+        if (!createResult.IsSuccess)
+            return new CreateEstateCommandResponse
+            {
+                IsSuccess = false,
+                ValidationsErrors = new Dictionary<string, List<string>> { { "Estate",  createResult.ValidationErrors!.Select(er => er.Value).ToList() } }
+            };
+        
+        var estate = createResult.Value;
+        
+        var addResult = await repository.AddAsync(estate);
+        
+        if (!addResult.IsSuccess)
+            return new CreateEstateCommandResponse
+            {
+                IsSuccess = false,
+                ValidationsErrors = new Dictionary<string, List<string>> { { "Estate",  new List<string> {addResult.Message} } }
             };
         
         var estateRooms = new List<EstateRoom>();
         
-        foreach (var pair in validator.Rooms!)
+        foreach (var estateRoom in validator.Rooms!.Select(pair => EstateRoom.Create(estate.Id, pair.Key.Id, pair.Value)))
         {
-            var estateRoom = EstateRoom.Create(estate.Id, pair.Key.Id, pair.Value);
             if (!estateRoom.IsSuccess)
                 return new CreateEstateCommandResponse
                 {
                     IsSuccess = false,
-                    ValidationsErrors = new Dictionary<string, List<string>> { { "EstateRoom",  estateRoom.ValidationErrors!.Select(er => er.Value).ToList() } }
+                    ValidationsErrors = new Dictionary<string, List<string>> { { "Rooms",  estateRoom.ValidationErrors!.Select(er => er.Value).ToList() } }
                 };
         
             await estateRoomRepository.AddAsync(estateRoom.Value);

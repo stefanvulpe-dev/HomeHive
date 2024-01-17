@@ -1,0 +1,81 @@
+@using HomeHive.UI.Interfaces
+@inject IJSRuntime JsRuntime
+@inject IEstateDataService EstateDataService
+@inject ILogger<ViewEstateCarousel> Logger
+
+
+@if (_isLoading)
+{
+    <div class="position-absolute top-50 start-50 translate-middle">
+        <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+    </div>
+}
+else
+{
+    <div id="@CarouselName" class="carousel slide" data-bs-ride="carousel" data-bs-wrap="true" data-bs-interval="20000" data-bs-pause="false">
+        <div class="carousel-inner">
+            @foreach (var item in _carouselItems)
+            {
+                <div class="carousel-item @(item == _carouselItems[0] ? "active" : "")">
+                    <img src="@item" class="d-block w-100 rounded" alt="estate-image" height="600px">
+                </div>
+            }
+        </div>
+        <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Previous</span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Next</span>
+        </button>
+    </div>
+}    
+
+@code {
+    const string CarouselName = "carouselExampleIndicators";
+
+    [Parameter] public Guid? EstateId { get; set; }
+
+    private IReadOnlyList<byte[]>? _estatePhotos = new List<byte[]>();
+
+    private readonly List<string> _carouselItems = new();
+
+    private bool _isLoading;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender) return;
+        object[] args = { CarouselName };
+        await JsRuntime.InvokeVoidAsync("startCarousel", args);
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        _isLoading = true;
+        var estatePhotosResult = await EstateDataService.GetEstatePhotos(EstateId);
+
+        var estateAvatarResult = await EstateDataService.GetById(EstateId);
+
+        var avatar = estateAvatarResult?.Estate?.EstateAvatar;
+        if (avatar != null) _carouselItems.Add(avatar);
+
+        if (estatePhotosResult is { IsSuccess: true })
+        {
+            _estatePhotos = estatePhotosResult.EstatePhotos;
+            foreach (var photo in _estatePhotos!)
+            {
+                _carouselItems.Add($"data:image/png;base64,{Convert.ToBase64String(photo)}");
+            }
+        }
+        else
+        {
+            Logger.LogError("Error while getting estate photos");
+        }
+        _isLoading = false;
+        await base.OnInitializedAsync();
+    }
+
+}

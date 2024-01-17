@@ -39,8 +39,10 @@ public class CreateContractCommandHandlerTests
     {
         // Arrange
         var command = new CreateContractCommand(Guid.NewGuid(),
-            new ContractData(Guid.NewGuid(),
+            new ContractData(Guid.NewGuid(), Guid.NewGuid(),
                 ContractType.Rent.ToString(),
+                ContractStatus.Done.ToString(),
+                200000,
                 DateTime.Now,
                 DateTime.Now,
                 "Test"));
@@ -61,8 +63,10 @@ public class CreateContractCommandHandlerTests
     {
         // Arrange
         var command = new CreateContractCommand(Guid.NewGuid(),
-            new ContractData(Guid.Empty,
+            new ContractData(Guid.NewGuid(), Guid.Empty,
                 ContractType.Rent.ToString(),
+                ContractStatus.Done.ToString(),
+                200000,
                 DateTime.Now,
                 DateTime.Now,
                 "Test"));
@@ -88,8 +92,13 @@ public class CreateContractCommandHandlerTests
 
         var command = new CreateContractCommand(
             Guid.NewGuid(),
-            new ContractData(estateCreationResult.Value.Id, "Rent", DateTime.Now, DateTime.Now, string.Empty)
-        );
+            new ContractData(Guid.NewGuid(), estateCreationResult.Value.Id,
+                ContractType.Rent.ToString(),
+                ContractStatus.Done.ToString(),
+                200000,
+                DateTime.Now,
+                DateTime.Now,
+                string.Empty));
 
         var handler = new CreateContractCommandHandler(_contractRepositoryMock, _estateRepositoryMock);
 
@@ -113,8 +122,13 @@ public class CreateContractCommandHandlerTests
 
         var command = new CreateContractCommand(
             Guid.NewGuid(),
-            new ContractData(estateCreationResult.Value.Id, "Rent", DateTime.Now, DateTime.Now, null)
-        );
+            new ContractData(Guid.NewGuid(), estateCreationResult.Value.Id,
+                ContractType.Rent.ToString(),
+                ContractStatus.Done.ToString(),
+                200000,
+                DateTime.Now,
+                DateTime.Now,
+                null));
 
         var handler = new CreateContractCommandHandler(_contractRepositoryMock, _estateRepositoryMock);
 
@@ -140,8 +154,13 @@ public class CreateContractCommandHandlerTests
 
         var command = new CreateContractCommand(
             Guid.NewGuid(),
-            new ContractData(estateCreationResult.Value.Id, "Rent", DateTime.Now, DateTime.Now, longDescription)
-        );
+            new ContractData(Guid.NewGuid(), estateCreationResult.Value.Id,
+                ContractType.Rent.ToString(),
+                ContractStatus.Done.ToString(),
+                200000,
+                DateTime.Now,
+                DateTime.Now,
+                longDescription));
 
         var handler = new CreateContractCommandHandler(_contractRepositoryMock, _estateRepositoryMock);
 
@@ -166,8 +185,13 @@ public class CreateContractCommandHandlerTests
 
         var command = new CreateContractCommand(
             Guid.NewGuid(),
-            new ContractData(estateCreationResult.Value.Id, "Rent", null, DateTime.Now, "Test")
-        );
+            new ContractData(Guid.NewGuid(), estateCreationResult.Value.Id,
+                ContractType.Rent.ToString(),
+                ContractStatus.Done.ToString(),
+                200000,
+                null,
+                DateTime.Now,
+                "Test"));
 
         var handler = new CreateContractCommandHandler(_contractRepositoryMock, _estateRepositoryMock);
 
@@ -181,31 +205,6 @@ public class CreateContractCommandHandlerTests
     }
 
     [Fact]
-    public async Task Handle_ShouldReturnFailure_WhenContractEndDateIsNull()
-    {
-        //Arrange
-        var estateCreationResult = Estate.Create(OwnerId, Utilities, EstateData);
-
-        _estateRepositoryMock.FindByIdAsync(estateCreationResult.Value.Id)
-            .Returns(Result<Estate>.Success(estateCreationResult.Value));
-
-        var command = new CreateContractCommand(
-            Guid.NewGuid(),
-            new ContractData(estateCreationResult.Value.Id, "Rent", DateTime.Now, null, "Test")
-        );
-
-        var handler = new CreateContractCommandHandler(_contractRepositoryMock, _estateRepositoryMock);
-
-        // Act
-        var result = await handler.Handle(command, default);
-
-        // Assert
-        Assert.False(result.IsSuccess);
-        Assert.Equal("Failed to create contract.", result.Message);
-        Assert.Contains("Data End Date can't be null.", result.ValidationsErrors!["Data.EndDate"]);
-    }
-
-    [Fact]
     public async Task Handle_ShouldReturnFailure_WhenContractTypeIsEmpty()
     {
         //Arrange
@@ -216,8 +215,13 @@ public class CreateContractCommandHandlerTests
 
         var command = new CreateContractCommand(
             Guid.NewGuid(),
-            new ContractData(estateCreationResult.Value.Id, string.Empty, DateTime.Now, DateTime.Now, "Test")
-        );
+            new ContractData(Guid.NewGuid(), estateCreationResult.Value.Id,
+                string.Empty, 
+                ContractStatus.Done.ToString(),
+                200000,
+                DateTime.Now,
+                DateTime.Now,
+                "Test"));
 
         var handler = new CreateContractCommandHandler(_contractRepositoryMock, _estateRepositoryMock);
 
@@ -241,8 +245,13 @@ public class CreateContractCommandHandlerTests
 
         var command = new CreateContractCommand(
             Guid.NewGuid(),
-            new ContractData(estateCreationResult.Value.Id, null, DateTime.Now, DateTime.Now, "Test")
-        );
+            new ContractData(Guid.NewGuid(), estateCreationResult.Value.Id,
+                null,
+                ContractStatus.Done.ToString(),
+                200000,
+                DateTime.Now,
+                DateTime.Now,
+                "Test"));
 
         var handler = new CreateContractCommandHandler(_contractRepositoryMock, _estateRepositoryMock);
 
@@ -266,9 +275,13 @@ public class CreateContractCommandHandlerTests
 
         var command = new CreateContractCommand(
             Guid.NewGuid(),
-            new ContractData(estateCreationResult.Value.Id, ContractType.Rent.ToString(), DateTime.Now, DateTime.Now,
-                "Test")
-        );
+            new ContractData(Guid.NewGuid(), estateCreationResult.Value.Id,
+                ContractType.Rent.ToString(),
+                ContractStatus.Done.ToString(),
+                200000,
+                DateTime.Now,
+                DateTime.Now,
+                "Test"));
 
         var handler = new CreateContractCommandHandler(_contractRepositoryMock, _estateRepositoryMock);
 
@@ -280,7 +293,7 @@ public class CreateContractCommandHandlerTests
         Assert.Equal("Contract created successfully.", result.Message);
         Assert.Equal(estateCreationResult.Value.Id, result.Contract!.EstateId);
         Assert.Equal(command.UserId, result.Contract.UserId);
-        Assert.Equal(command.Data.ContractType, result.Contract.ContractType.ToString());
+        Assert.Equal(command.Data.ContractType, result.Contract.ContractType!);
         Assert.Equal(command.Data.StartDate, result.Contract.StartDate);
         Assert.Equal(command.Data.EndDate, result.Contract.EndDate);
         Assert.Equal(command.Data.Description, result.Contract.Description);

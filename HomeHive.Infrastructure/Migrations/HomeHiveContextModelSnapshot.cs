@@ -67,6 +67,9 @@ namespace HomeHive.Infrastructure.Migrations
                     b.Property<DateTime>("LastModifiedDate")
                         .HasColumnType("timestamp with time zone");
 
+                    b.Property<Guid>("OwnerId")
+                        .HasColumnType("uuid");
+
                     b.Property<decimal?>("Price")
                         .HasColumnType("numeric");
 

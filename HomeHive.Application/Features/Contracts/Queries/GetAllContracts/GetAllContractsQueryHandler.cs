@@ -22,6 +22,7 @@ public class GetAllContractsQueryHandler(IContractRepository repository)
             new ContractDto
             {
                 Id = contract.Id,
+                OwnerId = contract.OwnerId,
                 UserId = contract.UserId,
                 EstateId = contract.EstateId,
                 ContractType = contract.ContractType.ToString(),

@@ -10,42 +10,43 @@ public class CreateEstateCommandValidator : AbstractValidator<CreateEstateComman
     private readonly IRoomRepository _roomRepository;
     public List<Utility>? Utilities { get; private set; }
     public Dictionary<Room, int>? Rooms { get; private set; }
+    
     public CreateEstateCommandValidator(IUtilityRepository utilityRepository, IRoomRepository roomRepository)
     {
         _utilityRepository = utilityRepository;
         _roomRepository = roomRepository;
-        RuleFor(p => p.EstateData.EstateType)
+        RuleFor(p => p.CreateEstateFormData.EstateType)
             .NotEmpty().WithMessage("{PropertyName} is required.")
             .NotNull();
-        RuleFor(p => p.EstateData.EstateCategory)
+        RuleFor(p => p.CreateEstateFormData.EstateCategory)
             .NotEmpty().WithMessage("{PropertyName} is required.")
             .NotNull();
-        RuleFor(p => p.EstateData.Name)
+        RuleFor(p => p.CreateEstateFormData.Name)
             .NotEmpty().WithMessage("{PropertyName} is required.")
             .NotNull()
             .MaximumLength(50).WithMessage("FirstName must not exceed 100 characters.");
-        RuleFor(p => p.EstateData.Location)
+        RuleFor(p => p.CreateEstateFormData.Location)
             .NotEmpty().WithMessage("{PropertyName} is required.")
             .NotNull();
-        RuleFor(p => p.EstateData.Price)
+        RuleFor(p => p.CreateEstateFormData.Price)
             .NotEmpty().WithMessage("{PropertyName} is required.")
             .NotNull()
             .GreaterThan(0);
-        RuleFor(p => p.EstateData.TotalArea)
+        RuleFor(p => p.CreateEstateFormData.TotalArea)
             .NotEmpty().WithMessage("{PropertyName} is required.")
             .NotNull();
-        RuleFor(p => p.EstateData.Utilities)
+        RuleFor(p => p.CreateEstateFormData.Utilities)
             .NotEmpty().WithMessage("{PropertyName} is required.")
             .NotNull()
             .MustAsync(ValidateUtilitiesExistence!).WithMessage("Utility does not exist.");
-        RuleFor(p => p.EstateData.Rooms)
+        RuleFor(p => p.CreateEstateFormData.Rooms)
             .NotEmpty().WithMessage("{PropertyName} is required.")
             .NotNull()
             .MustAsync(ValidateRooms).WithMessage("Room data is invalid.");
-        RuleFor(p => p.EstateData.Description)
+        RuleFor(p => p.CreateEstateFormData.Description)
             .NotEmpty().WithMessage("{PropertyName} is required.")
             .NotNull();
-        RuleFor(p => p.EstateData.EstateAvatar)
+        RuleFor(p => p.CreateEstateFormData.EstateAvatar)
             .NotEmpty().WithMessage("{PropertyName} is required.")
             .NotNull();
     }

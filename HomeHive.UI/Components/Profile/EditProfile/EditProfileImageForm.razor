@@ -1,0 +1,90 @@
+@using HomeHive.UI.Interfaces
+@using System.Net.Http.Headers
+@inject IUserDataService UserDataService
+
+<EditForm Model="@_userProfile" OnValidSubmit="@HandleValidSubmit" FormName="editProfileForm">
+    <div class="d-flex justify-content-center">
+        <img src="@(_imgSrc)" class="rounded-circle mb-3" width="256" height="256" alt="profile" style="border: 2px solid #ddd; border-radius: 4px; padding: 5px;"/>
+    </div>
+    <div class="mb-3">
+        <label for="profileImage" class="form-label">Profile Image</label>
+        <InputFile class="form-control" id="profileImage" OnChange="@OnInputFileChange"/>
+    </div>
+    <div class="d-flex justify-content-center">
+        <button disabled="@_isUploading" type="submit" class="btn btn-primary mb-3">Change Profile Image</button>
+    </div>
+
+    @if (_success)
+    {
+        <div class="alert alert-success" role="alert">
+            Photo updated successfully!
+        </div>
+    }
+
+</EditForm>
+
+@code {
+    private UserProfile _userProfile = new();
+
+    public class UserProfile;
+
+    private IBrowserFile? _file;
+
+    private bool _isUploading;
+
+    private bool _success;
+
+    private string _imgSrc = "background4.jpg";
+    
+    protected override async Task OnInitializedAsync()
+    {
+        _imgSrc = await UserDataService.GetProfilePicture();
+    }
+
+    void OnInputFileChange(InputFileChangeEventArgs e)
+    {
+        _file = e.File;
+        ShowImagePreview(_file);
+    }
+
+    private async void ShowImagePreview(IBrowserFile file)
+    {
+        var format = file.ContentType.Contains("png") ? "png" : "jpeg";
+        var resizedImageFile = await file.RequestImageFileAsync(format, 600, 600);
+        var buffer = new byte[resizedImageFile.Size];
+        var readAsync = await resizedImageFile.OpenReadStream().ReadAsync(buffer);
+        var imageBase64 = Convert.ToBase64String(buffer);
+        _imgSrc = $"data:{file.ContentType};base64,{imageBase64}";
+        StateHasChanged();
+    }
+    
+    private async void HandleValidSubmit()
+    {
+        var content = new MultipartFormDataContent();
+        
+        const long maxFileSize = 1024L * 1024L * 2L; // 2 MB
+        var fileContent = new StreamContent(_file?.OpenReadStream(maxAllowedSize: maxFileSize)!);
+
+        fileContent.Headers.ContentDisposition = new ContentDispositionHeaderValue("form-data")
+        {
+            Name = "file",
+            FileName = _file!.Name
+        };
+        fileContent.Headers.ContentType = new MediaTypeHeaderValue(_file.ContentType);
+
+        content.Add(fileContent);
+        
+        _isUploading = true;
+
+        var response = await UserDataService.UploadProfilePicture(content);
+
+        if (response is { IsSuccess: true })
+        {
+            _success = true;
+            StateHasChanged();
+        }
+
+        _isUploading = false;
+    }
+
+}

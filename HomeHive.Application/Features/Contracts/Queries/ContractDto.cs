@@ -4,6 +4,7 @@ public record ContractDto
 {
     public Guid Id { get; init; }
     public Guid UserId { get; init; }
+    public Guid OwnerId { get; init; }
     public Guid EstateId { get; init; }
     public string? ContractType { get; init; }
     public string? Status { get; init; }

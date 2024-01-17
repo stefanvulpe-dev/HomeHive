@@ -85,7 +85,7 @@ public sealed class Estate : BaseEntity
         });
     }
 
-    public void Update(List<Utility> utilities, List<EstateRoom> rooms, EstateData estateData)
+    public void Update(List<Utility> utilities, List<EstateRoom> rooms, UpdateEstateData estateData)
     {
         if (estateData.EstateType != null) EstateType = Enum.Parse<EstateType>(estateData.EstateType);
 
@@ -104,8 +104,11 @@ public sealed class Estate : BaseEntity
         if (estateData.Rooms != null) EstateRooms = rooms;
 
         if (estateData.Description != null) Description = estateData.Description;
-
-        if (estateData.EstateAvatar != null) EstateAvatar = estateData.EstateAvatar;
+    }
+    
+    public void UpdateEstateAvatar(string estateAvatar)
+    {
+        EstateAvatar = estateAvatar;
     }
     
     public void AddEstateRooms(List<EstateRoom> estateRooms)

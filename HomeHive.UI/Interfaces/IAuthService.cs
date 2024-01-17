@@ -12,4 +12,5 @@ public interface IAuthService
     Task<bool> Refresh();
     Task<bool> Logout();
     Task<string> GetAccessTokenFromBrowserStorage();
+    Task<Guid> GetUserId();
 }

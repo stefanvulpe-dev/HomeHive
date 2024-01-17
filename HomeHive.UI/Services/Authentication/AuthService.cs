@@ -14,7 +14,7 @@ using TLoginResponse = Dictionary<string, string>;
 public class AuthService(IHttpClientFactory httpClientFactory, ILocalStorageService localStorageService) : IAuthService
 {
     private readonly HttpClient _httpClient = httpClientFactory.CreateClient("HomeHive.API");
-
+    
     public async Task<ApiResponse?> Register(RegistrationModel registrationModel)
     {
         var result = await _httpClient.PostAsJsonAsync("api/v1/Authentication/register", registrationModel);
@@ -44,6 +44,7 @@ public class AuthService(IHttpClientFactory httpClientFactory, ILocalStorageServ
     public async Task<bool> Logout()
     {
         var responseMessage = await _httpClient.DeleteAsync("api/v1/Authentication/logout");
+        await RemoveTokensFromBrowserStorage();
         return responseMessage.StatusCode == HttpStatusCode.NoContent;
     }
 
@@ -55,14 +56,14 @@ public class AuthService(IHttpClientFactory httpClientFactory, ILocalStorageServ
     public async Task<ApiResponse<TLoginResponse>?> Login(LoginModel loginModel)
     {
         var responseMessage = await _httpClient.PostAsJsonAsync("api/v1/Authentication/login", loginModel);
-
-        if (!responseMessage.IsSuccessStatusCode) return null;
-
+        
         var loginResult = await responseMessage.Content.ReadFromJsonAsync<ApiResponse<TLoginResponse>>();
-        if (loginResult is not { IsSuccess: true }) return null;
-
-        await PersistTokensToBrowserStorage(loginResult.Value!["accessToken"], loginResult.Value!["refreshToken"]);
-
+        
+        if (loginResult is { IsSuccess: true })
+        {
+            await PersistTokensToBrowserStorage(loginResult.Value!["accessToken"], loginResult.Value!["refreshToken"]);
+        }
+        
         return loginResult;
     }
 
@@ -70,6 +71,12 @@ public class AuthService(IHttpClientFactory httpClientFactory, ILocalStorageServ
     {
         await localStorageService.SetItemAsync("accessToken", accessToken);
         await localStorageService.SetItemAsync("refreshToken", refreshToken);
+    }
+    
+    private async Task RemoveTokensFromBrowserStorage()
+    {
+        await localStorageService.RemoveItemAsync("accessToken");
+        await localStorageService.RemoveItemAsync("refreshToken");
     }
 
     public static IEnumerable<Claim>? ParseClaimsFromJwt(string accessToken)
@@ -104,14 +111,21 @@ public class AuthService(IHttpClientFactory httpClientFactory, ILocalStorageServ
 
         var claimsIdentity = new ClaimsIdentity(new List<Claim>
         {
-            new(ClaimTypes.NameIdentifier, userId!),
-            new(ClaimTypes.Name, userName!),
-            new(JwtRegisteredClaimNames.Jti, tokenId!)
+            new(ClaimTypes.NameIdentifier, userId),
+            new(ClaimTypes.Name, userName),
+            new(JwtRegisteredClaimNames.Jti, tokenId)
         }, "Bearer");
 
         claimsIdentity.AddClaims(userRoles.Select(role => new Claim(ClaimTypes.Role, role)));
 
         return new ClaimsPrincipal(claimsIdentity);
+    }
+    
+    public async Task<Guid> GetUserId()
+    {
+        var claims = ParseClaimsFromJwt(await GetAccessTokenFromBrowserStorage());
+        var userId = claims?.FirstOrDefault(x => x.Type.Equals("nameid"))?.Value;
+        return Guid.Parse(userId ?? Guid.Empty.ToString());
     }
 }
 

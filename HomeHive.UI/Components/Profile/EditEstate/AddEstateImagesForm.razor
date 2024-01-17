@@ -1,0 +1,139 @@
+@using HomeHive.UI.ViewModels.Estates
+@using HomeHive.UI.Utils
+@using HomeHive.UI.Components.Authentication
+@using HomeHive.UI.Interfaces
+@using HomeHive.Domain.Common.EntitiesUtils.Rooms
+@using ContentDispositionHeaderValue = System.Net.Http.Headers.ContentDispositionHeaderValue
+@using MediaTypeHeaderValue = System.Net.Http.Headers.MediaTypeHeaderValue
+@inject ILogger<LoginForm> Logger
+@inject IEstateDataService EstateService
+
+
+<EditForm Model="@EstateModel" OnValidSubmit="@HandleValidSubmit" FormName="addEstatePhotosForm">
+    <DataAnnotationsValidator/>
+    <CustomValidation @ref="@_customValidation"/>
+    <div class="image-container mb-3">
+        <InputFile class="form-control" id="estatePhotos" OnChange="@OnInputFileChange" accept=".jpg,.jpeg,.png" multiple/>
+        <ValidationMessage For="@(() => EstateModel!.EstatePhotos)"></ValidationMessage>
+    </div>
+    <div class="d-flex justify-content-center">
+        <button type="submit" class="btn btn-primary" disabled="@_isSubmitting">Update Images</button>
+    </div>
+    <hr/>
+    @if (_isSuccess)
+    {
+        <div class="alert alert-success" role="alert">
+            <strong>Success!</strong> The images have been updated.
+        </div>
+    }
+    @if (_isError)
+    {
+        <div class="alert alert-danger" role="alert">
+            <strong>Error!</strong> An error occurred while updating the images.
+        </div>
+    }
+</EditForm>
+
+
+@code {
+    [SupplyParameterFromForm] private AddEstateImagesModel? EstateModel { get; set; }
+    
+    [Parameter]
+    public Guid? EstateId { get; set; }
+    
+    private CustomValidation? _customValidation;
+    
+    private bool _isSubmitting;
+
+    private bool _isSuccess; 
+    
+    private bool _isError;
+    
+    protected override void OnInitialized()
+    {
+        EstateModel ??= new AddEstateImagesModel
+        {
+            EstatePhotos = new List<IBrowserFile>()
+        };
+    }
+
+    private async void HandleValidSubmit()
+    {
+        _customValidation?.ClearErrors();
+        try
+        {
+            _isSubmitting = true;
+            
+            var content = new MultipartFormDataContent();
+        
+            const int maxFileSize = 1024 * 1024 * 2; // 2 MB
+
+            foreach (var file in EstateModel!.EstatePhotos!)
+            {
+                var fileContent = new StreamContent(file.OpenReadStream(maxFileSize));
+                fileContent.Headers.ContentDisposition = new ContentDispositionHeaderValue("form-data")
+                {
+                    Name = "estatePhotos",
+                    FileName = file.Name
+                };
+                fileContent.Headers.ContentType = new MediaTypeHeaderValue(file.ContentType);
+                content.Add(fileContent);
+            }
+            
+            var result = await EstateService.UpdatePhotos(content, EstateId);
+
+            if (result != null)
+            {
+                if (result.IsSuccess)
+                {
+                    Logger.LogInformation(result.Message);
+                    _isSuccess = true;
+                }
+                else
+                {
+                    Logger.LogError(result.Message);
+                    if (result.ValidationsErrors != null)
+                        _customValidation?.DisplayErrors(result.ValidationsErrors);
+                    _isError = true;
+                }
+                StateHasChanged();
+            }
+        }
+        catch (Exception)
+        {
+            Logger.LogError("An error occurred while updating the avatar.");
+        }
+        finally
+        {
+            _isSubmitting = false;
+            StateHasChanged();
+        }
+    }
+    
+
+    private void OnInputFileChange(InputFileChangeEventArgs obj)
+    {
+        _customValidation?.ClearErrors();
+
+        if (obj.GetMultipleFiles().Count < 5 || obj.GetMultipleFiles().Count > 10)
+        {
+            _customValidation?.DisplayErrors(new Dictionary<string, string> {
+                { "EstatePhotos", "You must upload between 5 and 10 photos" }
+            });
+            return;
+        }
+        
+        foreach (var file in obj.GetMultipleFiles())
+        {
+            if (file.Size > 2097152) // 2 MB in bytes
+            {
+                _customValidation?.DisplayErrors(new Dictionary<string, string> {
+                    { "EstatePhotos", $"{file.Name} exceeds 2MB limit" }
+                });
+                return;
+            }
+            
+            EstateModel!.EstatePhotos!.Add(file);
+        }
+    }
+}

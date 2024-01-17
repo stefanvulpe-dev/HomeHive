@@ -381,7 +381,7 @@ public class EstateTests
         Result<Utility> utilityResult1 = Utility.Create("Updated Test Utilities");
         utilities = new List<Utility> { utilityResult1.Value };
         
-        var estateData = new EstateData(
+        var estateData = new UpdateEstateData(
             EstateType: "Apartment",
             EstateCategory: "ForSale",
             Name: "Updated Test Estate",
@@ -390,8 +390,7 @@ public class EstateTests
             TotalArea: "200m2",
             Utilities: ["Updated Test Utilities"],
             Rooms: new Dictionary<string, int>(){ {"Test", 1 }, {"Test1", 2} },
-            Description: "Updated Test Description",
-            EstateAvatar: "Updated Test Image");
+            Description: "Updated Test Description");
 
         // Act
         estate.Update(utilities, null!,  estateData);
@@ -405,6 +404,5 @@ public class EstateTests
         Assert.Equal(estateData.TotalArea, estate.TotalArea);
         Assert.Equal(utilities, estate.Utilities);
         Assert.Equal(estateData.Description, estate.Description);
-        Assert.Equal(estateData.EstateAvatar, estate.EstateAvatar);
     }
 }

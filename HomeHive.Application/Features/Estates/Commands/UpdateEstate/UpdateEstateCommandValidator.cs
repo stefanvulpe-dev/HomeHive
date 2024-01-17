@@ -33,8 +33,7 @@ public class UpdateEstateCommandValidator : AbstractValidator<UpdateEstateComman
                     string.IsNullOrWhiteSpace(estateData.TotalArea) &&
                     (estateData.Utilities == null || estateData.Utilities.Count == 0) &&
                     (estateData.Rooms == null || estateData.Rooms.Count == 0) &&
-                    string.IsNullOrWhiteSpace(estateData.Description) &&
-                    string.IsNullOrWhiteSpace(estateData.EstateAvatar))
+                    string.IsNullOrWhiteSpace(estateData.Description))
                     context.AddFailure("At least one field in EstateData must be provided.");
             });
         RuleFor(v => v.EstateData.Utilities)

@@ -3,58 +3,79 @@
 @using HomeHive.UI.Interfaces
 @using HomeHive.UI.Components.Profile.ListedEstates
 @inject IEstateDataService EstateService
+@inject IAuthService AuthService
 @inject ILogger<ListedEstates> Logger
 @layout ProfileLayout
 
-<div class="profile-card col d-flex flex-column h-sm-100">
-    <div class="card-header">
-        <h2>Listed Properties</h2>
-    </div>
+<div class="profile-card col d-flex flex-column h-sm-100 min-vh-100">
     <div class="card-body">
+        <p class="fs-3">Listed Estates</p>
+        <hr />
         <div class="row">
-            @if (Estates != null)
+            @if (_isLoading)
             {
-                @foreach (var estate in Estates)
-                {
-                    <EstateCard Estate="@estate"></EstateCard>
-                }
+                <div class="fw-bold" style="display:flex; gap:10px; justify-content:center; align-items:center">
+                    <div class="spinner-border" role="status"></div>
+                    Loading...
+                </div>
             }
             else
             {
-                <div class="col-12">
-                    <p class="text-center">You have no listed properties.</p>
-                </div>
+                @if (Estates != null && Estates.Any())
+                {
+                    @foreach (var estate in Estates)
+                    {
+                        <EstateCard Estate="@estate"></EstateCard>
+                    }
+                }
+                else
+                {
+                    <div class="col-12">
+                        <p class="text-center">You have no listed properties.</p>
+                    </div>
+                }
             }
         </div>
+        
     </div>
 </div>
 
 @code {
-    private List<EstateModel>? Estates { get; set; }
+    private List<EstateViewModel>? Estates { get; set; }
+    
+    private bool _isLoading = true;
 
     protected override async Task OnInitializedAsync()
     {
+        var userId = await AuthService.GetUserId();
         var result = await EstateService.GetAll();
 
         if (result is { IsSuccess: true })
         {
             if (result.Estates != null)
-                Estates = result.Estates.Select(e => new EstateModel
-                {
-                    EstateCategory = e.EstateCategory,
-                    EstateType = e.EstateType,
-                    Name = e.Name,
-                    Location = e.Location,
-                    Price = e.Price.ToString(),
-                    TotalArea = e.TotalArea,
-                    Utilities = e.Utilities,
-                    Description = e.Description
-                }).ToList();
+                Estates = result.Estates
+                    .Where(e => e.OwnerId == userId)
+                    .Select(e => new EstateViewModel
+                    {
+                        Id = e.Id,
+                        OwnerId = e.OwnerId,
+                        EstateCategory = e.EstateCategory,
+                        EstateType = e.EstateType,
+                        Name = e.Name,
+                        Location = e.Location,
+                        Price = e.Price,
+                        TotalArea = e.TotalArea,
+                        Utilities = e.Utilities!,
+                        Description = e.Description,
+                        EstateAvatar = e.EstateAvatar
+                    })
+                    .ToList();
         }
         else
         {
             Logger.LogError($"Error getting estates: {result?.Message}");
         }
+        _isLoading = false;
     }
 
 }

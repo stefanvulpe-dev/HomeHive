@@ -9,9 +9,14 @@ public class CreateContractCommandTests
     public void CreateContractByIdCommand_SetProperties_ShouldModifyPropertyValues()
     {
         // Arrange
-        var originalCommand = new CreateContractCommand(Guid.NewGuid(), new ContractData(
-            Guid.NewGuid(), ContractType.Rent.ToString(), DateTime.Now,
-            DateTime.Now.AddDays(30), "Test"));
+        var originalCommand = new CreateContractCommand(Guid.NewGuid(), new 
+            ContractData(Guid.NewGuid(), Guid.NewGuid(),
+            ContractType.Rent.ToString(),
+            ContractStatus.Done.ToString(),
+            200000,
+            DateTime.Now,
+            DateTime.Now,
+            "Test"));
 
         // Act
         var command = originalCommand with

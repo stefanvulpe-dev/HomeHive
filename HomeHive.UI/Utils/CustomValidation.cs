@@ -36,6 +36,22 @@ public class CustomValidation : ComponentBase
         }
     }
 
+    public void DisplayErrors(Dictionary<string, List<string>> errors)
+    {
+        if (CurrentEditContext is not null)
+        {
+            foreach (var err in errors)
+            {
+                foreach (var e in err.Value)
+                {
+                    _messageStore?.Add(CurrentEditContext.Field(err.Key), e);
+                }
+            }
+
+            CurrentEditContext.NotifyValidationStateChanged();
+        }
+    }
+
     public void ClearErrors()
     {
         _messageStore?.Clear();

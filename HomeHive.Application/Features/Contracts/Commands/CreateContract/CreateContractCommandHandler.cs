@@ -33,7 +33,7 @@ public class CreateContractCommandHandler(IContractRepository contractRepository
             return new CreateContractCommandResponse
             {
                 IsSuccess = false,
-                ValidationsErrors = new Dictionary<string, List<string>> { { "Contract", [contract.Message] } }
+                ValidationsErrors = new Dictionary<string, List<string>> { { "Contract",  new List<string> {contract.Message} } }
             };
 
         await contractRepository.AddAsync(contract.Value);
@@ -41,9 +41,10 @@ public class CreateContractCommandHandler(IContractRepository contractRepository
         {
             IsSuccess = true,
             Message = "Contract created successfully.",
-            Contract = new ContractDto()
+            Contract = new ContractDto
             {
                 Id = contract.Value.Id,
+                OwnerId = contract.Value.OwnerId,
                 EstateId = contract.Value.EstateId,
                 UserId = contract.Value.UserId,
                 ContractType = contract.Value.ContractType.ToString(),

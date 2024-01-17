@@ -1,0 +1,261 @@
+@using HomeHive.UI.ViewModels.Estates
+@using HomeHive.UI.Utils
+@using HomeHive.UI.Components.Authentication
+@using HomeHive.UI.Interfaces
+@using HomeHive.Domain.Common.EntitiesUtils.Estates
+@using HomeHive.Domain.Common.EntitiesUtils.Rooms
+@using HomeHive.Domain.Common.EntitiesUtils.Utility
+@using HomeHive.Domain.Common.EntitiesUtils.Contracts
+@inject NavigationManager NavigationManager
+@inject ILogger<LoginForm> Logger
+@inject IEstateDataService EstateService
+
+
+<EditForm Model="@EstateModel" OnValidSubmit="@HandleValidSubmit" FormName="editEstateForm">
+    <DataAnnotationsValidator/>
+    <CustomValidation @ref="@_customValidation"/>
+    <div class="row">
+        <div class="col-md-6">
+            <div class="mb-3">
+                <label for="estateType" class="form-label">Estate Type</label>
+                <InputSelect class="form-control" id="estateType" @bind-Value="EstateModel!.EstateType">
+                    @foreach (var type in Enum.GetValues<EstateType>())
+                    {
+                        <option value="@type">@type</option>
+                    }
+                </InputSelect>
+                <ValidationMessage For="@(() => EstateModel.EstateType)"></ValidationMessage>
+            </div>
+            <div class="mb-3">
+                <label for="estateCategory" class="form-label">Estate Category</label>
+                <InputSelect class="form-control" id="estateCategory" @bind-Value="EstateModel.EstateCategory">
+                    @foreach (var category in Enum.GetValues<EstateCategory>())
+                    {
+                        <option value="@category">@category</option>
+                    }
+                </InputSelect>
+                <ValidationMessage For="@(() => EstateModel.EstateCategory)"></ValidationMessage>
+            </div>
+            <div class="mb-3">
+                <label for="name" class="form-label">Name</label>
+                <InputText class="form-control" id="name" @bind-Value="EstateModel.Name"/>
+                <ValidationMessage For="@(() => EstateModel.Name)"></ValidationMessage>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Location</label>
+                <div class="d-flex">
+                    <InputSelect class="form-control me-2" id="country" @oninput="@UpdateSelectedCity" @bind-Value="@EstateModel.Country">
+                        <option value="" disabled selected>Select a country</option>
+                        @foreach (var country in _countries)
+                        {
+                            <option value="@country">@country</option>
+                        }
+                    </InputSelect>
+                    <InputSelect class="form-control" id="city" @bind-Value="@EstateModel.City">
+                        <option value="" disabled selected>Select a city</option>
+                        @if (!string.IsNullOrEmpty(EstateModel.Country))
+                        {
+                            foreach (var city in _allCities[EstateModel.Country])
+                            {
+                                <option value="@city">@city</option>
+                            }
+                        }
+                    </InputSelect>
+                </div>
+                <ValidationMessage For="@(() => EstateModel.Location)"></ValidationMessage>
+            </div>
+            <div class="mb-3">
+                <label for="price" class="form-label">
+                    @if (EstateModel.EstateCategory == EstateCategory.ForRent.ToString())
+                    {
+                        <text>Price ($/month)</text>
+                    }
+                    else
+                    {
+                        <text>Price</text>
+                    }
+                </label>
+                <InputNumber class="form-control" id="price" min="0" max="1_000_000d" @bind-Value="@EstateModel.Price"/>
+                <ValidationMessage For="@(() => EstateModel.Price)"></ValidationMessage>
+            </div>
+
+        </div>
+        <div class="col-md-6">
+            <div class="mb-3">
+                <label for="totalArea" class="form-label">Total Area (Square Meters)</label>
+                <InputNumber class="form-control" id="totalArea" min="0" max="1_000_000d" @bind-Value="@EstateModel.TotalAreaInt"/>
+                <ValidationMessage For="@(() => EstateModel.TotalArea)"></ValidationMessage>
+            </div>
+            <div class="mb-3">
+                <label for="utilities" class="form-label">Utilities</label>
+                <InputSelect class="form-control" id="utilities" @bind-Value="@EstateModel.EstateUtilities" multiple="">
+                    @foreach (var type in Enum.GetValues<UtilityType>())
+                    {
+                        <option value="@type">@type</option>
+                    }
+                </InputSelect>
+            </div>
+            <div class="mb-3">
+                <label for="rooms" class="form-label">Rooms</label>
+                <InputSelect class="form-control" id="rooms" @bind-Value="@EstateModel.EstateRoomsKeys" multiple="">
+                    @foreach (var type in Enum.GetValues<RoomType>())
+                    {
+                        <option value="@type">@type</option>
+                    }
+                </InputSelect>
+
+                @foreach (var selectedOption in EstateModel.EstateRoomsKeys)
+                {
+                    <div class="w-100 mt-2 d-flex justify-content-between align-items-center bg-white p-2 rounded">
+                        <span>@selectedOption</span>
+                        <div class="d-flex justify-content-center align-items-center gap-2">
+                            <span>@EstateModel.Rooms![selectedOption]</span>
+                            <button type="button" class="btn-primary align-self-stretch px-2" @onclick="() => IncreaseQuantity(selectedOption)">+</button>
+                            <button type="button" class="btn-primary align-self-stretch px-2" @onclick="() => DecreaseQuantity(selectedOption)">-</button>
+                        </div>
+                    </div>
+                }
+            </div>
+            <div class="mb-3">
+                <label for="description" class="form-label">Description</label>
+                <InputText class="form-control" id="description" @bind-Value="EstateModel.Description"/>
+                <ValidationMessage For="@(() => EstateModel.Description)"></ValidationMessage>
+            </div>
+        </div>
+        <div class="mt-2 mb-3 d-flex justify-content-center">
+            <button type="submit" class="btn btn-primary" disabled="@_isSubmitting">Edit Estate</button>
+        </div>
+
+        @if (_isSuccess)
+        {
+            <div class="alert alert-success mt-2" role="alert">
+                Estate successfully edited!
+            </div>
+        }
+
+        <hr/>
+    </div>
+</EditForm>
+
+@code {
+    [SupplyParameterFromForm] private EditEstateModel? EstateModel { get; set; }
+
+    [Parameter] public EstateViewModel? Estate { get; set; }
+
+    private CustomValidation? _customValidation;
+
+    private bool _isSubmitting;
+
+    private bool _isSuccess;
+
+    private string[] _countries = Array.Empty<string>();
+
+    private Dictionary<string, string[]> _allCities = new Dictionary<string, string[]>();
+
+    protected override void OnInitialized()
+    {
+        EstateModel ??= new EditEstateModel
+        {
+            EstateCategory = Estate!.EstateCategory,
+            EstateType = Estate.EstateType,
+            Name = Estate.Name,
+            Country = Estate.Location!.Split(", ")[0],
+            City = Estate.Location.Split(", ")[1],
+            Price = Estate.Price,
+            TotalAreaInt = Int32.Parse(Estate.TotalArea!),
+            Rooms = Estate.Rooms!,
+            Description = Estate.Description,
+            EstateUtilities = Estate.Utilities!.ToArray()!,
+            EstateRoomsKeys = Estate.Rooms!.Keys.ToArray()
+        };
+
+        _countries = GetPredefinedCountries();
+        _allCities = GetPredefinedCities();
+    }
+
+    private async void HandleValidSubmit()
+    {
+        _customValidation?.ClearErrors();
+        try
+        {
+            _isSubmitting = true;
+
+            var result = await EstateService.UpdateById(Estate!.Id, EstateModel!);
+
+            if (result != null)
+            {
+                if (result.IsSuccess)
+                {
+                    Logger.LogInformation(result.Message);
+                    _isSuccess = true;
+                }
+                else
+                {
+                    Logger.LogError(result.Message);
+                    if (result.ValidationsErrors != null)
+                        _customValidation?.DisplayErrors(result.ValidationsErrors);
+                }
+            }
+        }
+        catch (Exception)
+        {
+            Logger.LogError("An error occurred while registering a new estate");
+        }
+        finally
+        {
+            _isSubmitting = false;
+            StateHasChanged();
+        }
+    }
+
+    private void IncreaseQuantity(string option)
+    {
+        EstateModel!.Rooms![option]++;
+    }
+
+    private void DecreaseQuantity(string option)
+    {
+        if (EstateModel!.Rooms![option] > 0)
+        {
+            EstateModel!.Rooms![option]--;
+        }
+    }
+    
+    private void UpdateSelectedCity(ChangeEventArgs args)
+    {
+        var selectedCountry = args.Value?.ToString();
+
+        if (!string.IsNullOrEmpty(selectedCountry) && _allCities.ContainsKey(selectedCountry))
+        {
+            EstateModel!.City = _allCities[selectedCountry][0];
+            StateHasChanged();
+        }
+    }
+
+    private string[] GetPredefinedCountries()
+    {
+        return new string[]
+        {
+            "Romania", "United States", "Germany", "France", "Japan",
+            "Italy", "Spain", "Canada", "United Kingdom", "Australia"
+        };
+    }
+
+    private Dictionary<string, string[]> GetPredefinedCities()
+    {
+        return new Dictionary<string, string[]>
+        {
+            { "Romania", new string[] { "Bucharest", "Cluj-Napoca", "Timisoara", "Iasi", "Constanta" } },
+            { "United States", new string[] { "New York", "Los Angeles", "Chicago", "Miami", "San Francisco" } },
+            { "Germany", new string[] { "Berlin", "Munich", "Hamburg", "Frankfurt", "Cologne" } },
+            { "France", new string[] { "Paris", "Marseille", "Lyon", "Toulouse", "Nice" } },
+            { "Japan", new string[] { "Tokyo", "Osaka", "Kyoto", "Yokohama", "Sapporo" } },
+            { "Italy", new string[] { "Rome", "Milan", "Naples", "Turin", "Florence" } },
+            { "Spain", new string[] { "Madrid", "Barcelona", "Valencia", "Seville", "Zaragoza" } },
+            { "Canada", new string[] { "Toronto", "Vancouver", "Montreal", "Calgary", "Ottawa" } },
+            { "United Kingdom", new string[] { "London", "Manchester", "Birmingham", "Glasgow", "Edinburgh" } },
+            { "Australia", new string[] { "Sydney", "Melbourne", "Brisbane", "Perth", "Adelaide" } }
+        };
+    }
+
+}

@@ -10,12 +10,21 @@ public class ContractDataTests
         // Arrange
         var estateId = Guid.NewGuid();
         var contractType = "Rent";
+        var status = "Done";
+        var price = 200000;
         var startDate = DateTime.UtcNow;
         var endDate = DateTime.UtcNow.AddMonths(6);
         var description = "Lease agreement";
 
         // Act
-        var contractData = new ContractData(estateId, contractType, startDate, endDate, description);
+        var contractData = new ContractData(estateId,
+            Guid.NewGuid(),
+            contractType,
+            status,
+            price,
+            startDate,
+            endDate,
+            description);
 
         // Assert
         Assert.Equal(estateId, contractData.EstateId);
@@ -29,7 +38,14 @@ public class ContractDataTests
     public void ContractData_SetProperties_ShouldModifyProperties()
     {
         // Arrange
-        var contractData = new ContractData(Guid.Empty, null, null, null, null);
+        var contractData = new ContractData(Guid.NewGuid(),
+            Guid.NewGuid(),
+            null,
+            null,
+            null,
+            null,
+            null,
+            null);
 
         // Act
         contractData = contractData with { EstateId = Guid.NewGuid(), ContractType = "Rent" };

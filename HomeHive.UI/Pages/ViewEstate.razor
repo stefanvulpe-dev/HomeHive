@@ -1,0 +1,139 @@
+@page "/ViewEstate/{EstateId:guid}"
+@using HomeHive.UI.ViewModels.Estates
+@using OpenAI.API
+@using OpenAI.API.Completions
+@using HomeHive.UI.Interfaces
+@using HomeHive.UI.Components.General
+@using HomeHive.UI.Components.Estates
+@inject IEstateDataService EstateDataService
+@inject ILogger<ViewEstate> Logger
+@inject IConfiguration Configuration
+
+<PageTitle>EstateName</PageTitle>
+
+<Navbar></Navbar>
+
+@if (_isLoading)
+{
+    <div class="min-vh-100 d-flex justify-content-center align-items-center">
+        <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+    </div>
+}
+else
+{
+    <section class="min-vh-100 p-0 d-flex flex-column align-items-center ">
+        <div class="row mt-4 justify-content-center gx-0">
+            <div class="col-xl-4">
+                <div class="row justify-content-center align-items-center text-center m-3">
+                    <div class="row mb-2">
+                        <h5 class="fw-bold fs-1">@EstateViewModel?.Name</h5>
+                        <small>Posted by <span class="fw-bold">@EstateViewModel?.OwnerName</span></small>
+                        <span>@EstateViewModel?.Description</span>
+                    </div>
+
+                    <div class="card mt-3">
+                        <div class="card-body justify-content-center">
+                            <EstateGeneralInfo Estate="@EstateViewModel"></EstateGeneralInfo>
+                            <hr/>
+                            <Utilities EstateUtilities="@EstateViewModel?.Utilities"></Utilities>
+                            <Rooms EstateRooms="@EstateViewModel?.Rooms"></Rooms>
+                            <hr/>
+                            <button class="ms-2 btn btn-primary" @onclick="GenerateText">Ask AI for a price</button>
+                            <div class="mt-2">
+                                @_generatedText
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-8 mx-3 mx-lg-0 position-relative">
+                <ViewEstateCarousel EstateId="@EstateId"></ViewEstateCarousel>
+            </div>
+
+            <div class="row justify-content-center mt-4 ">
+                <div class="col-xl-8">
+                    <BuyEstateForm Estate="@EstateViewModel"></BuyEstateForm>
+                </div>
+            </div>
+        </div>
+    </section>
+}
+<Footer></Footer>
+
+@code {
+    [Parameter] public Guid? EstateId { get; set; }
+
+    private EstateViewModel? EstateViewModel { get; set; }
+
+    private bool _isLoading;
+
+    private OpenAIAPI? _client;
+    private string? _generatedText;
+
+    private string? _apiKey;
+
+    protected override void OnInitialized()
+    {
+        _apiKey = Configuration.GetValue<string>("OpenAI:ApiKey");
+        _client = new OpenAIAPI(_apiKey!);
+    }
+
+    private async Task GenerateText()
+    {
+        var roomsText = string.Join(", ", EstateViewModel?.Rooms!.Select(kv => $"{kv.Key}: {kv.Value}")!);
+
+        var utilitiesText = string.Join(", ", EstateViewModel?.Utilities!);
+
+        var promptText = $"This estate is {EstateViewModel?.EstateCategory} and it is a {EstateViewModel?.EstateType} located in {EstateViewModel?.Location} with the area of: {EstateViewModel?.TotalArea}m2. Rooms: {roomsText}. It has these utilities: {utilitiesText}. It has the price of {EstateViewModel?.Price} $. Tell me if the given price is too high or too low, and then tell me an estimate price taking into account only the given information.";
+        
+        Console.WriteLine(promptText);
+        
+        var parameters = new CompletionRequest
+        {
+            Model = "gpt-3.5-turbo-instruct",
+            Prompt = promptText,
+            Temperature = 0.1,
+            MaxTokens = 150
+        };
+    
+        var response = await _client?.Completions.CreateCompletionAsync(parameters)!;
+
+        _generatedText = response.Completions[0].Text;
+    }
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        _isLoading = true;
+        var result = await EstateDataService.GetById(EstateId);
+
+        if (result is { IsSuccess: true })
+        {
+            EstateViewModel = new EstateViewModel
+            {
+                Id = result.Estate?.Id,
+                OwnerId = result.Estate?.OwnerId,
+                OwnerName = result.Estate?.OwnerName,
+                EstateCategory = result.Estate?.EstateCategory,
+                Name = result.Estate?.Name,
+                Description = result.Estate?.Description,
+                EstateType = result.Estate?.EstateType,
+                Utilities = result.Estate?.Utilities,
+                Rooms = result.Estate?.EstateRooms,
+                Price = result.Estate?.Price,
+                TotalArea = result.Estate?.TotalArea,
+                Location = result.Estate?.Location
+            };
+        }
+        else
+        {
+            Logger.LogError("Error while getting estate by id");
+        }
+
+        _isLoading = false;
+        await base.OnInitializedAsync();
+    }
+
+}
