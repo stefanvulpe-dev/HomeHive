@@ -50,17 +50,17 @@ public class CustomHttpClientHandler(ILocalStorageService
                 request.Headers.Authorization =
                     new AuthenticationHeaderValue("Bearer",
                         tokens?.Value?.AccessToken);
-            }
-            else
-            {
-                await localStorageService.RemoveItemAsync("accessToken",
-                    cancellationToken);
-                await localStorageService.RemoveItemAsync("refreshToken",
-                    cancellationToken);
-                navigationManager.NavigateTo("/login", true);
-            }
-        }
+                return await base.SendAsync(request, cancellationToken);
 
-        return await base.SendAsync(request, cancellationToken);
+            }
+            
+            await localStorageService.RemoveItemAsync("accessToken",
+                cancellationToken);
+            await localStorageService.RemoveItemAsync("refreshToken",
+                cancellationToken);
+            navigationManager.NavigateTo("/login", true);
+        }
+        
+        return response;
     }
 }

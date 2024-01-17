@@ -1,23 +1,23 @@
-using HomeHive.Application.Contracts.Queries;
+﻿using HomeHive.Application.Contracts.Queries;
 using HomeHive.Application.Persistence;
 
-namespace HomeHive.Application.Features.Contracts.Queries.GetAllContractsByUserId;
+namespace HomeHive.Application.Features.Contracts.Queries.GetAllContractsByOwnerId;
 
-public class GetAllContractsByUserIdQueryHandler(IContractRepository repository)
-    : IQueryHandler<GetAllContractsByUserIdQuery, GetAllContractsByUserIdResponse>
+public class GetAllContractsByOwnerIdQueryHandler(IContractRepository repository): 
+    IQueryHandler<GetAllContractsByOwnerIdQuery, GetAllContractsByOwnerIdQueryResponse>
 {
-    public async Task<GetAllContractsByUserIdResponse> Handle(GetAllContractsByUserIdQuery request,
+    public async Task<GetAllContractsByOwnerIdQueryResponse> Handle(GetAllContractsByOwnerIdQuery request,
         CancellationToken cancellationToken)
     {
-        var result = await repository.GetContractsByUserId(request.UserId);
+        var result = await repository.GetContractsByOwnerId(request.OwnerId);
         if (!result.IsSuccess)
-            return new GetAllContractsByUserIdResponse
+            return new GetAllContractsByOwnerIdQueryResponse
             {
                 IsSuccess = false,
-                Message = $"Contracts not found for user with id: {request.UserId}."
+                Message = $"Contracts not found for owner with id: {request.OwnerId}."
             };
 
-        return new GetAllContractsByUserIdResponse
+        return new GetAllContractsByOwnerIdQueryResponse
         {
             IsSuccess = true,
             Contracts = result.Value.Select(c => new ContractDto
@@ -35,4 +35,5 @@ public class GetAllContractsByUserIdQueryHandler(IContractRepository repository)
             }).ToList()
         };
     }
+    
 }

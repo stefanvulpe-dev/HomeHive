@@ -5,6 +5,7 @@ using HomeHive.Application.Features.Users.Commands.UpdateGeneralInfo;
 using HomeHive.Application.Features.Users.Commands.UploadProfilePicture;
 using HomeHive.Application.Features.Users.Queries.GetResetToken;
 using HomeHive.Application.Features.Users.Queries.GetUserById;
+using HomeHive.Application.Features.Users.Queries.GetUserGeneralInfo;
 using HomeHive.UI.Interfaces;
 using HomeHive.UI.ViewModels.Users;
 
@@ -55,5 +56,11 @@ public class UserDataService(IHttpClientFactory httpClientFactory): IUserDataSer
     {
         var responseMessage = await _httpClient.PutAsync("/api/v1/Users/profile-picture", content);
         return await responseMessage.Content.ReadFromJsonAsync<UploadProfilePictureCommandResponse>();
+    }
+
+    public async Task<GetUserGeneralInfoQueryResponse?> GetUserGeneralInfo(Guid userId)
+    {
+        var responseMessage = await _httpClient.GetAsync($"/api/v1/Users/General/{userId}");
+        return await responseMessage.Content.ReadFromJsonAsync<GetUserGeneralInfoQueryResponse>();
     }
 }

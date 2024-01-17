@@ -46,6 +46,7 @@ public class UpdateContractCommandHandler(IContractRepository contractRepository
             Contract = new ContractDto
             {
                 Id = newContract.Id,
+                OwnerId = contractResult.Value.OwnerId,
                 EstateId = newContract.EstateId,
                 UserId = newContract.UserId,
                 ContractType = newContract.ContractType.ToString(),

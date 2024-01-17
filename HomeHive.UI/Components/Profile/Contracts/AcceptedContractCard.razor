@@ -1,12 +1,13 @@
 @using HomeHive.UI.ViewModels
+@using HomeHive.UI.ViewModels.Contracts
 @using iTextSharp.text
 @using iTextSharp.text.pdf
-@inject IJSRuntime JSRuntime
+@inject IJSRuntime JsRuntime
 
 <div class="card col-md-3 m-md-3 mb-sm-3">
     <div class="card-body">
         <h5 class=" fs-3 card-title">@Contract?.ContractType Offer</h5>
-        @(Contract?.Description != null){
+        @if (Contract?.Description != null){
             <small>@Contract?.Description</small>
         }
         <div class="row">
@@ -17,7 +18,7 @@
                 </svg>
                 <NavLink href="@_estateUrl">
                     <span class="ms-2 d-inline" style="font-weight:bold">Estate:</span>
-                    Estate Name 
+                    @Contract?.EstateName 
                 </NavLink>
             </div>
             <div class="d-flex justify-content-start align-items-center">
@@ -33,7 +34,7 @@
                     <path d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6m2-3a2 2 0 1 1-4 0 2 2 0 0 1 4 0m4 8c0 1-1 1-1 1H3s-1 0-1-1 1-4 6-4 6 3 6 4m-1-.004c-.001-.246-.154-.986-.832-1.664C11.516 10.68 10.289 10 8 10s-3.516.68-4.168 1.332c-.678.678-.83 1.418-.832 1.664z"/>
                 </svg>
                 <span class="ms-2 d-inline" style="font-weight:bold">Client:</span>
-                Client name
+                @Contract?.ClientName
             </div>
             @if (Contract?.EndDate == null)
             {
@@ -71,7 +72,7 @@
                     <path d="M5.5 5a.5.5 0 1 1 0-1 .5.5 0 0 1 0 1m0 1a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3M1 7.086a1 1 0 0 0 .293.707L8.75 15.25l-.043.043a1 1 0 0 1-1.414 0l-7-7A1 1 0 0 1 0 7.586V3a1 1 0 0 1 1-1z"/>
                 </svg>
                 <span class="ms-2 d-inline" style="font-weight:bold">Offered Price:</span>
-                @Contract?.Price $
+                @($"{Contract?.Price:N2}") $
             </div>
         </div>
         <div class="mt-4 d-flex justify-content-center gap-1">
@@ -112,10 +113,9 @@
         pdfDoc.Add(new Paragraph("\n\n"));
 
         pdfDoc.Add(new Paragraph($"This agreement is made on this date between the parties:"));
-        pdfDoc.Add(new Paragraph($"Seller: "));
-        pdfDoc.Add(new Paragraph($"Buyer: "));
-        pdfDoc.Add(new Paragraph($"Property: "));
-        pdfDoc.Add(new Paragraph($"Address: "));
+        pdfDoc.Add(new Paragraph($"Seller: " + Contract?.OwnerName));
+        pdfDoc.Add(new Paragraph($"Buyer: " + Contract?.ClientName));
+        pdfDoc.Add(new Paragraph($"Property: " + Contract?.EstateName));
             
         if (Contract?.EndDate != null)
         {
@@ -128,7 +128,7 @@
         else
         {
             pdfDoc.Add(new Paragraph("The parties agree to the following terms regarding the purchase of the property:"));
-            pdfDoc.Add(new Paragraph($"Purchase Price: ${Contract?.Price}"));
+            pdfDoc.Add(new Paragraph($"Purchase Price: ${Contract?.Price:N2}"));
             pdfDoc.Add(new Paragraph("This amount represents the agreed-upon purchase price for the property."));
             pdfDoc.Add(new Paragraph($"Closing Date: {Contract?.StartDate}"));
             pdfDoc.Add(new Paragraph("The closing date is the date on which the ownership of the property is officially transferred from the seller to the buyer."));
@@ -161,7 +161,7 @@
 
         var blobData = new { Type = "application/pdf", Data = pdfData };
 
-        var blob = await JSRuntime.InvokeAsync<string>("createBlob", blobData);
-        await JSRuntime.InvokeVoidAsync("saveAsFile", "contract.pdf", blob);
+        var blob = await JsRuntime.InvokeAsync<string>("createBlob", blobData);
+        await JsRuntime.InvokeVoidAsync("saveAsFile", "contract.pdf", blob);
     }
 }

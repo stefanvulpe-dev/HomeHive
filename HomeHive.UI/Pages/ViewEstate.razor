@@ -1,13 +1,13 @@
 @page "/ViewEstate/{EstateId:guid}"
 @using HomeHive.UI.ViewModels.Estates
+@using OpenAI.API
+@using OpenAI.API.Completions
 @using HomeHive.UI.Interfaces
 @using HomeHive.UI.Components.General
 @using HomeHive.UI.Components.Estates
 @inject IEstateDataService EstateDataService
 @inject ILogger<ViewEstate> Logger
 @inject IConfiguration Configuration
-@using OpenAI.API
-@using OpenAI.API.Completions
 
 <PageTitle>EstateName</PageTitle>
 
@@ -42,7 +42,7 @@ else
                             <hr/>
                             <button class="ms-2 btn btn-primary" @onclick="GenerateText">Ask AI for a price</button>
                             <div class="mt-2">
-                                @generatedText
+                                @_generatedText
                             </div>
                         </div>
                     </div>
@@ -51,7 +51,7 @@ else
             <div class="col-xl-8 mx-3 mx-lg-0 position-relative">
                 <ViewEstateCarousel EstateId="@EstateId"></ViewEstateCarousel>
             </div>
-            
+
             <div class="row justify-content-center mt-4 ">
                 <div class="col-xl-8">
                     <BuyEstateForm Estate="@EstateViewModel"></BuyEstateForm>
@@ -66,29 +66,30 @@ else
     [Parameter] public Guid? EstateId { get; set; }
 
     private EstateViewModel? EstateViewModel { get; set; }
-    
-    private bool _isLoading;
-    
-    private OpenAIAPI client;
-    private string generatedText;
 
-    private string apiKey;
+    private bool _isLoading;
+
+    private OpenAIAPI? _client;
+    private string? _generatedText;
+
+    private string? _apiKey;
 
     protected override void OnInitialized()
     {
-        apiKey = Configuration.GetValue<string>("OpenAI:ApiKey");
-        client = new OpenAIAPI(apiKey);
+        _apiKey = Configuration.GetValue<string>("OpenAI:ApiKey");
+        _client = new OpenAIAPI(_apiKey!);
     }
-    
+
     private async Task GenerateText()
     {
-        var roomsText = string.Join(", ", EstateViewModel.Rooms.Select(kv => $"{kv.Key}: {kv.Value}"));
-        
-        var utilitiesText = string.Join(", ", EstateViewModel.Utilities);
-        
-        var promptText = $"This estate is {EstateViewModel.EstateCategory} and it is a {EstateViewModel.EstateType} located in {EstateViewModel.Location} with the area of: {EstateViewModel.TotalArea}m2. Rooms: {roomsText}. It has these utilities: {utilitiesText}. It has the price of {EstateViewModel.Price} $. Tell me if the given price is too high or too low, and then tell me an estimate price taking into account only the given information.";
+        var roomsText = string.Join(", ", EstateViewModel?.Rooms!.Select(kv => $"{kv.Key}: {kv.Value}")!);
 
+        var utilitiesText = string.Join(", ", EstateViewModel?.Utilities!);
+
+        var promptText = $"This estate is {EstateViewModel?.EstateCategory} and it is a {EstateViewModel?.EstateType} located in {EstateViewModel?.Location} with the area of: {EstateViewModel?.TotalArea}m2. Rooms: {roomsText}. It has these utilities: {utilitiesText}. It has the price of {EstateViewModel?.Price} $. Tell me if the given price is too high or too low, and then tell me an estimate price taking into account only the given information.";
+        
         Console.WriteLine(promptText);
+        
         var parameters = new CompletionRequest
         {
             Model = "gpt-3.5-turbo-instruct",
@@ -96,13 +97,13 @@ else
             Temperature = 0.1,
             MaxTokens = 150
         };
+    
+        var response = await _client?.Completions.CreateCompletionAsync(parameters)!;
 
-        var response = await client.Completions.CreateCompletionAsync(parameters);
-
-        generatedText = response.Completions[0].Text;
+        _generatedText = response.Completions[0].Text;
     }
 
-    
+
     protected override async Task OnInitializedAsync()
     {
         _isLoading = true;
@@ -130,6 +131,7 @@ else
         {
             Logger.LogError("Error while getting estate by id");
         }
+
         _isLoading = false;
         await base.OnInitializedAsync();
     }

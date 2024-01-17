@@ -4,6 +4,7 @@
 @using HomeHive.UI.ViewModels
 @using HomeHive.Domain.Common.EntitiesUtils.Estates
 @using HomeHive.Domain.Entities
+@using HomeHive.UI.ViewModels.Contracts
 @inject ILogger<BuyEstateForm> Logger
 @inject IContractDataService ContractDataService
 @inject IAuthService AuthService
@@ -79,7 +80,7 @@
 @code {
     [Parameter] public EstateViewModel? Estate { get; set; }
 
-    [SupplyParameterFromForm] private ContractViewModel? BuyModel { get; set; }
+    [SupplyParameterFromForm] private CreateContractViewModel? BuyModel { get; set; }
 
     private CustomValidation? _customValidation;
 
@@ -91,15 +92,16 @@
     
     protected override void OnInitialized()
     {
-        BuyModel ??= new ContractViewModel
+        BuyModel ??= new CreateContractViewModel
         {
             EstateId = Estate?.Id,
+            OwnerId = Estate?.OwnerId,
             ContractType = GetContractType(Estate?.EstateCategory)
         };
         Console.WriteLine("ContractType: " + BuyModel.ContractType);
     }
     
-    private string? GetContractType(string estateCategory)
+    private string? GetContractType(string? estateCategory)
     {
         return estateCategory switch
         {

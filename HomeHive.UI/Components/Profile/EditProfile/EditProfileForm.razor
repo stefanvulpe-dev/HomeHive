@@ -9,9 +9,10 @@
     <CustomValidation @ref="@_customValidation"/>
     
     <div class="row mb-3">
-            <label for="firstName" class="form-label">First Name</label>
-            <InputText class="form-control" id="firstName" @bind-Value="@User!.FirstName"/>
-            <label for="lastName" class="form-label">Last Name</label>
+            <label for="firstName" class="form-label ps-0">First Name</label>
+            <InputText class="form-control mb-2" id="firstName" 
+            @bind-Value="@User!.FirstName"/>
+            <label for="lastName" class="form-label ps-0">Last Name</label>
             <InputText class="form-control" id="lastName" @bind-Value="@User!.LastName"/>
     </div>
 

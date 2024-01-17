@@ -15,6 +15,9 @@ public class CreateContractCommandValidator : AbstractValidator<CreateContractCo
             .WithMessage("{PropertyName} is required.")
             .NotNull()
             .MustAsync(ValidateEstateExistence).WithMessage("Estate does not exist.");
+        RuleFor(p => p.Data.OwnerId)
+            .NotEmpty().WithMessage("{PropertyName} is required.")
+            .NotNull().WithMessage("{PropertyName} can't be null.");
         RuleFor(p => p.Data.Description)
             .NotEmpty().WithMessage("{PropertyName} is required.")
             .NotNull().WithMessage("{PropertyName} can't be null.")

@@ -21,7 +21,7 @@ public class DeleteEstateByIdCommandHandler(IEstateRepository estateRepository)
             return new DeleteEstateByIdCommandResponse
             {
                 IsSuccess = false,
-                Message = "Failed to create contract.",
+                Message = "Delete estate by Id validation failed",
                 ValidationsErrors = validationErrors
             };
         }

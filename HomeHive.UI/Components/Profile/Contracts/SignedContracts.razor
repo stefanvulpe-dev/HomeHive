@@ -1,10 +1,13 @@
 @using HomeHive.UI.ViewModels
 @using HomeHive.UI.Interfaces
 @using HomeHive.UI.Pages.Profile
+@using HomeHive.UI.ViewModels.Contracts
 @using Microsoft.AspNetCore.Authorization
 @layout ProfileLayout
 @attribute [Authorize(Roles = "User, Admin")]
 @inject IContractDataService ContractDataService
+@inject IEstateDataService EstateDataService
+@inject IUserDataService UserDataService
 @inject ILogger<Contracts> Logger
 
 
@@ -27,27 +30,42 @@
 </div>
 
 @code {
-    private IReadOnlyList<ContractViewModel>? ContractsList { get; set; }
+    private List<ContractViewModel>? ContractsList { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
-        var result = await ContractDataService.GetAllContractsByUserId();
+        var result = await ContractDataService.GetUserContracts();
 
         if (result is { IsSuccess: true })
         {
             Logger.LogInformation("Contracts retrieved successfully.");
-            ContractsList = result.Contracts?
-                .Where(c => c.ContractType == "Signed")
-                .Select(c => new ContractViewModel
+            ContractsList = new List<ContractViewModel>();
+            if (result.Contracts?.Count > 0)
+                foreach (var c in result.Contracts)
                 {
-                    EstateId = c.EstateId,
-                    ContractType = c.ContractType?.ToString(),
-                    Status = c.Status?.ToString(),
-                    Price = c.Price,
-                    StartDate = c.StartDate,
-                    EndDate = c.EndDate,
-                    Description = c.Description
-                }).ToList();
+                    if (c.Status == "Done")
+                    {
+                        var estateResult = await EstateDataService.GetById(c
+                            .EstateId);
+                        var clientResult = await UserDataService.GetUserGeneralInfo(c.UserId);
+                        var ownerResult = await UserDataService.GetUserGeneralInfo(c.OwnerId);
+                        ContractsList.Add(new ContractViewModel
+                        {
+                            Id = c.Id,
+                            EstateId = c.EstateId,
+                            EstateName = estateResult?.Estate?.Name,
+                            OwnerName = ownerResult?.User?.FirstName + " " + ownerResult?.User?.LastName,
+                            ClientName = clientResult?.User?.FirstName + " " + clientResult?.User?.LastName,
+                            OwnerId = c.OwnerId,
+                            ContractType = c.ContractType,
+                            Status = c.Status,
+                            Price = c.Price,
+                            StartDate = c.StartDate,
+                            EndDate = c.EndDate,
+                            Description = c.Description
+                        });
+                    }
+                }
         }
         else
         {

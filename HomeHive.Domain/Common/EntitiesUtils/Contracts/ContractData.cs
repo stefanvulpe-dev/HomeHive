@@ -2,6 +2,7 @@
 
 public record ContractData(
     Guid EstateId,
+    Guid OwnerId,
     string? ContractType,
     string? Status,
     decimal? Price,

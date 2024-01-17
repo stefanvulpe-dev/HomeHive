@@ -4,7 +4,6 @@
         <TargetFramework>net8.0</TargetFramework>
         <Nullable>enable</Nullable>
         <ImplicitUsings>enable</ImplicitUsings>
-        <RunAOTCompilation>true</RunAOTCompilation>
         <RunWasmToolchain>true</RunWasmToolchain>
         <BlazorWebAssemblyEnableLinking>true</BlazorWebAssemblyEnableLinking>
         <BlazorWebAssemblyEnableCache>true</BlazorWebAssemblyEnableCache>

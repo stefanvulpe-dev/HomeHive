@@ -30,13 +30,13 @@
     @if (Estate?.EstateCategory == "ForSale")
     {
         <span>
-            @Estate?.Price $
+            @($"{Estate?.Price:N2}") $
         </span>
     }
     else
     {
         <span>
-            @Estate?.Price $/month
+            @($"{Estate?.Price:N2}") $/month
         </span>
     }
 </div>

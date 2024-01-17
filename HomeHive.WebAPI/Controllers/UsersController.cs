@@ -10,6 +10,7 @@ using HomeHive.Application.Features.Users.Queries.GetAllUsers;
 using HomeHive.Application.Features.Users.Queries.GetProfilePicture;
 using HomeHive.Application.Features.Users.Queries.GetResetToken;
 using HomeHive.Application.Features.Users.Queries.GetUserById;
+using HomeHive.Application.Features.Users.Queries.GetUserGeneralInfo;
 using HomeHive.Application.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -59,6 +60,24 @@ public class UsersController(
         return Ok(result);
     }
 
+    [Authorize(Roles = "Admin, User")]
+    [HttpGet("General/{userId}")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    public async Task<IActionResult> GetGeneralInfo(Guid userId)
+    {
+        var result = await Mediator.Send(new GetUserGeneralInfoQuery(userId));
+
+        if (!result.IsSuccess)
+        {
+            if (result.ValidationsErrors != null)
+                foreach (var (field, error) in result.ValidationsErrors)
+                    logger.LogError($"Field: {field}, Message: {error}");
+            return BadRequest(result);
+        }
+
+        return Ok(result);
+    }
+    
     [Authorize(Roles = "Admin")]
     [HttpGet("all")]
     [ProducesResponseType(StatusCodes.Status200OK)]

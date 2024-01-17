@@ -1,11 +1,14 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace HomeHive.UI.ViewModels;
+namespace HomeHive.UI.ViewModels.Contracts;
 
-public class ContractViewModel
+public class CreateContractViewModel
 {
     [Required(ErrorMessage = "Estate id is required")]
     public Guid? EstateId { get; set; }
+    
+    [Required(ErrorMessage = "Owner id is required")]
+    public Guid? OwnerId { get; set; }
     
     [Required(ErrorMessage = "Contract type is required")]
     public string? ContractType { get; set; }
@@ -24,5 +27,4 @@ public class ContractViewModel
     [Required(ErrorMessage = "Please enter something here")]
     [MaxLength(250, ErrorMessage = "Your description is too long (250 characters max).")]
     public string? Description { get; set; }
-
 }

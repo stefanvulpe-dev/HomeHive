@@ -39,7 +39,7 @@ public class CreateContractCommandHandlerTests
     {
         // Arrange
         var command = new CreateContractCommand(Guid.NewGuid(),
-            new ContractData(Guid.NewGuid(),
+            new ContractData(Guid.NewGuid(), Guid.NewGuid(),
                 ContractType.Rent.ToString(),
                 ContractStatus.Done.ToString(),
                 200000,
@@ -63,7 +63,7 @@ public class CreateContractCommandHandlerTests
     {
         // Arrange
         var command = new CreateContractCommand(Guid.NewGuid(),
-            new ContractData(Guid.Empty,
+            new ContractData(Guid.NewGuid(), Guid.Empty,
                 ContractType.Rent.ToString(),
                 ContractStatus.Done.ToString(),
                 200000,
@@ -92,7 +92,7 @@ public class CreateContractCommandHandlerTests
 
         var command = new CreateContractCommand(
             Guid.NewGuid(),
-            new ContractData(estateCreationResult.Value.Id,
+            new ContractData(Guid.NewGuid(), estateCreationResult.Value.Id,
                 ContractType.Rent.ToString(),
                 ContractStatus.Done.ToString(),
                 200000,
@@ -122,7 +122,7 @@ public class CreateContractCommandHandlerTests
 
         var command = new CreateContractCommand(
             Guid.NewGuid(),
-            new ContractData(estateCreationResult.Value.Id,
+            new ContractData(Guid.NewGuid(), estateCreationResult.Value.Id,
                 ContractType.Rent.ToString(),
                 ContractStatus.Done.ToString(),
                 200000,
@@ -154,7 +154,7 @@ public class CreateContractCommandHandlerTests
 
         var command = new CreateContractCommand(
             Guid.NewGuid(),
-            new ContractData(estateCreationResult.Value.Id,
+            new ContractData(Guid.NewGuid(), estateCreationResult.Value.Id,
                 ContractType.Rent.ToString(),
                 ContractStatus.Done.ToString(),
                 200000,
@@ -185,7 +185,7 @@ public class CreateContractCommandHandlerTests
 
         var command = new CreateContractCommand(
             Guid.NewGuid(),
-            new ContractData(estateCreationResult.Value.Id,
+            new ContractData(Guid.NewGuid(), estateCreationResult.Value.Id,
                 ContractType.Rent.ToString(),
                 ContractStatus.Done.ToString(),
                 200000,
@@ -215,7 +215,7 @@ public class CreateContractCommandHandlerTests
 
         var command = new CreateContractCommand(
             Guid.NewGuid(),
-            new ContractData(estateCreationResult.Value.Id,
+            new ContractData(Guid.NewGuid(), estateCreationResult.Value.Id,
                 string.Empty, 
                 ContractStatus.Done.ToString(),
                 200000,
@@ -245,7 +245,7 @@ public class CreateContractCommandHandlerTests
 
         var command = new CreateContractCommand(
             Guid.NewGuid(),
-            new ContractData(estateCreationResult.Value.Id,
+            new ContractData(Guid.NewGuid(), estateCreationResult.Value.Id,
                 null,
                 ContractStatus.Done.ToString(),
                 200000,
@@ -275,7 +275,7 @@ public class CreateContractCommandHandlerTests
 
         var command = new CreateContractCommand(
             Guid.NewGuid(),
-            new ContractData(estateCreationResult.Value.Id,
+            new ContractData(Guid.NewGuid(), estateCreationResult.Value.Id,
                 ContractType.Rent.ToString(),
                 ContractStatus.Done.ToString(),
                 200000,
