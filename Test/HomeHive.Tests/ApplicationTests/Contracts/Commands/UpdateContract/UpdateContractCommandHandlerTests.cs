@@ -20,7 +20,7 @@ public class UpdateContractCommandHandlerTests
     public async Task Handle_ShouldReturnFailureResponse_WhenContractIdIsEmpty()
     {
         // Arrange
-        var contractData = new ContractData(Guid.NewGuid(),
+        var contractData = new ContractData(Guid.NewGuid(), Guid.NewGuid(),
             ContractType.Rent.ToString(),
             ContractStatus.Done.ToString(),
             200000,
@@ -60,7 +60,7 @@ public class UpdateContractCommandHandlerTests
     public async Task Handle_ShouldReturnFailureResponse_WhenContractDataHasNoValues()
     {
         // Arrange
-        var contractData = new ContractData(Guid.Empty,
+        var contractData = new ContractData(Guid.Empty, Guid.Empty,
             null,
             null,
             null,
@@ -84,7 +84,7 @@ public class UpdateContractCommandHandlerTests
     public async Task Handle_ShouldReturnFailureResponse_WhenContractDataHasInvalidContractType()
     {
         // Arrange
-        var contractData = new ContractData(Guid.NewGuid(),
+        var contractData = new ContractData(Guid.NewGuid(), Guid.NewGuid(),
             "Test",
             ContractStatus.Done.ToString(),
             200000,
@@ -108,7 +108,7 @@ public class UpdateContractCommandHandlerTests
     public async Task Handle_ShouldReturnFailureResponse_WhenContractDoesNotExist()
     {
         // Arrange
-        var contractData = new ContractData(Guid.NewGuid(),
+        var contractData = new ContractData(Guid.NewGuid(), Guid.NewGuid(),
             ContractType.Rent.ToString(),
             ContractStatus.Done.ToString(),
             200000,
@@ -134,7 +134,7 @@ public class UpdateContractCommandHandlerTests
     public async Task Handle_ShouldReturnSuccessResponse_WhenContractIdIsValidAndContractDataIsValid()
     {
         // Arrange
-        var contractData = new ContractData(Guid.NewGuid(),
+        var contractData = new ContractData(Guid.NewGuid(), Guid.NewGuid(),
             ContractType.Rent.ToString(),
             ContractStatus.Done.ToString(),
             200000,

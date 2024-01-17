@@ -14,7 +14,7 @@ public class UpdateContractCommandTests
     {
         // Arrange
         var contractId = Guid.NewGuid();
-        var contractData = new ContractData(Guid.NewGuid(),
+        var contractData = new ContractData(Guid.NewGuid(), Guid.NewGuid(),
             ContractType.Rent.ToString(),
             ContractStatus.Done.ToString(),
             200000,
@@ -44,7 +44,7 @@ public class UpdateContractCommandTests
     {
         // Arrange
         var contractId = Guid.NewGuid();
-        var contractData = new ContractData(Guid.NewGuid(),
+        var contractData = new ContractData(Guid.NewGuid(), Guid.NewGuid(),
             ContractType.Rent.ToString(),
             ContractStatus.Done.ToString(),
             200000,
@@ -73,7 +73,7 @@ public class UpdateContractCommandTests
     {
         // Arrange
         var originalCommand = new UpdateContractCommand(Guid.NewGuid(),
-            new ContractData(Guid.NewGuid(),
+            new ContractData(Guid.NewGuid(), Guid.NewGuid(),
                 ContractType.Rent.ToString(),
                 ContractStatus.Done.ToString(),
                 200000,

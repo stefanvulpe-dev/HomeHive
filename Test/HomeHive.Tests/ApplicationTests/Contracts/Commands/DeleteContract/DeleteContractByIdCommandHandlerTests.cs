@@ -72,7 +72,7 @@ public class DeleteContractByIdCommandHandlerTests
     public async Task Handle_ShouldReturnFailureResponse_WhenContractRepositoryDeleteByIdAsyncFails()
     {
         // Arrange
-        var contractData = new ContractData(Guid.NewGuid(),
+        var contractData = new ContractData(Guid.NewGuid(), Guid.NewGuid(),
             ContractType.Rent.ToString(),
             ContractStatus.Done.ToString(),
             200000,

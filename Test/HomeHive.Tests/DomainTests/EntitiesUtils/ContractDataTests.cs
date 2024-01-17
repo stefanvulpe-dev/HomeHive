@@ -18,6 +18,7 @@ public class ContractDataTests
 
         // Act
         var contractData = new ContractData(estateId,
+            Guid.NewGuid(),
             contractType,
             status,
             price,
@@ -38,6 +39,7 @@ public class ContractDataTests
     {
         // Arrange
         var contractData = new ContractData(Guid.NewGuid(),
+            Guid.NewGuid(),
             null,
             null,
             null,

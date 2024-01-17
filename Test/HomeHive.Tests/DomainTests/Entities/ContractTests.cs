@@ -10,7 +10,7 @@ public class ContractTests
     {
         // Arrange
         var userId = Guid.NewGuid();
-        var contractData = new ContractData(Guid.Empty,
+        var contractData = new ContractData(Guid.Empty, Guid.Empty,
             ContractType.Rent.ToString(),
             ContractStatus.Done.ToString(),
             200000,
@@ -29,7 +29,7 @@ public class ContractTests
     {
         // Arrange
         var estateId = Guid.NewGuid();
-        var contractData = new ContractData(estateId,
+        var contractData = new ContractData(estateId, Guid.NewGuid(),
             ContractType.Rent.ToString(),
             ContractStatus.Done.ToString(),
             200000,
@@ -48,7 +48,7 @@ public class ContractTests
     {
         // Arrange
         var (estateId, userId) = (Guid.NewGuid(), Guid.NewGuid());
-        var contractData = new ContractData(estateId,
+        var contractData = new ContractData(estateId, Guid.NewGuid(),
             "",
             ContractStatus.Done.ToString(),
             200000,
@@ -68,6 +68,7 @@ public class ContractTests
         // Arrange
         var (estateId, userId) = (Guid.NewGuid(), Guid.NewGuid());
         var contractData = new ContractData(estateId,
+            Guid.NewGuid(),
             ContractType.Rent.ToString(),
             ContractStatus.Done.ToString(),
             200000,
@@ -87,6 +88,7 @@ public class ContractTests
         // Arrange
         var (estateId, userId) = (Guid.NewGuid(), Guid.NewGuid());
         var contractData = new ContractData(estateId,
+            Guid.NewGuid(),
             ContractType.Rent.ToString(),
             ContractStatus.Done.ToString(),
             200000,
@@ -105,6 +107,7 @@ public class ContractTests
     {
         // Arrange
         var contractData = new ContractData(Guid.NewGuid(),
+            Guid.NewGuid(),
             ContractType.Rent.ToString(),
             ContractStatus.Done.ToString(),
             200000,
@@ -131,6 +134,7 @@ public class ContractTests
     {
         // Arrange
         var contractData = new ContractData(Guid.NewGuid(),
+            Guid.NewGuid(),
             ContractType.Rent.ToString(),
             ContractStatus.Done.ToString(),
             200000,
@@ -139,6 +143,7 @@ public class ContractTests
             "Test");
         var contract = Contract.Create(Guid.NewGuid(), contractData).Value;
         var newContractData = new ContractData(Guid.NewGuid(),
+            Guid.NewGuid(),
             ContractType.Rent.ToString(),
             ContractStatus.Done.ToString(),
             200000,

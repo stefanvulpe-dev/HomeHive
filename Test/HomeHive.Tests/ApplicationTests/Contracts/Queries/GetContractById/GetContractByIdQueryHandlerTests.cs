@@ -37,7 +37,7 @@ public class GetContractByIdQueryHandlerTests
     public async Task Handle_ShouldReturnSuccessResponse_WhenContractRepositoryGetByIdAsyncSucceeds()
     {
         // Arrange
-        var contractData = new ContractData(Guid.NewGuid(),
+        var contractData = new ContractData(Guid.NewGuid(), Guid.NewGuid(),
             ContractType.Rent.ToString(),
             ContractStatus.Done.ToString(),
             200000,
